@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16f3f22b97f3aa4b8042e7ab5bdc466, type: 3}
+  m_Name: itaHQ
+  m_EditorClassIdentifier: 
+  buildingName: Italian HQ
+  type: 0
+  model: {fileID: 5047458214652261495, guid: b85a5dfd9150ecf4a9f9b218fdfdb2ef, type: 3}
+  buildingHealth: 500
+  owner: 0
+  team: 0
+  canReinforce: 1
+  canHeal: 1
+  productionList:
+  - {fileID: 0}
+  healRange: 10
