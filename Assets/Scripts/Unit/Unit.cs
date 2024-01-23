@@ -6,10 +6,10 @@ namespace Capstone
 {
     public class Unit : MonoBehaviour
     {
-        public string Name;
-        public string Description;
+        public string unitName;
+        public string description;
         public GameObject unitObj;
-        public GameObject Icon;
-        public int Team;
+        public GameObject icon;
+        public int team;
     }
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
   owner: 0
   team: 0
   models:
-  - {fileID: 11400000, guid: da5f31a68205600428b9d6281e376dd0, type: 2}
-  - {fileID: 11400000, guid: da5f31a68205600428b9d6281e376dd0, type: 2}
-  - {fileID: 11400000, guid: da5f31a68205600428b9d6281e376dd0, type: 2}
-  - {fileID: 11400000, guid: da5f31a68205600428b9d6281e376dd0, type: 2}
+  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
+  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
+  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
+  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}

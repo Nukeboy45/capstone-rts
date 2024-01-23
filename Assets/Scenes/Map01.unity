@@ -364,10 +364,15 @@ MonoBehaviour:
   aiPrefab: {fileID: 4824233187180255722, guid: 5193217f001c44d4297d55924ef8daff, type: 3}
   team1: 00000000
   team2: 01000000
-  team1BaseSpawns:
+  baseSpawns:
   - {fileID: 137385166}
-  team2BaseSpawns:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 2062664763}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &1734984951
 GameObject:
   m_ObjectHideFlags: 0

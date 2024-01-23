@@ -106,6 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4536996091685818393}
+  - component: {fileID: -2553513167860832298}
   m_Layer: 3
   m_Name: AusRifle
   m_TagString: Untagged
@@ -129,3 +130,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2553513167860832298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7386849799038691330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1585710975bb99c4088352fc8d228029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  modelObj: {fileID: 7386849799038691330}
+  team: 0
+  weaponData: {fileID: 11400000, guid: 9313c28fe23444a41a16aae16edf9134, type: 2}
+  maxHealth: 50
+  attackSpeed: 2
+  range: 10
+  defense: 1
+  moveSpeed: 3
+  modelPriority: 0

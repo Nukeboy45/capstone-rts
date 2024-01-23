@@ -2,18 +2,17 @@ using UnityEngine;
 
 namespace Capstone
 {
-    public class EntitySpawner : MonoBehaviour
+    public static class EntitySpawner
     {
         public static void SpawnPassiveBuilding(PassiveBuildingData buildingData, Vector3 position, int team, int ownerTag)
         {
-            buildingData.team = team;
+            /*buildingData.team = team;
             buildingData.owner = ownerTag;
             GameObject hqObj = new GameObject(buildingData.buildingName);
-            PassiveBuilding hq = hqObj.AddComponent<PassiveBuilding>();
             hq.data = buildingData;
             hq.buildingObj = hqObj;
 
-            hq.transform.position = position;
+            hq.transform.position = position;*/
         }
 
         public static void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag)

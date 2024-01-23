@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f16f3f22b97f3aa4b8042e7ab5bdc466, type: 3}
-  m_Name: AusHQ
+  m_Name: ausHQ
   m_EditorClassIdentifier: 
   buildingName: Austrian HQ
   type: 0

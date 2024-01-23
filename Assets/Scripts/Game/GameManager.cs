@@ -10,9 +10,8 @@ namespace Capstone
         public GameObject aiPrefab;
         public GameActorType[] team1;
         public GameActorType[] team2;
-        public GameObject[] players; // 0-3 is team 1, 4-7 is team 2;
-        public HQSpawnPoint[] team1BaseSpawns;
-        public HQSpawnPoint[] team2BaseSpawns;
+        private GameObject[] players; // 0-3 is team 1, 4-7 is team 2
+        public HQSpawnPoint[] baseSpawns; // 0-3 is team 1, 4-7 is team 2
         private int team1Tickets;
         private int team2Tickets;
 
@@ -20,7 +19,7 @@ namespace Capstone
         void Start()
         {
             InitializeTeams();
-            //InitalizeBases();
+            InitalizeBases();
         }
 
         /// <summary>
@@ -63,76 +62,137 @@ namespace Capstone
                             computerPlayerComponent.team = 0;
                             computerPlayerComponent.faction = "aus";
                             computerPlayerComponent.difficulty = "easy";
-                            /// Left off here
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + " Team 1";
+                            aiCount++;
                         }
+                        players[ownerTag] = newTeamMember;
+                        ownerTag++;
                         break;
                     }
-                    case (GameActorType.aiHard):
-
+                    case (GameActorType.aiHard): {
+                        GameObject newTeamMember = Instantiate(aiPrefab, new Vector3(0,0,0), Quaternion.identity);
+                        ComputerPlayer computerPlayerComponent = newTeamMember.GetComponent<ComputerPlayer>();
+                        if (computerPlayerComponent != null)
+                        {
+                            computerPlayerComponent.ownerTag = ownerTag;
+                            computerPlayerComponent.team = 0;
+                            computerPlayerComponent.faction = "aus";
+                            computerPlayerComponent.difficulty = "hard";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + " Team 1";
+                            aiCount++;
+                        }
+                        players[ownerTag] = newTeamMember;
+                        ownerTag++;
                         break;
-
-                    default:
-
+                    }
+                    default: 
+                        Debug.Log("Incorrect Player Object defined, could not instantiate");
                         break;
                 }
             }
-
-            foreach(GameActorType type in team2)
+            ownerTag = 4;
+            foreach (GameActorType type in team2)
             {
                 switch (type)
                 {
-                    case (GameActorType.player):
-                        
+                    case (GameActorType.player): {
+                        GameObject newTeamMember = Instantiate(playerPrefab, new Vector3(0,0,0), Quaternion.identity);
+                        Player playerComponent = newTeamMember.GetComponent<Player>();
+                        if (playerComponent != null) 
+                        {
+                            playerComponent.ownerTag = ownerTag;
+                            playerComponent.team = 1;
+                            playerComponent.faction = "ita";
+                            newTeamMember.name = "Player" + playerCount + " Team 1";
+                            playerCount++;
+                        }
+                        players[ownerTag] = newTeamMember;
+                        ownerTag++;
                         break;
-                    
-                    case (GameActorType.aiEasy):
-
+                    }
+                    case (GameActorType.aiEasy): {
+                        GameObject newTeamMember = Instantiate(aiPrefab, new Vector3(0,0,0), Quaternion.identity);
+                        ComputerPlayer computerPlayerComponent = newTeamMember.GetComponent<ComputerPlayer>();
+                        if (computerPlayerComponent != null)
+                        {
+                            computerPlayerComponent.ownerTag = ownerTag;
+                            computerPlayerComponent.team = 1;
+                            computerPlayerComponent.faction = "ita";
+                            computerPlayerComponent.difficulty = "easy";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + " Team 2";
+                            aiCount++;
+                        }
+                        players[ownerTag] = newTeamMember;
+                        ownerTag++;
                         break;
-
-                    case (GameActorType.aiHard):
-
+                    }
+                    case (GameActorType.aiHard): {
+                        GameObject newTeamMember = Instantiate(aiPrefab, new Vector3(0,0,0), Quaternion.identity);
+                        ComputerPlayer computerPlayerComponent = newTeamMember.GetComponent<ComputerPlayer>();
+                        if (computerPlayerComponent != null)
+                        {
+                            computerPlayerComponent.ownerTag = ownerTag;
+                            computerPlayerComponent.team = 1;
+                            computerPlayerComponent.faction = "ita";
+                            computerPlayerComponent.difficulty = "hard";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + " Team 2";
+                            aiCount++;
+                        }
+                        players[ownerTag] = newTeamMember;
+                        ownerTag++;
                         break;
-                    
-                    default:
-
+                    }
+                    default: 
+                        Debug.Log("Incorrect Player Object defined, could not instantiate");
                         break;
                 }
             }
-
         }
-    }
-}
 
         /// <summary>
         /// For each existing Entity, spawns an HQ structure at map-defined spawn points
         /// </summary>
-        /*void InitalizeBases()
+        void InitalizeBases()
         {
-            /// Initializes Team 1 First
-            for (int i = 0; i < team1.Length; i++)
+            /// Initalizes bases for existing gameActors in the player list
+            foreach (GameObject gameActor in players)
             {
                 /// The Player / ComputerPlayer inheret from a generic class GameActor
                 /// so that a switch statement can be used to handle their component rather
                 /// than writing an if-else check for each possible component.
-                GameActor component = team1[i].GetComponent<GameActor>();
-                Debug.Log(component.faction);
-                if (component != null)
+                if (gameActor != null)
                 {
-                    switch (component.faction)
+                    /// Getting the component of the gameActor object
+                    GameActor component = gameActor.GetComponent<GameActor>();
+                    Debug.Log(component.faction);
+                    if (component != null)
                     {
-                        case "aus":
-                            /// Load Austrian HQ building data from resources and spawn
-                            PassiveBuildingData ausHQ = Resources.Load<PassiveBuildingData>("Assets/Resources/Buildings/Austrian/PassiveBuildings/ausHQ");
-                            EntitySpawner.SpawnPassiveBuilding(ausHQ, team1BaseSpawns[i].transform.position, 0, component.ownerTag);
-                            break;
-                        case "ita":
-                            /// Load Italian HQ building data from resources and spawn
-                            PassiveBuildingData itaHQ = Resources.Load<PassiveBuildingData>("Assets/Resources/Buildings/Italian/PassiveBuildings/itaHQ");
-                            EntitySpawner.SpawnPassiveBuilding(itaHQ, team1BaseSpawns[i].transform.position, 0, component.ownerTag);
-                            break;
-                        default:
-                            Debug.Log("GameActor does not have a correct faction tag");
-                            break;
+                        switch (component.faction)
+                        {
+                            case "aus":
+                                /// Load Austrian HQ building data from resources and spawn
+                                PassiveBuildingData ausHQ = Resources.Load<PassiveBuildingData>("Buildings/Austrian/PassiveBuildings/ausHQ");
+                                if (ausHQ != null)
+                                {
+                                    EntitySpawner.SpawnPassiveBuilding(ausHQ, baseSpawns[component.ownerTag].transform.position, component.team, component.ownerTag);
+                                } else {
+                                    Debug.Log("Austrian HQ object is", ausHQ);
+                                }
+                                break;
+                            case "ita":
+                                /// Load Italian HQ building data from resources and spawn
+                                PassiveBuildingData itaHQ = Resources.Load<PassiveBuildingData>("Buildings/Italian/PassiveBuildings/itaHQ");
+                                if (itaHQ != null)
+                                {
+                                    EntitySpawner.SpawnPassiveBuilding(itaHQ, baseSpawns[component.ownerTag].transform.position, component.team, component.ownerTag);
+                                } else {
+                                    Debug.Log("Italian HQ object is ", itaHQ);
+                                }
+                                break;
+                            default:
+                                Debug.Log("GameActor does not have a correct faction tag");
+                                break;
+                        }
                     }
                 }
             }
