@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 365183166389344589}
   - component: {fileID: 8824131962089684525}
   - component: {fileID: 7293824955081043581}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3086726945915165017}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.25, z: 0}
-  m_LocalScale: {x: 5, y: 2.5, z: 5}
+  m_LocalScale: {x: 3, y: 1.5, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8842760829663763918}
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ee5ffaf28d1c28d4180b49f587a33a25, type: 2}
+  - {fileID: 2100000, guid: e6cd1fb3ecd7a904a8cbf81d5b0f09c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -106,9 +106,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8842760829663763918}
-  - component: {fileID: 6654214129625561083}
-  m_Layer: 0
-  m_Name: AusHQ
+  - component: {fileID: 3094509096773899797}
+  m_Layer: 3
+  m_Name: itaHQ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,7 +130,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6654214129625561083
+--- !u!114 &3094509096773899797
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,10 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c44154c3e0cbd47bb840f02243855a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingObj: {fileID: 0}
-  maxBuildingHealth: 0
-  currHealth: 0
+  buildingObj: {fileID: 3086726945915165017}
+  maxBuildingHealth: 500
   owner: 0
   team: 0
-  data: {fileID: 0}
   selected: 0
+  data: {fileID: 11400000, guid: f519edcb787fda14ea819fdc70d5b4dc, type: 2}

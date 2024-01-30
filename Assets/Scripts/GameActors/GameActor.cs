@@ -9,5 +9,6 @@ namespace Capstone
         public string faction;
         public int ownerTag;
         public int team;
+        public List<GameObject> unitList = new List<GameObject>();
     }
 }

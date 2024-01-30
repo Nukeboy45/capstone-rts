@@ -13,22 +13,57 @@ namespace Capstone
                                        // is assigned to this
 
         private int squadSize;
-        private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings
-        private bool selected; 
+        private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
         
-        void Start()
+        // --------------------- Class Methods ---------------------------------
+
+        public override void Start()
         {
+            base.Start();
             InstantiateSquad();
         }
 
         void Update()
         {
-            /*if (aliveMembers <= 0) {
-                Destroy(unitObj);
-            }*/
+            if (aliveMembers <= 0) {
+                Destroy(this.gameObject);
+            }
         }
 
-        public void killModel(GameObject modelObject) {
+        public override void select()
+        {
+            base.select();
+            foreach (GameObject member in squadMembers)
+            {
+                SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                if (render != null)
+                {   
+                    render.enabled = true;
+                }
+            }
+        }
+
+        public override void deselect()
+        {
+            base.deselect();
+            foreach (GameObject member in squadMembers)
+            {
+                SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                if (render != null)
+                {   
+                    render.enabled = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Function called by a squadMember object belonging to this squad when its
+        /// health reaches 0. Allows the squad to always determine proper number of 
+        /// alive members.
+        /// </summary>
+        /// <param name="modelObject"></param>
+        public void killModel(GameObject modelObject) 
+        {
             Destroy(modelObject);
             aliveMembers--;
         }
@@ -77,7 +112,7 @@ namespace Capstone
             }
 
             // Initializes the squad Icon and renders it above the Squad Lead. 
-            GameObject iconObject = Instantiate(squadData.icon, (squadLead.transform.position + new Vector3(0,3,0)), Quaternion.identity);
+            GameObject iconObject = Instantiate(squadData.icon, (squadLead.transform.position + new Vector3(0,2,0)), Quaternion.identity);
 
             iconObject.transform.SetParent(squadLead.transform, false);
             iconObject.layer = LayerMask.NameToLayer("Selectable");

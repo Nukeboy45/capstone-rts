@@ -8,8 +8,17 @@ namespace Capstone {
     {
         public GameObject buildingObj;
         public float maxBuildingHealth;
-        public float currHealth;
         public int owner;
         public int team;
+        public bool selected;
+        private float currHealth;
+
+        public void setCurrentHealth(float health) {
+            currHealth = health;
+        }
+
+        public float getCurrentHealth() {
+            return currHealth;
+        }
     }
 }

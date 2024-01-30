@@ -5,11 +5,8 @@ namespace Capstone
     public class UnitData : ScriptableObject
     {
         public string unitName;
-        public UnitType unitType;
-        public string description;
+        public string desc;
         public GameObject icon;
-        public int owner;
-        public int team;
     }
 
 }

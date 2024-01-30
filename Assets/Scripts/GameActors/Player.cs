@@ -6,9 +6,10 @@ namespace Capstone
 {
     public class Player : GameActor
     {
+        // --------- Player Specific Variables -------
         private Camera playerCamera;
         private GameObject playerUI;
-        private Unit[] selectedUnits;
+        public List<GameObject> selected = new List<GameObject>();
 
         // --------- Camera Variables ----------
         private float minZoom = 130;
@@ -52,6 +53,44 @@ namespace Capstone
 
         // Update is called once per frame
         void Update()
+        {
+            cameraUpdate();
+            // ---------------------------------------------------------------------------
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.collider.gameObject.layer);
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    {
+                        SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>();
+                    
+                        if (squadMember == null && hit.collider.transform.parent != null)
+                        {
+                            // Check the parent for SquadMember component
+                            squadMember = hit.collider.transform.parent.gameObject.GetComponent<SquadMember>();
+                        }
+
+                        if (squadMember != null)
+                        {
+                            if (!selected.Contains(squadMember.parent.gameObject))
+                            {
+                                squadMember.parent.select();
+                            }
+                        }
+                    } else {
+                        deselectAll();
+                    }
+                }
+            }
+        }
+
+        private void cameraUpdate() 
         {
             if (Input.GetKey(KeyCode.LeftAlt) || Input.GetMouseButton(2))
             {
@@ -99,37 +138,26 @@ namespace Capstone
                    playerCamera.fieldOfView += zoomRateFOV; 
                 }
             }
+        }
 
-            // ---------------------------------------------------------------------------
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-
-                
-                if (Physics.Raycast(ray, out hit))
+        // ----------------- Selection Functions ------------------------------
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        private void deselectAll() {
+            if (selected.Count > 0)
                 {
-                    Debug.Log(hit.collider.gameObject.layer);
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    for (int i = selected.Count - 1; i >= 0; i--) 
                     {
-                        
+                        Unit component = selected[i].GetComponent<Unit>();
+                        component.deselect();
                     }
-
-                    /*SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>();
-
-                    if (squadMember == null && hit.collider.transform.parent != null)
-                    {
-                        // Check the parent for SquadMember component
-                        squadMember = hit.collider.transform.parent.parent.gameObject.GetComponent<SquadMember>();
-                    }
-
-                    if (squadMember != null)
-                    {
-                        Debug.Log("Squad Member Clicked!");
-                    }*/
                 }
-            }
+        }
+
+        private void deselect() {
+    
         }
 
         float normalizeAngles(float angle) {

@@ -6,7 +6,6 @@ namespace Capstone
     {
         // Object functionality Variables
         public Squad parent;
-        public GameObject modelObj; // Reference to GameObject this instance is attached to
         private SquadMember target; // Reference to the enemy SquadMember to be firing at
         private float currHealth;
         public WeaponData weaponData;

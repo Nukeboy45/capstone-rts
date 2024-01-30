@@ -13,13 +13,10 @@ MonoBehaviour:
   m_Name: AusRifle
   m_EditorClassIdentifier: 
   unitName: Austrian Rifle Squad
-  unitType: 0
-  description: Description
+  desc: 
   icon: {fileID: 3189833679224510634, guid: 2071c68e83a55e24d8f8aa9a6123f826, type: 3}
-  owner: 0
-  team: 0
   models:
-  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
-  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
-  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
-  - {fileID: 7386849799038691330, guid: 9b6726ee41c9a514aa675f32c7410550, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}

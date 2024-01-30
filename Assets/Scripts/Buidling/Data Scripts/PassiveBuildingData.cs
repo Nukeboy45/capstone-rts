@@ -6,7 +6,7 @@ namespace Capstone
     {
         public bool canReinforce;
         public bool canHeal;
-        public UnitData[] productionList;
+        public GameObject[] productionList;
         public float healRange;
     }
 
