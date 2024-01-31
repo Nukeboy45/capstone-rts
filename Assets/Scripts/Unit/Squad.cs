@@ -14,6 +14,8 @@ namespace Capstone
 
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
+        public bool? showSelect = null;
+        private bool selected = false;
         
         // --------------------- Class Methods ---------------------------------
 
@@ -28,11 +30,36 @@ namespace Capstone
             if (aliveMembers <= 0) {
                 Destroy(this.gameObject);
             }
+
+            if (showSelect != null && selected == false)
+            {
+                if (showSelect == true)
+                {
+                    showSelectionRadius();
+                    showSelect = false;
+                } else {
+                    hideSelectionRadius();
+                    showSelect = false;
+                }
+            }
         }
 
         public override void select()
         {
             base.select();
+            selected = true;
+            showSelectionRadius();
+        }
+
+        public override void deselect()
+        {
+            base.deselect();
+            selected = false;
+            hideSelectionRadius();
+        }
+
+        private void showSelectionRadius()
+        {
             foreach (GameObject member in squadMembers)
             {
                 SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
@@ -43,9 +70,8 @@ namespace Capstone
             }
         }
 
-        public override void deselect()
+        private void hideSelectionRadius()
         {
-            base.deselect();
             foreach (GameObject member in squadMembers)
             {
                 SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
@@ -80,8 +106,17 @@ namespace Capstone
             aliveMembers = squadSize;
 
             squadMembers = new GameObject[squadSize];
-
+            
             Dictionary<int, Vector3> spacing = generateSpacing(transform.position);
+
+            // Setting the squad's icon based on whether or not it belongs to player's team
+            Player playerObj = FindObjectOfType<Player>();
+            if (owner.team != playerObj.team) 
+            {
+                squadData.icon = squadData.icons[1];
+            } else {
+                squadData.icon = squadData.icons[0];
+            }
 
             // Spawn loop for initializing each model of squad according to 
             // the associated model prefabs
@@ -111,11 +146,47 @@ namespace Capstone
                 squadMembers[i].transform.SetParent(this.transform, false);
             }
 
-            // Initializes the squad Icon and renders it above the Squad Lead. 
-            GameObject iconObject = Instantiate(squadData.icon, (squadLead.transform.position + new Vector3(0,2,0)), Quaternion.identity);
+            // Initializes the squad Icon and attaches it to the icon position empty object on the model.
+            GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
+            if (iconPosition != null) {
+                iconPosition.SetActive(true);
+                
+                GameObject iconObject = Instantiate(squadData.iconObj, new Vector3(0,0,0), Quaternion.identity);
+                iconObject.transform.SetParent(iconPosition.transform, false);
+                SpriteRenderer renderer = iconObject.GetComponent<SpriteRenderer>();
+                if (renderer != null) 
+                {
+                    renderer.sprite = squadData.icon;
+                }
+                iconObject.layer = LayerMask.NameToLayer("Selectable");
+            } else {
+                Debug.Log("Icon Position Object not found!");
+            }
 
-            iconObject.transform.SetParent(squadLead.transform, false);
-            iconObject.layer = LayerMask.NameToLayer("Selectable");
+            // Setting the render color of the selection circles
+            if (owner.team != playerObj.team)
+            {
+                foreach(GameObject member in squadMembers)
+                {
+                    SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                    if (render != null)
+                    {
+                    render.color = Color.red;
+                    render.enabled = false;
+                    }
+                }
+            } else {
+                foreach(GameObject member in squadMembers)
+                {
+                    SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                    if (render != null)
+                    {
+                        render.color = Color.blue;
+                        render.enabled = false;
+                    }
+                }    
+            }
+    
         }
 
         /// <summary>

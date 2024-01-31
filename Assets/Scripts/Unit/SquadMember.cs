@@ -23,7 +23,8 @@ namespace Capstone
             
         }
 
-        void InstantiateSquadMember() {
+        void InstantiateSquadMember() 
+        {
 
         }
 

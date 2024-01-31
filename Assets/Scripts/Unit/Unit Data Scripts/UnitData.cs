@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Capstone
 {
@@ -6,7 +8,9 @@ namespace Capstone
     {
         public string unitName;
         public string desc;
-        public GameObject icon;
+        public GameObject iconObj;
+        public Sprite[] icons;
+        public Sprite icon;
     }
 
 }

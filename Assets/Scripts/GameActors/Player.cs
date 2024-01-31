@@ -26,9 +26,6 @@ namespace Capstone
         {
             playerCamera = new GameObject("PlayerCamera").AddComponent<Camera>();
             GameObject ui = Resources.Load("Prefabs/UI/PlayerUI") as GameObject;
-            //playerCamera.transform.parent = cameraParent.transform;
-            //cameraParent.transform.position = new Vector3(0,6,0);
-            //cameraParent.transform.rotation = Quaternion.Euler(45.0f, 0f, 0f);
             playerCamera.transform.position = new Vector3(0,6,0);
             playerCamera.transform.rotation = Quaternion.Euler(45.0f, 0f, 0f);
 
@@ -55,41 +52,12 @@ namespace Capstone
         void Update()
         {
             cameraUpdate();
-            // ---------------------------------------------------------------------------
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-
-                
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.collider.gameObject.layer);
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
-                    {
-                        SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>();
-                    
-                        if (squadMember == null && hit.collider.transform.parent != null)
-                        {
-                            // Check the parent for SquadMember component
-                            squadMember = hit.collider.transform.parent.gameObject.GetComponent<SquadMember>();
-                        }
-
-                        if (squadMember != null)
-                        {
-                            if (!selected.Contains(squadMember.parent.gameObject))
-                            {
-                                squadMember.parent.select();
-                            }
-                        }
-                    } else {
-                        deselectAll();
-                    }
-                }
-            }
+            mouseUpdate();
         }
 
+        /// <summary>
+        /// Contains all logic for camera movement, called at the very start of Update()
+        /// </summary>
         private void cameraUpdate() 
         {
             if (Input.GetKey(KeyCode.LeftAlt) || Input.GetMouseButton(2))
@@ -140,12 +108,104 @@ namespace Capstone
             }
         }
 
+        /// <summary>
+        /// Contains all logic for selection and clicking commands, called in the Update() function
+        /// </summary>
+        private void mouseUpdate() 
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+            SquadMember squadMember;
+            PassiveBuilding passiveBuilding;
+            DefenseBuilding defenseBuilding;
+
+            if (Physics.Raycast(ray, out hit))
+            {   
+                Transform hitTransform = hit.collider.transform;
+
+                squadMember = getSelectionComponent<SquadMember>(hitTransform);
+
+                passiveBuilding = getSelectionComponent<PassiveBuilding>(hitTransform);
+
+                defenseBuilding = getSelectionComponent<DefenseBuilding>(hitTransform);
+
+                if (squadMember != null) 
+                {
+                    squadMember.parent.showSelect = true;
+                }
+
+                // Check if LMB has been clicked
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    {
+                        if (squadMember != null)
+                        {
+                            squadSelect(squadMember);
+                        }
+
+                        if (passiveBuilding != null)
+                        {
+                            
+                        }
+                        
+                    } else {
+                        deselectAll();
+                    }
+                }
+            }
+        }
+
         // ----------------- Selection Functions ------------------------------
-        
+
+        private T getSelectionComponent<T>(Transform startTransform) where T : Component
+        {
+            Transform currentTransform = startTransform;
+
+            while (currentTransform != null)
+            {
+                T component = currentTransform.gameObject.GetComponent<T>();
+
+                if (component != null) 
+                {
+                    return component;
+                }
+
+                currentTransform = currentTransform.parent;
+            }
+
+            return null;
+        }
+
+        private void squadSelect(SquadMember squadMember)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    if (!selected.Contains(squadMember.parent.gameObject))
+                    {
+                        if (squadMember.parent.owner == this) {
+                            squadMember.parent.select();
+                        }
+                    } else {
+                        squadMember.parent.deselect();
+                    }
+                } else {
+                    deselectAll();
+                    if (!selected.Contains(squadMember.parent.gameObject))
+                    {
+                        if (squadMember.parent.owner == this) {
+                            squadMember.parent.select();
+                        }
+                    }
+                }
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        private void deselectAll() {
+        private void deselectAll() 
+        {
             if (selected.Count > 0)
                 {
                     for (int i = selected.Count - 1; i >= 0; i--) 
@@ -156,9 +216,7 @@ namespace Capstone
                 }
         }
 
-        private void deselect() {
-    
-        }
+        // ------------------ Utility Functions -------------------------
 
         float normalizeAngles(float angle) {
             while (angle < 0f)
