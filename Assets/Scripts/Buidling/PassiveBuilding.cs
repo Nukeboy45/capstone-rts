@@ -34,7 +34,13 @@ namespace Capstone
             }
         }
 
-        private void SpawnUnit(GameObject unit) {
+        private void SpawnUnit(GameObject unit) 
+        {
+
+        }
+        
+        public void setRallyPoint(RaycastHit hit)
+        {
 
         }
     }

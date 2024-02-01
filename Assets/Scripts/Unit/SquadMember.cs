@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Capstone
 {
@@ -15,17 +16,20 @@ namespace Capstone
         public float defense;
         public float moveSpeed;
         public int modelPriority;
+        public LayerMask ground;
+        NavMeshAgent myAgent;
+
 
 
         // Start is called before the first frame update
         void Start()
         {
-            
+            myAgent = GetComponent<NavMeshAgent>();
         }
 
-        void InstantiateSquadMember() 
+        public void moveToPosition(RaycastHit hit)
         {
-
+            myAgent.SetDestination(hit.point);
         }
 
         // Update is called once per frame

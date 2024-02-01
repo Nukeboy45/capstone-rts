@@ -19,7 +19,6 @@ namespace Capstone
         private float zoomRateFOV = 5;
         private float zoomRateY = 0.25f;
         private float cameraSensitivity = 10.0f;
-        // -------------------------------------
 
         // Start is called before the first frame update
         void Start()
@@ -114,8 +113,8 @@ namespace Capstone
         private void mouseUpdate() 
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             RaycastHit hit;
+
             SquadMember squadMember;
             PassiveBuilding passiveBuilding;
             DefenseBuilding defenseBuilding;
@@ -132,7 +131,8 @@ namespace Capstone
 
                 if (squadMember != null) 
                 {
-                    squadMember.parent.showSelect = true;
+                    if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { squadMember.parent.showSelect = true; }
+                    else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { squadMember.parent.showSelect = true; }
                 }
 
                 // Check if LMB has been clicked
@@ -151,7 +151,46 @@ namespace Capstone
                         }
                         
                     } else {
-                        deselectAll();
+                        // Assuming player is not in multi-select mode, deselect all units
+                        if (!Input.GetKey(KeyCode.LeftShift)) { deselectAll(); } 
+                    }
+                }
+            }
+            if (Input.GetMouseButton(1))
+            {
+                Debug.Log("Right Click");
+                if (selected.Count > 0)
+                {
+                    Debug.Log("Phase 1");
+                    if (selected.Count == 1)
+                    {
+                        Debug.Log("Phase 2");
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                        {
+                            Unit unit = getSelectionComponent<Unit>(selected[0]);
+                            Building building = getSelectionComponent<Building>(selected[0]);
+                            if (unit != null) { 
+                                Debug.Log("Test");
+                                if (unit is Squad) 
+                                {
+                                    Squad squad = (Squad)unit;
+                                    squad.moveTo(hit);
+                                }
+                            }
+                            if (building != null) 
+                            {
+                                if (building is PassiveBuilding)
+                                {
+                                    PassiveBuilding passiveBuildComp = (PassiveBuilding)building;
+                                    passiveBuildComp.setRallyPoint(hit);
+                                }
+                            }
+                        }
+                    } else {
+                        foreach (GameObject gameObject in selected)
+                        {
+                            Unit unit = getSelectionComponent<Unit>(gameObject);
+                        }
                     }
                 }
             }
@@ -167,14 +206,19 @@ namespace Capstone
             {
                 T component = currentTransform.gameObject.GetComponent<T>();
 
-                if (component != null) 
-                {
-                    return component;
-                }
+                if (component != null) { return component; }
 
                 currentTransform = currentTransform.parent;
             }
 
+            return null;
+        }
+
+        private T getSelectionComponent<T>(GameObject gameObject) where T: Component
+        {
+            T component = gameObject.GetComponent<T>();
+            if (component is Unit) { return component; }
+            if (component is Building) { return component; }
             return null;
         }
 
@@ -202,7 +246,7 @@ namespace Capstone
         }
 
         /// <summary>
-        /// 
+        /// Goes through the current selected list and calls the parent deselect function
         /// </summary>
         private void deselectAll() 
         {
@@ -229,5 +273,7 @@ namespace Capstone
             }
             return angle;
         }
+
+
     }
 }

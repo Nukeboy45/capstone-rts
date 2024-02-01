@@ -44,6 +44,9 @@ namespace Capstone
             }
         }
 
+        /// <summary>
+        /// Calls Unit select method and calls to show selection radiuses for this squad
+        /// </summary>
         public override void select()
         {
             base.select();
@@ -51,6 +54,9 @@ namespace Capstone
             showSelectionRadius();
         }
 
+        /// <summary>
+        /// Calls Unit deselect method and calls to hide selection radiuses for this squad
+        /// </summary>
         public override void deselect()
         {
             base.deselect();
@@ -58,6 +64,22 @@ namespace Capstone
             hideSelectionRadius();
         }
 
+        /// <summary>
+        /// Overrides the parent moveTo command and issues move commands to each squadMember
+        /// </summary>
+        /// <param name="hit"></param>
+        public override void moveTo(RaycastHit hit)
+        {
+            foreach (GameObject member in squadMembers)
+            {
+                SquadMember component = member.GetComponent<SquadMember>();
+                component.moveToPosition(hit);
+            }
+        }
+
+        /// <summary>
+        /// Shows the selection radiuses for squad members
+        /// </summary>
         private void showSelectionRadius()
         {
             foreach (GameObject member in squadMembers)
@@ -70,6 +92,9 @@ namespace Capstone
             }
         }
 
+        /// <summary>
+        /// Hides the selection radiuses for squad members
+        /// </summary>
         private void hideSelectionRadius()
         {
             foreach (GameObject member in squadMembers)

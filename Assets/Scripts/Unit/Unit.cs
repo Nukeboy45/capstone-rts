@@ -42,5 +42,7 @@ namespace Capstone
                 playerComp.selected.Remove(this.gameObject);              
             }
         }
+
+        public virtual void moveTo(RaycastHit hit) {}
     }
 }

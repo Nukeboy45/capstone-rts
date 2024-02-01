@@ -10,5 +10,6 @@ namespace Capstone
         public int ownerTag;
         public int team;
         public List<GameObject> unitList = new List<GameObject>();
+        public LayerMask ground;
     }
 }

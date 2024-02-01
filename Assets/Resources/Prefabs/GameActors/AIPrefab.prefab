@@ -47,4 +47,8 @@ MonoBehaviour:
   faction: 
   ownerTag: 0
   team: 0
+  unitList: []
+  ground:
+    serializedVersion: 2
+    m_Bits: 256
   difficulty: easy
