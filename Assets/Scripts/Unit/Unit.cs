@@ -43,6 +43,6 @@ namespace Capstone
             }
         }
 
-        public virtual void moveTo(RaycastHit hit) {}
+        public virtual void moveTo(List<RaycastHit> hit) {}
     }
 }

@@ -11,6 +11,7 @@ namespace Capstone
         public GameActorType[] team2;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public HQSpawnPoint[] baseSpawns; // 0-3 is team 1, 4-7 is team 2
+        public Camera rayCamera;
         
         // ---- Private Variables ------
         private int team1Tickets;
@@ -59,6 +60,7 @@ namespace Capstone
                             playerComponent.ownerTag = ownerTag;
                             playerComponent.team = 0;
                             playerComponent.faction = "aus";
+                            playerComponent.rayCamera = rayCamera;
                             newTeamMember.name = "Player" + playerCount + "Team 1";
                             playerCount++;
                         }
@@ -75,6 +77,7 @@ namespace Capstone
                             computerPlayerComponent.team = 0;
                             computerPlayerComponent.faction = "aus";
                             computerPlayerComponent.difficulty = "easy";
+                            computerPlayerComponent.rayCamera = rayCamera;
                             newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 1";
                             aiCount++;
                         }
@@ -91,6 +94,7 @@ namespace Capstone
                             computerPlayerComponent.team = 0;
                             computerPlayerComponent.faction = "aus";
                             computerPlayerComponent.difficulty = "hard";
+                            computerPlayerComponent.rayCamera = rayCamera;
                             newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 1";
                             aiCount++;
                         }
@@ -116,6 +120,7 @@ namespace Capstone
                             playerComponent.ownerTag = ownerTag;
                             playerComponent.team = 1;
                             playerComponent.faction = "ita";
+                            playerComponent.rayCamera = rayCamera;
                             newTeamMember.name = "Player" + playerCount + "Team 1";
                             playerCount++;
                         }
@@ -131,6 +136,7 @@ namespace Capstone
                             computerPlayerComponent.ownerTag = ownerTag;
                             computerPlayerComponent.team = 1;
                             computerPlayerComponent.faction = "ita";
+                            computerPlayerComponent.rayCamera = rayCamera;
                             computerPlayerComponent.difficulty = "easy";
                             newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 2";
                             aiCount++;
@@ -147,6 +153,7 @@ namespace Capstone
                             computerPlayerComponent.ownerTag = ownerTag;
                             computerPlayerComponent.team = 1;
                             computerPlayerComponent.faction = "ita";
+                            computerPlayerComponent.rayCamera = rayCamera;
                             computerPlayerComponent.difficulty = "hard";
                             newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 2";
                             aiCount++;

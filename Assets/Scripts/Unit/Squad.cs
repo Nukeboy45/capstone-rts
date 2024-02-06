@@ -68,12 +68,14 @@ namespace Capstone
         /// Overrides the parent moveTo command and issues move commands to each squadMember
         /// </summary>
         /// <param name="hit"></param>
-        public override void moveTo(RaycastHit hit)
+        public override void moveTo(List<RaycastHit> hits)
         {
+            int i = 0;
             foreach (GameObject member in squadMembers)
             {
                 SquadMember component = member.GetComponent<SquadMember>();
-                component.moveToPosition(hit);
+                component.moveToPosition(hits[i]);
+                i++;
             }
         }
 
@@ -132,7 +134,7 @@ namespace Capstone
 
             squadMembers = new GameObject[squadSize];
             
-            Dictionary<int, Vector3> spacing = generateSpacing(transform.position);
+            List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
             // Setting the squad's icon based on whether or not it belongs to player's team
             Player playerObj = FindObjectOfType<Player>();
@@ -214,56 +216,13 @@ namespace Capstone
     
         }
 
-        /// <summary>
-        /// Assuming a squad has not taken cover, generates a spacing based on number of alive squad members upon spawning and every subsequent move command.
-        /// Takes a Vector3 value, target position to generate the new values
-        /// </summary>
-        /// <returns> Spacing dictionary to be used in squad positioning </returns>
-        private Dictionary<int, Vector3> generateSpacing(Vector3 targetPosition)
-        {
-            Dictionary<int, Vector3> spacingDictionary = new Dictionary<int, Vector3>();
-            switch (aliveMembers)
-            {
-                case 1:
-                    spacingDictionary[0] = targetPosition;
-                    break;
-                
-                case 2:
-                    spacingDictionary[0] = targetPosition;
-                    spacingDictionary[1] = targetPosition - new Vector3(2,0,0);
-                    break;
+        // ---------------------- Getter / Setter methods ------------------------------
+        public int getAliveMembers() {
+            return this.aliveMembers;
+        }
 
-                case 3:
-                    spacingDictionary[0] = targetPosition;
-                    spacingDictionary[1] = targetPosition - new Vector3(2,0,2);
-                    spacingDictionary[2] = targetPosition + new Vector3(2,0,2);
-                    break;
-
-                case 4:
-                    spacingDictionary[0] = targetPosition;
-                    spacingDictionary[1] = targetPosition - new Vector3(2,0,2);
-                    spacingDictionary[2] = targetPosition + new Vector3(4,0,-2);
-                    spacingDictionary[3] = targetPosition + new Vector3(2,0,0);
-                    break;
-
-                case 5:
-                    spacingDictionary[0] = targetPosition;
-                    spacingDictionary[1] = targetPosition - new Vector3(2,0,2);
-                    spacingDictionary[2] = targetPosition + new Vector3(4,0,-2);
-                    spacingDictionary[3] = targetPosition + new Vector3(2,0,0);
-                    spacingDictionary[4] = targetPosition + new Vector3(1,0,-2);
-                    break;
-
-                case 6: 
-                    spacingDictionary[0] = targetPosition;
-                    spacingDictionary[1] = targetPosition - new Vector3(2,0,2);
-                    spacingDictionary[2] = targetPosition + new Vector3(4,0,-2);
-                    spacingDictionary[3] = targetPosition + new Vector3(2,0,0);
-                    spacingDictionary[4] = targetPosition + new Vector3(1,0,-2);
-                    spacingDictionary[5] = targetPosition + new Vector3(1,0,-4);
-                    break;
-            }
-            return spacingDictionary;
+        public Vector3 getCurrentPosition() {
+            return this.transform.position;
         }
 
     }

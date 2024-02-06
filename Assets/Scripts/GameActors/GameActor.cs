@@ -11,5 +11,6 @@ namespace Capstone
         public int team;
         public List<GameObject> unitList = new List<GameObject>();
         public LayerMask ground;
+        public Camera rayCamera;
     }
 }

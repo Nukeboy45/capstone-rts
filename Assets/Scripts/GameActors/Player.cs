@@ -123,11 +123,11 @@ namespace Capstone
             {   
                 Transform hitTransform = hit.collider.transform;
 
-                squadMember = getSelectionComponent<SquadMember>(hitTransform);
+                squadMember = Selection.getSelectionComponent<SquadMember>(hitTransform);
 
-                passiveBuilding = getSelectionComponent<PassiveBuilding>(hitTransform);
+                passiveBuilding = Selection.getSelectionComponent<PassiveBuilding>(hitTransform);
 
-                defenseBuilding = getSelectionComponent<DefenseBuilding>(hitTransform);
+                defenseBuilding = Selection.getSelectionComponent<DefenseBuilding>(hitTransform);
 
                 if (squadMember != null) 
                 {
@@ -142,7 +142,7 @@ namespace Capstone
                     {
                         if (squadMember != null)
                         {
-                            squadSelect(squadMember);
+                            Selection.squadSelect(squadMember, selected, this);
                         }
 
                         if (passiveBuilding != null)
@@ -152,33 +152,29 @@ namespace Capstone
                         
                     } else {
                         // Assuming player is not in multi-select mode, deselect all units
-                        if (!Input.GetKey(KeyCode.LeftShift)) { deselectAll(); } 
+                        if (!Input.GetKey(KeyCode.LeftShift)) { Selection.deselectAll(this); } 
                     }
                 }
             }
             if (Input.GetMouseButton(1))
             {
-                Debug.Log("Right Click");
                 if (selected.Count > 0)
                 {
-                    Debug.Log("Phase 1");
                     if (selected.Count == 1)
                     {
-                        Debug.Log("Phase 2");
                         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
                         {
-                            Unit unit = getSelectionComponent<Unit>(selected[0]);
-                            Building building = getSelectionComponent<Building>(selected[0]);
-                            if (unit != null) { 
-                                Debug.Log("Test");
+                            if (Selection.getSelectionComponent<Unit>(selected[0]) is Unit)
+                            {
+                                Unit unit = Selection.getSelectionComponent<Unit>(selected[0]);
                                 if (unit is Squad) 
                                 {
                                     Squad squad = (Squad)unit;
-                                    squad.moveTo(hit);
+                                    List<RaycastHit> hits = new List<RaycastHit>();
+                                    squad.moveTo(hits);
                                 }
-                            }
-                            if (building != null) 
-                            {
+                            } else if (Selection.getSelectionComponent<Building>(selected[0]) is Building) {
+                                Building building = Selection.getSelectionComponent<Building>(selected[0]);
                                 if (building is PassiveBuilding)
                                 {
                                     PassiveBuilding passiveBuildComp = (PassiveBuilding)building;
@@ -189,78 +185,20 @@ namespace Capstone
                     } else {
                         foreach (GameObject gameObject in selected)
                         {
-                            Unit unit = getSelectionComponent<Unit>(gameObject);
+                            Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
                         }
                     }
                 }
             }
         }
-
-        // ----------------- Selection Functions ------------------------------
-
-        private T getSelectionComponent<T>(Transform startTransform) where T : Component
-        {
-            Transform currentTransform = startTransform;
-
-            while (currentTransform != null)
-            {
-                T component = currentTransform.gameObject.GetComponent<T>();
-
-                if (component != null) { return component; }
-
-                currentTransform = currentTransform.parent;
-            }
-
-            return null;
-        }
-
-        private T getSelectionComponent<T>(GameObject gameObject) where T: Component
-        {
-            T component = gameObject.GetComponent<T>();
-            if (component is Unit) { return component; }
-            if (component is Building) { return component; }
-            return null;
-        }
-
-        private void squadSelect(SquadMember squadMember)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    if (!selected.Contains(squadMember.parent.gameObject))
-                    {
-                        if (squadMember.parent.owner == this) {
-                            squadMember.parent.select();
-                        }
-                    } else {
-                        squadMember.parent.deselect();
-                    }
-                } else {
-                    deselectAll();
-                    if (!selected.Contains(squadMember.parent.gameObject))
-                    {
-                        if (squadMember.parent.owner == this) {
-                            squadMember.parent.select();
-                        }
-                    }
-                }
-        }
-
-        /// <summary>
-        /// Goes through the current selected list and calls the parent deselect function
-        /// </summary>
-        private void deselectAll() 
-        {
-            if (selected.Count > 0)
-                {
-                    for (int i = selected.Count - 1; i >= 0; i--) 
-                    {
-                        Unit component = selected[i].GetComponent<Unit>();
-                        component.deselect();
-                    }
-                }
-        }
+        
 
         // ------------------ Utility Functions -------------------------
+
+        /*private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Vector3 currPos, int squadSize)
+        {
+
+        }*/
 
         float normalizeAngles(float angle) {
             while (angle < 0f)
@@ -272,6 +210,12 @@ namespace Capstone
                 angle -= 360f;
             }
             return angle;
+        }
+
+        // ------------------- Getter / Setter Functions ----------------
+
+        public List<GameObject> getSelected() {
+            return selected;
         }
 
 
