@@ -171,6 +171,7 @@ namespace Capstone
                                 {
                                     Squad squad = (Squad)unit;
                                     List<RaycastHit> hits = new List<RaycastHit>();
+                                    hits = getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers());
                                     squad.moveTo(hits);
                                 }
                             } else if (Selection.getSelectionComponent<Building>(selected[0]) is Building) {
@@ -195,10 +196,23 @@ namespace Capstone
 
         // ------------------ Utility Functions -------------------------
 
-        /*private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Vector3 currPos, int squadSize)
+        private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Transform currTransform, int squadSize)
         {
-
-        }*/
+            List<Vector3> castTargets = unitFunctions.getMoveCoordinates(parentHit.point, currTransform, squadSize);
+            List<RaycastHit> hits = new List<RaycastHit>();
+            foreach(Vector3 target in castTargets)
+            {
+                Ray ray = castCamera.ScreenPointToRay(castCamera.WorldToScreenPoint(target));
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                {
+                    hits.Add(hit);
+                } else {
+                    Debug.Log("not hitting!");
+                }
+            }
+            return hits;
+        }
 
         float normalizeAngles(float angle) {
             while (angle < 0f)

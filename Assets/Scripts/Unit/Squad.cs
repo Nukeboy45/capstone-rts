@@ -221,8 +221,8 @@ namespace Capstone
             return this.aliveMembers;
         }
 
-        public Vector3 getCurrentPosition() {
-            return this.transform.position;
+        public Transform getCurrentTransform() {
+            return this.transform;
         }
 
     }
