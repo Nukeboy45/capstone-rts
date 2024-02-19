@@ -48,7 +48,11 @@ MonoBehaviour:
   ownerTag: 0
   team: 0
   unitList: []
+  clickable:
+    serializedVersion: 2
+    m_Bits: 264
   ground:
     serializedVersion: 2
     m_Bits: 256
+  rayCamera: {fileID: 0}
   selected: []

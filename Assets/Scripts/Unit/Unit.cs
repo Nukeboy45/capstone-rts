@@ -8,6 +8,8 @@ namespace Capstone
     {
         public int team;
         public GameActor owner;
+        public bool? showSelect = null;
+        public bool selected = false;
 
         /// ---------- Generic Methods to Inherit ---------------
         

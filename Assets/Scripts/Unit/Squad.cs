@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Capstone 
@@ -11,11 +12,8 @@ namespace Capstone
         private int veterancy;
         private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
                                        // is assigned to this
-
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
-        public bool? showSelect = null;
-        private bool selected = false;
         
         // --------------------- Class Methods ---------------------------------
 
@@ -70,12 +68,28 @@ namespace Capstone
         /// <param name="hit"></param>
         public override void moveTo(List<RaycastHit> hits)
         {
-            int i = 0;
+            List<int> indexes = new List<int>(Enumerable.Range(0, hits.Count));
+            SquadMember leadComponent = squadLead.GetComponent<SquadMember>();
+            leadComponent.moveToPosition(hits[0]);
+            indexes.Remove(0);
             foreach (GameObject member in squadMembers)
             {
-                SquadMember component = member.GetComponent<SquadMember>();
-                component.moveToPosition(hits[i]);
-                i++;
+                if (!(member == squadLead))
+                {
+                    SquadMember component = member.GetComponent<SquadMember>();
+                    int minIndex = 0;
+                    float minDistance = 99999f;
+                    foreach (int index in indexes) {
+                        float distance = Vector3.Distance(member.transform.position, hits[index].point);
+                        if (distance < minDistance) 
+                        {
+                            minIndex = index;
+                            minDistance = distance;
+                        }
+                    }
+                    indexes.Remove(minIndex);
+                    component.moveToPosition(hits[minIndex]);
+                }
             }
         }
 

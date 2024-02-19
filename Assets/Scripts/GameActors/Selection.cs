@@ -75,6 +75,37 @@ namespace Capstone
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="building"></param>
+            /// <param name="selected"></param>
+            /// <param name="owner"></param>
+            public static void buildingSelect(Building building, List<GameObject> selected, GameActor owner)
+            {
+                if (building is PassiveBuilding passiveBuilding)
+                {
+                    if (!selected.Contains(passiveBuilding.gameObject))
+                    {
+                        if (passiveBuilding.owner == owner) 
+                        {
+                            deselectAll(owner);
+                            passiveBuilding.select();
+                        }
+                    }
+                } else if (building is DefenseBuilding defenseBuilding)
+                {
+                    if (!selected.Contains(defenseBuilding.gameObject))
+                    {
+                        if (defenseBuilding.owner == owner) 
+                        {
+                            deselectAll(owner);
+                            defenseBuilding.select();
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="owner"></param>
             public static void deselectAll(GameActor owner) 
             {
@@ -85,11 +116,37 @@ namespace Capstone
                     {
                         for (int i = selected.Count - 1; i >= 0; i--) 
                         {
-                            Unit component = selected[i].GetComponent<Unit>();
-                            component.deselect();
+                            Unit unit = selected[i].GetComponent<Unit>();
+                            Building building = selected[i].GetComponent<Building>();
+                            if (unit != null) 
+                            {
+                                unit.deselect();
+                            } else if (building != null) 
+                            {
+                                building.deselect();
+                            }
                         }
                     }
                 }
             }
+
+
+        public static List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Transform currTransform, int squadSize, LayerMask ground)
+        {
+            List<Vector3> castTargets = unitFunctions.getMoveCoordinates(parentHit.point, currTransform, squadSize);
+            List<RaycastHit> hits = new List<RaycastHit>();
+            foreach(Vector3 target in castTargets)
+            {
+                Ray ray = castCamera.ScreenPointToRay(castCamera.WorldToScreenPoint(target));
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                {
+                    hits.Add(hit);
+                } else {
+                    Debug.Log("not hitting!");
+                }
+            }
+            return hits;
+        }
     }
 }

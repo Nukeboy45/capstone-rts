@@ -48,7 +48,11 @@ MonoBehaviour:
   ownerTag: 0
   team: 0
   unitList: []
+  selectable:
+    serializedVersion: 2
+    m_Bits: 8
   ground:
     serializedVersion: 2
     m_Bits: 256
+  rayCamera: {fileID: 0}
   difficulty: easy

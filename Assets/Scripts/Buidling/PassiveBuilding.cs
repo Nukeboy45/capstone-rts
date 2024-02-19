@@ -12,6 +12,7 @@ namespace Capstone
         private bool canHeal;
         private float healRange;
         private GameObject[] productionList;
+
         void Start() 
         {
             InstantiatePassiveBuilding();
@@ -32,6 +33,11 @@ namespace Capstone
             if (data.productionList != null) {
                 productionList = data.productionList;
             }
+        }
+
+        public override void select() 
+        {
+            base.select();
         }
 
         private void SpawnUnit(GameObject unit) 

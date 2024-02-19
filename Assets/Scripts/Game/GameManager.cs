@@ -228,7 +228,7 @@ namespace Capstone
             GameObject newHQ = Instantiate(baseObj, baseSpawns[component.ownerTag].transform.position, Quaternion.identity);
             Building hqComponent = newHQ.GetComponent<Building>();
             hqComponent.team = component.team;
-            hqComponent.owner = component.ownerTag;
+            hqComponent.owner = component;
         }
 
         // Update is called once per frame

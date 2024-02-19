@@ -119,15 +119,13 @@ namespace Capstone
             PassiveBuilding passiveBuilding;
             DefenseBuilding defenseBuilding;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
             {   
                 Transform hitTransform = hit.collider.transform;
 
                 squadMember = Selection.getSelectionComponent<SquadMember>(hitTransform);
 
                 passiveBuilding = Selection.getSelectionComponent<PassiveBuilding>(hitTransform);
-
-                defenseBuilding = Selection.getSelectionComponent<DefenseBuilding>(hitTransform);
 
                 if (squadMember != null) 
                 {
@@ -147,7 +145,7 @@ namespace Capstone
 
                         if (passiveBuilding != null)
                         {
-                            
+                            Selection.buildingSelect(passiveBuilding, selected, this);
                         }
                         
                     } else {
@@ -171,7 +169,7 @@ namespace Capstone
                                 {
                                     Squad squad = (Squad)unit;
                                     List<RaycastHit> hits = new List<RaycastHit>();
-                                    hits = getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers());
+                                    hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
                                     squad.moveTo(hits);
                                 }
                             } else if (Selection.getSelectionComponent<Building>(selected[0]) is Building) {
@@ -196,7 +194,7 @@ namespace Capstone
 
         // ------------------ Utility Functions -------------------------
 
-        private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Transform currTransform, int squadSize)
+        /*private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Transform currTransform, int squadSize)
         {
             List<Vector3> castTargets = unitFunctions.getMoveCoordinates(parentHit.point, currTransform, squadSize);
             List<RaycastHit> hits = new List<RaycastHit>();
@@ -212,7 +210,7 @@ namespace Capstone
                 }
             }
             return hits;
-        }
+        }*/
 
         float normalizeAngles(float angle) {
             while (angle < 0f)
