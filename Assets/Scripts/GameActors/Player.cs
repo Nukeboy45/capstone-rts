@@ -8,7 +8,7 @@ namespace Capstone
     {
         // --------- Player Specific Variables -------
         private Camera playerCamera;
-        private GameObject playerUI;
+        public PlayerUI playerUI;
         public List<GameObject> selected = new List<GameObject>();
 
         // --------- Camera Variables ----------
@@ -30,7 +30,9 @@ namespace Capstone
 
             if (ui != null)
             {
-                playerUI = Instantiate(ui);
+                playerUI = Instantiate(ui).GetComponentInChildren<PlayerUI>();
+
+                playerUI.setPlayerObj(this);
 
                 Camera uiCamera = playerUI.GetComponentInChildren<Camera>();
 
@@ -117,7 +119,7 @@ namespace Capstone
 
             SquadMember squadMember;
             PassiveBuilding passiveBuilding;
-            DefenseBuilding defenseBuilding;
+            //DefenseBuilding defenseBuilding;
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
             {   
@@ -190,27 +192,6 @@ namespace Capstone
                 }
             }
         }
-        
-
-        // ------------------ Utility Functions -------------------------
-
-        /*private List<RaycastHit> getAdditionalCasts(RaycastHit parentHit, Camera castCamera, Transform currTransform, int squadSize)
-        {
-            List<Vector3> castTargets = unitFunctions.getMoveCoordinates(parentHit.point, currTransform, squadSize);
-            List<RaycastHit> hits = new List<RaycastHit>();
-            foreach(Vector3 target in castTargets)
-            {
-                Ray ray = castCamera.ScreenPointToRay(castCamera.WorldToScreenPoint(target));
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
-                {
-                    hits.Add(hit);
-                } else {
-                    Debug.Log("not hitting!");
-                }
-            }
-            return hits;
-        }*/
 
         float normalizeAngles(float angle) {
             while (angle < 0f)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Capstone 
 {
@@ -11,7 +12,7 @@ namespace Capstone
         public GameObject[] squadMembers;
         private int veterancy;
         private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
-                                       // is assigned to this
+                                       // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
         
@@ -68,29 +69,114 @@ namespace Capstone
         /// <param name="hit"></param>
         public override void moveTo(List<RaycastHit> hits)
         {
-            List<int> indexes = new List<int>(Enumerable.Range(0, hits.Count));
-            SquadMember leadComponent = squadLead.GetComponent<SquadMember>();
-            leadComponent.moveToPosition(hits[0]);
-            indexes.Remove(0);
-            foreach (GameObject member in squadMembers)
+            Dictionary<GameObject, RaycastHit> movePositions = getOptimalMovePositions(hits);
+            float longestMoveTime = getMaxMoveTime(movePositions, getSquadModelSpeed());
+            foreach (var pair in movePositions)
             {
-                if (!(member == squadLead))
+                SquadMember component = pair.Key.GetComponent<SquadMember>();
+                NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
+                float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
+                float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
+                component.moveToPosition(pair.Value);
+            }
+        }
+
+        private float getMaxMoveTime(Dictionary<GameObject, RaycastHit> movePairs , float speed)
+        {   
+            float maxTime = 99999f;
+            foreach (var pair in movePairs)
+            {
+                float tempTime = Vector3.Distance(pair.Key.transform.position, pair.Value.point) / speed;
+                if (tempTime < maxTime)
                 {
-                    SquadMember component = member.GetComponent<SquadMember>();
-                    int minIndex = 0;
-                    float minDistance = 99999f;
-                    foreach (int index in indexes) {
-                        float distance = Vector3.Distance(member.transform.position, hits[index].point);
-                        if (distance < minDistance) 
-                        {
-                            minIndex = index;
-                            minDistance = distance;
-                        }
-                    }
-                    indexes.Remove(minIndex);
-                    component.moveToPosition(hits[minIndex]);
+                    maxTime = tempTime;
                 }
             }
+            return maxTime;
+        }
+
+        private float getNormalizedMoveSpeed(float distance, float maxMoveTime, float moveSpeed)
+        {
+            return moveSpeed * (1 - (distance / maxMoveTime));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hits"></param>
+        /// <returns></returns>
+        private Dictionary<GameObject, RaycastHit> getOptimalMovePositions(List<RaycastHit> hits) 
+        {
+            List<Dictionary<GameObject, RaycastHit>> permutations = getPermutations(squadMembers, hits);
+
+            Dictionary<GameObject, RaycastHit> returnDict = new Dictionary<GameObject, RaycastHit>();
+            
+            float minH = 99999f;
+
+            foreach (Dictionary<GameObject, RaycastHit> permutation in permutations)
+            {   
+                float cost = 0f;
+                foreach (var pair in permutation)
+                {
+                    cost += Vector3.Distance(pair.Key.transform.position, pair.Value.point);
+                }
+                if (cost < minH && permutation[squadLead].point == hits[0].point)
+                {
+                    minH = cost;
+                    returnDict = permutation;
+                }
+            }
+            return returnDict;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="GameObject"></typeparam>
+        /// <typeparam name="RaycastHit"></typeparam>
+        /// <param name="members"></param>
+        /// <param name="hits"></param>
+        /// <returns></returns>
+        private List<Dictionary<GameObject, RaycastHit>> getPermutations<GameObject, RaycastHit>(GameObject[] members, List<RaycastHit> hits)
+        {
+            List<Dictionary<GameObject, RaycastHit>> result = new List<Dictionary<GameObject, RaycastHit>>();
+            int len = members.Length;
+            RaycastHit[] hitsArray = hits.ToArray();
+
+            RaycastHit squadLeadPosition = hits[0];
+
+            void heaps(int l)
+            {
+                if (l == 1)
+                {
+                    Dictionary<GameObject, RaycastHit> temp = new Dictionary<GameObject, RaycastHit>();
+                    for (int i=0; i < len; i++)
+                    {
+                        if (i == 0) {
+                            temp[members[i]] = squadLeadPosition;
+                        } else {
+                            temp[members[i]] = hitsArray[i];
+                        }
+                    }
+                    result.Add(temp);
+                } 
+                else 
+                {
+                    for (int i=0; i < len; i++)
+                    {
+                        heaps(l-1);
+
+                        if (l % 2 == 1)
+                        {
+                            (members[i], members[l - 1]) = (members[l - 1], members[i]);
+                        } else {
+                            (members[0], members[l - 1]) = (members[l - 1], members[0]);
+                        }
+                    }
+                }
+            }
+            heaps(len);
+            return result;
         }
 
         /// <summary>
@@ -132,7 +218,7 @@ namespace Capstone
         public void killModel(GameObject modelObject) 
         {
             Destroy(modelObject);
-            aliveMembers--;
+            aliveMembers--; 
         }
 
         /// <summary>
@@ -237,6 +323,11 @@ namespace Capstone
 
         public Transform getCurrentTransform() {
             return this.transform;
+        }
+
+        private float getSquadModelSpeed() {
+            SquadMember component = squadMembers[0].GetComponent<SquadMember>();
+            return component.moveSpeed;
         }
 
     }

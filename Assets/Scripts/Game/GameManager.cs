@@ -61,7 +61,7 @@ namespace Capstone
                             playerComponent.team = 0;
                             playerComponent.faction = "aus";
                             playerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "Player" + playerCount + "Team 1";
+                            newTeamMember.name = "Player" + playerCount + "Team1";
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -78,7 +78,7 @@ namespace Capstone
                             computerPlayerComponent.faction = "aus";
                             computerPlayerComponent.difficulty = "easy";
                             computerPlayerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 1";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team1";
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -95,7 +95,7 @@ namespace Capstone
                             computerPlayerComponent.faction = "aus";
                             computerPlayerComponent.difficulty = "hard";
                             computerPlayerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 1";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team1";
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -121,7 +121,7 @@ namespace Capstone
                             playerComponent.team = 1;
                             playerComponent.faction = "ita";
                             playerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "Player" + playerCount + "Team 1";
+                            newTeamMember.name = "Player" + playerCount + "Team2";
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -138,7 +138,7 @@ namespace Capstone
                             computerPlayerComponent.faction = "ita";
                             computerPlayerComponent.rayCamera = rayCamera;
                             computerPlayerComponent.difficulty = "easy";
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 2";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team2";
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -155,7 +155,7 @@ namespace Capstone
                             computerPlayerComponent.faction = "ita";
                             computerPlayerComponent.rayCamera = rayCamera;
                             computerPlayerComponent.difficulty = "hard";
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team 2";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team2";
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;

@@ -51,6 +51,8 @@ namespace Capstone {
             if (insidePoint.Count > 0)
             {
                 capturePoint();
+            } else {
+                neutralizePoint();
             }
         }
 
@@ -120,7 +122,38 @@ namespace Capstone {
                         }
                         break;
                 }
-            }
+            } 
+        }
+
+        private void neutralizePoint()
+        {
+            switch (owner) {
+                case 0:
+                    if (captureValue >= 1.0f)
+                    {
+                        captureValue -= 0.2f;
+                        updateFlagPosition(); 
+                    } else if (captureValue <= -1.0f)
+                    {
+                        captureValue += 0.2f;
+                        updateFlagPosition();
+                    }
+                    break;
+                case 1:
+                    if (captureValue <= (100f + 0.2f))
+                    {
+                        captureValue += 0.2f;
+                        updateFlagPosition();
+                    }
+                    break;
+                case 2:
+                    if (captureValue >= (-100.0f - 0.2f))
+                    {
+                        captureValue -= 0.2f;
+                        updateFlagPosition();
+                    }
+                    break;
+                }
         }
 
         /// <summary>

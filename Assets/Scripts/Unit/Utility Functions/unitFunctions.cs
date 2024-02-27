@@ -72,16 +72,16 @@ namespace Capstone
             switch (aliveMembers)
             {
                 case 1:
-                    moveCoordinates.Add(rotation * targetPosition);
+                    moveCoordinates.Add(targetPosition);
                     break;
                 
                 case 2:
-                    moveCoordinates.Add(rotation * targetPosition);
+                    moveCoordinates.Add(targetPosition);
                     moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
                     break;
 
                 case 3:
-                    moveCoordinates.Add(rotation * targetPosition);
+                    moveCoordinates.Add(targetPosition);
                     moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
                     break;
@@ -94,7 +94,7 @@ namespace Capstone
                     break;
 
                 case 5:
-                    moveCoordinates.Add(rotation * targetPosition);
+                    moveCoordinates.Add(targetPosition);
                     moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
@@ -102,7 +102,7 @@ namespace Capstone
                     break;
 
                 case 6: 
-                    moveCoordinates.Add(rotation * targetPosition);
+                    moveCoordinates.Add(targetPosition);
                     moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
