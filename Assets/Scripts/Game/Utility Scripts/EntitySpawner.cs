@@ -15,7 +15,7 @@ namespace Capstone
             }
         }*/
 
-        public static void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag)
+        public static void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
         {
             GameObject squadObj = new GameObject(squadData.unitName);
             Squad squad = squadObj.AddComponent<Squad>();
@@ -26,8 +26,11 @@ namespace Capstone
             {
                 squad.owner = component;
             }
-            
-            squad.transform.position = position;
+            squadObj.transform.position = position;
+            if (rallyMove != null)
+            {
+                squad.moveTo(rallyMove);
+            }
         }
     }
 }

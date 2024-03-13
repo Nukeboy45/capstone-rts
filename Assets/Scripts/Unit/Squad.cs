@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using capstone;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,7 @@ namespace Capstone
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
+        public SquadState squadState = SquadState.stationary;
         
         // --------------------- Class Methods ---------------------------------
 
@@ -77,17 +79,17 @@ namespace Capstone
                 NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
                 float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
                 float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
-                component.moveToPosition(pair.Value);
+                component.moveToPosition(pair.Value.point, speed);
             }
         }
 
         private float getMaxMoveTime(Dictionary<GameObject, RaycastHit> movePairs , float speed)
         {   
-            float maxTime = 99999f;
+            float maxTime = 0f;
             foreach (var pair in movePairs)
             {
                 float tempTime = Vector3.Distance(pair.Key.transform.position, pair.Value.point) / speed;
-                if (tempTime < maxTime)
+                if (tempTime > maxTime)
                 {
                     maxTime = tempTime;
                 }
@@ -97,7 +99,7 @@ namespace Capstone
 
         private float getNormalizedMoveSpeed(float distance, float maxMoveTime, float moveSpeed)
         {
-            return moveSpeed * (1 - (distance / maxMoveTime));
+            return distance / maxMoveTime;
         }
 
         /// <summary>
@@ -209,6 +211,21 @@ namespace Capstone
             }
         }
 
+        public void retreat(List<RaycastHit> hits)
+        {
+            squadState = SquadState.retreating;
+            Dictionary<GameObject, RaycastHit> movePositions = getOptimalMovePositions(hits);
+            float longestMoveTime = getMaxMoveTime(movePositions, 10.0f);
+            foreach (var pair in movePositions)
+            {
+                SquadMember component = pair.Key.GetComponent<SquadMember>();
+                NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
+                float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
+                float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
+                component.moveToPosition(pair.Value.point, speed);
+            }
+        }
+
         /// <summary>
         /// Function called by a squadMember object belonging to this squad when its
         /// health reaches 0. Allows the squad to always determine proper number of 
@@ -270,7 +287,7 @@ namespace Capstone
                 // Sets the squad's transformation as parent - not really relevant since
                 // movement code is always separate, but makes it look cleaner in the
                 // editor
-                squadMembers[i].transform.SetParent(this.transform, false);
+                //squadMembers[i].transform.SetParent(this.transform, false);
             }
 
             // Initializes the squad Icon and attaches it to the icon position empty object on the model.

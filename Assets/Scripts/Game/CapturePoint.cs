@@ -163,7 +163,7 @@ namespace Capstone {
             Vector3 flagPosition = flag.transform.position;
             if (flagPosition.y < 5.4)
             {
-                flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 0.9f; 
+                flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 1.2f; 
             }
             flag.transform.position = flagPosition;
         }

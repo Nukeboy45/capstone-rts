@@ -11,6 +11,7 @@ namespace Capstone
         public GameObject iconObj;
         public Sprite[] icons;
         public Sprite icon;
+        public float buildTime; // In Seconds
     }
 
 }

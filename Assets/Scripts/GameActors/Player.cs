@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using capstone;
 using UnityEngine;
 
 namespace Capstone
@@ -34,6 +36,8 @@ namespace Capstone
 
                 playerUI.setPlayerObj(this);
 
+                playerUI.faction = this.faction;
+
                 Camera uiCamera = playerUI.GetComponentInChildren<Camera>();
 
                 if (uiCamera != null)
@@ -54,6 +58,7 @@ namespace Capstone
         {
             cameraUpdate();
             mouseUpdate();
+            keyboardUpdate();
         }
 
         /// <summary>
@@ -140,7 +145,7 @@ namespace Capstone
                 {
                     if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
                     {
-                        if (squadMember != null)
+                        if (squadMember != null && squadMember.parent.squadState != SquadState.retreating)
                         {
                             Selection.squadSelect(squadMember, selected, this);
                         }
@@ -192,17 +197,36 @@ namespace Capstone
                 }
             }
         }
+        
+        private void keyboardUpdate()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (selected.Count > 0)
+                {
+                    foreach (GameObject gameObject in selected)
+                    {
+                        if (Selection.getSelectionComponent<Unit>(gameObject) is Unit)
+                        {
+                            Unit unitComp = Selection.getSelectionComponent<Unit>(gameObject);
+                            if (unitComp is Squad)
+                            {
+                                Ray ray = rayCamera.ScreenPointToRay(rayCamera.WorldToScreenPoint(spawnPoint.transform.position));
+                                RaycastHit hit;
 
-        float normalizeAngles(float angle) {
-            while (angle < 0f)
-            {
-                angle += 360f;
-            } 
-            while (angle >= 360f) 
-            {
-                angle -= 360f;
+                                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                                {
+                                    Squad squad = (Squad)unitComp;
+                                    List<RaycastHit> hits = new List<RaycastHit>();
+                                    hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                                    squad.retreat(hits);
+                                }
+                            }
+                        }
+                    }
+                    Selection.deselectAll(this);
+                }
             }
-            return angle;
         }
 
         // ------------------- Getter / Setter Functions ----------------

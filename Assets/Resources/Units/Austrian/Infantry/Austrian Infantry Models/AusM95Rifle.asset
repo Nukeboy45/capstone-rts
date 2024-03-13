@@ -18,5 +18,5 @@ MonoBehaviour:
   attackSpeed: 5
   range: 30
   defense: 1
-  moveSpeed: 5
+  moveSpeed: 8
   modelPriority: 0

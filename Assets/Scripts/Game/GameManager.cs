@@ -10,7 +10,7 @@ namespace Capstone
         public GameActorType[] team1;
         public GameActorType[] team2;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
-        public HQSpawnPoint[] baseSpawns; // 0-3 is team 1, 4-7 is team 2
+        public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
         public Camera rayCamera;
         
         // ---- Private Variables ------
@@ -29,7 +29,7 @@ namespace Capstone
                 _instance = this;
             }
             InitializeTeams();
-            InitalizeBases();
+            InitalizeSpawnPoints();
         }
         
 
@@ -169,66 +169,20 @@ namespace Capstone
             }
         }
 
-        /// <summary>
-        /// Loops through the existing players and calls a function to spawn their HQ
-        /// structures for their respective owner / team values.
-        /// </summary>
-        private void InitalizeBases()
+        private void InitalizeSpawnPoints()
         {
-            /// Initalizes bases for existing gameActors in the player list
             foreach (GameObject gameActor in players)
             {
-                /// The Player / ComputerPlayer inheret from a generic class GameActor
-                /// so that a switch statement can be used to handle their component rather
-                /// than writing an if-else check for each possible component.
                 if (gameActor != null)
                 {
-                    /// Getting the component of the gameActor object
                     GameActor component = gameActor.GetComponent<GameActor>();
-                    Debug.Log(component.faction);
-                    if (component != null)
-                    {
-                        switch (component.faction)
-                        {
-                            case "aus":
-                                /// Load Austrian HQ building data from resources and spawn
-                                GameObject ausHQ = Resources.Load<GameObject>("Prefabs/Buildings/Base/ausHQ");
-                                if (ausHQ != null)
-                                {
-                                    spawnHQStructure(ausHQ, component);
-                                } else {
-                                    Debug.Log("Austrian HQ object is", ausHQ);
-                                }
-                                break;
-                            case "ita":
-                                /// Load Italian HQ building data from resources and spawn
-                                GameObject itaHQ = Resources.Load<GameObject>("Prefabs/Buildings/Base/itaHQ");
-                                if (itaHQ != null)
-                                {
-                                    spawnHQStructure(itaHQ, component);
-                                } else {
-                                    Debug.Log("Italian HQ object is ", itaHQ);
-                                }
-                                break;
-                            default:
-                                Debug.Log("GameActor does not have a correct faction tag");
-                                break;
-                        }
-                    }
+                    component.spawnPoint = spawns[component.ownerTag];
+                    component.spawnPoint.faction = component.faction;
+                    component.spawnPoint.team = component.team;
+                    component.spawnPoint.ownerTag = component.ownerTag;
+                    component.spawnPoint.owner = component;
                 }
             }
-        }
-
-        /// <summary>
-        /// Used by the IntializeBases() Method to Instantiate the HQ Structures
-        /// </summary>
-        /// <param name="baseObj"></param>
-        /// <param name="component"></param>
-        private void spawnHQStructure(GameObject baseObj, GameActor component) {
-            GameObject newHQ = Instantiate(baseObj, baseSpawns[component.ownerTag].transform.position, Quaternion.identity);
-            Building hqComponent = newHQ.GetComponent<Building>();
-            hqComponent.team = component.team;
-            hqComponent.owner = component;
         }
 
         // Update is called once per frame

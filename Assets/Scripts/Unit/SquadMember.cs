@@ -27,9 +27,10 @@ namespace Capstone
             myAgent = GetComponent<NavMeshAgent>();
         }
 
-        public void moveToPosition(RaycastHit hit)
+        public void moveToPosition(Vector3 point, float speed)
         {
-            myAgent.SetDestination(hit.point);
+            myAgent.speed = speed;
+            myAgent.SetDestination(point);
         }
 
         // Update is called once per frame
