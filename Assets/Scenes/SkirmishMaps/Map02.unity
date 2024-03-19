@@ -448,7 +448,6 @@ GameObject:
   m_Component:
   - component: {fileID: 731881786}
   - component: {fileID: 731881787}
-  - component: {fileID: 731881788}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -483,23 +482,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 113ef7b8e5028364589ac23018d575a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  team1: 00000000
+  team2: 01000000
   players: []
   spawns:
   - {fileID: 137385166}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 2062664763}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   rayCamera: {fileID: 473327101}
---- !u!114 &731881788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731881784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f9a7013e4379f344a36d1e81bd33295, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &765789948 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5051095380995578440, guid: 5ed9f82d1f0b22845aff0c57c4bfe04a, type: 3}
@@ -880,7 +875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7905404675908008886, guid: 35397d3738e48a546a62252c41c90a5e, type: 3}
       propertyPath: m_Name
-      value: HQSpawnPoint-Slot2
+      value: HQSpawnPoint-Slot5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

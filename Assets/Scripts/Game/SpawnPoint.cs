@@ -5,12 +5,13 @@ namespace Capstone {
     public class SpawnPoint : MonoBehaviour
     {
         public GameActor owner;
-        public string faction;
+        public FactionType faction;
         public int team;
         public int ownerTag;
         public RaycastHit rallyPoint;
         public List<UnitData> buildQueue = new List<UnitData>();
         public float currentBuildTime = 0.0f;
+        private GameManager gameManager;
 
         public void Update()
         {
@@ -44,13 +45,20 @@ namespace Capstone {
                 Squad squad = squadObj.GetComponent<Squad>();
                 squad.squadData = squadData;
                 squad.team = team;
-                GameActor component = GameManager.Instance.players[ownerTag].GetComponent<GameActor>();
+                GameActor component = gameManager.players[ownerTag].GetComponent<GameActor>();
                 if (component != null)
                 {
                     squad.owner = component;
                 }
                 squadObj.transform.position = transform.position;
             }
+        }
+
+        // -------- Getters / Setters ---------------
+
+        public void setGameManager(GameManager instance)
+        {
+            gameManager = instance;
         }
     }
 }

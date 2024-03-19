@@ -7,8 +7,7 @@ namespace Capstone
     public class GameManager : MonoBehaviour
     {
         // ------- Public Variables -----------
-        public GameActorType[] team1;
-        public GameActorType[] team2;
+        private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
         public Camera rayCamera;
@@ -16,18 +15,19 @@ namespace Capstone
         // ---- Private Variables ------
         private int team1Tickets;
         private int team2Tickets;
-        private static GameManager _instance;
-        public static GameManager Instance { get {return _instance; } }
+        //private static GameManager _instance;
+        //public static GameManager Instance { get {return _instance; } }
 
         // Start is called before the first frame update
         void Awake()
         {
-            if (_instance != null && _instance != this)
+            /*if (_instance != null && _instance != this)
             {
                 Destroy(this);
             } else {
                 _instance = this;
-            }
+            }*/
+            matchMembers = MatchManager.instance.getMatchMembers();
             InitializeTeams();
             InitalizeSpawnPoints();
         }
@@ -48,9 +48,9 @@ namespace Capstone
             GameObject playerPrefab = Resources.Load<GameObject>("Prefabs/GameActors/PlayerPrefab");
             GameObject aiPrefab = Resources.Load<GameObject>("Prefabs/GameActors/AIPrefab");
 
-            foreach (GameActorType type in team1)
+            foreach ((int, GameActorType, FactionType) gameActor in matchMembers)
             {
-                switch (type)
+                switch (gameActor.Item2)
                 {
                     case (GameActorType.player): {
                         GameObject newTeamMember = Instantiate(playerPrefab, new Vector3(0,0,0), Quaternion.identity);
@@ -58,10 +58,10 @@ namespace Capstone
                         if (playerComponent != null) 
                         {
                             playerComponent.ownerTag = ownerTag;
-                            playerComponent.team = 0;
-                            playerComponent.faction = "aus";
+                            playerComponent.team = gameActor.Item1;
+                            playerComponent.faction = gameActor.Item3;
                             playerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "Player" + playerCount + "Team1";
+                            newTeamMember.name = "Player" + playerCount + "Team" + gameActor.Item1.ToString();
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -74,11 +74,11 @@ namespace Capstone
                         if (computerPlayerComponent != null)
                         {
                             computerPlayerComponent.ownerTag = ownerTag;
-                            computerPlayerComponent.team = 0;
-                            computerPlayerComponent.faction = "aus";
+                            computerPlayerComponent.team = gameActor.Item1;
+                            computerPlayerComponent.faction = gameActor.Item3;
                             computerPlayerComponent.difficulty = "easy";
                             computerPlayerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team1";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + gameActor.Item1.ToString();
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -91,11 +91,11 @@ namespace Capstone
                         if (computerPlayerComponent != null)
                         {
                             computerPlayerComponent.ownerTag = ownerTag;
-                            computerPlayerComponent.team = 0;
-                            computerPlayerComponent.faction = "aus";
+                            computerPlayerComponent.team = gameActor.Item1;
+                            computerPlayerComponent.faction = gameActor.Item3;
                             computerPlayerComponent.difficulty = "hard";
                             computerPlayerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team1";
+                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + gameActor.Item1.ToString();
                             aiCount++;
                         }
                         players[ownerTag] = newTeamMember;
@@ -108,7 +108,7 @@ namespace Capstone
                 }
             }
             ownerTag = 4;
-            foreach (GameActorType type in team2)
+            /*foreach (GameActorType type in team2)
             {
                 switch (type)
                 {
@@ -165,8 +165,11 @@ namespace Capstone
                     default: 
                         Debug.Log("Incorrect Player Object defined, could not instantiate");
                         break;
+                    
                 }
+                
             }
+            */
         }
 
         private void InitalizeSpawnPoints()
@@ -181,6 +184,7 @@ namespace Capstone
                     component.spawnPoint.team = component.team;
                     component.spawnPoint.ownerTag = component.ownerTag;
                     component.spawnPoint.owner = component;
+                    component.spawnPoint.setGameManager(this);
                 }
             }
         }

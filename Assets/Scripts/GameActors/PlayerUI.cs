@@ -11,7 +11,7 @@ namespace Capstone {
         public Button[] buttons;
         public Button buttonMenu1;
         public Button buttonMenu2;
-        public String faction;
+        public FactionType faction;
         private UIState uiState = UIState.menu1;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
         public void Start()
@@ -66,7 +66,7 @@ namespace Capstone {
             switch (uiState)
             {
                 case UIState.menu1:
-                    if (faction == "aus")
+                    if (faction == FactionType.centralPowers)
                     {
                         playerObj.spawnPoint.addToBuildQueue(Resources.Load<SquadData>("Units/Austrian/Infantry/ausRifle"));
                     }
@@ -111,7 +111,7 @@ namespace Capstone {
             switch (uiState)
             {
                 case UIState.menu1:
-                    if (faction == "aus")
+                    if (faction == FactionType.centralPowers)
                     {
                         buttons[0].GetComponent<Image>().sprite = buttonImages["ausRifle"];
                         buttons[0].interactable = true;

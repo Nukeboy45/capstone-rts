@@ -7,7 +7,7 @@ namespace Capstone
     public class GameActor : MonoBehaviour
     {
         // Identity Variables
-        public string faction;
+        public FactionType faction;
         public int ownerTag;
         public int team;
         public List<GameObject> unitList = new List<GameObject>();
