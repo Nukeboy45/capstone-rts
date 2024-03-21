@@ -1,4 +1,6 @@
-namespace capstone
+using System;
+
+namespace Capstone
 {
     public enum SquadState
     {
@@ -11,11 +13,26 @@ namespace capstone
 
     public enum UIState
     {
-        menu1,
-        menu2,
+        defaultMenu,
         squad,
         group,
         vehicle,
         other
     }
+
+    [Serializable]
+    public enum FactionType
+    {
+        centralPowers,
+        alliedForces
+    }
+
+    [Serializable]
+    public enum GameActorType
+    {
+        player,
+        aiEasy,
+        aiHard
+    }
+    
 }

@@ -28,7 +28,7 @@ namespace Capstone
 
         public void resetMatchVariables()
         {
-            matchMembers = new List<(int, GameActorType, FactionType)>();
+            matchMembers.Clear();
             mapSlots = 0;
         }
         
@@ -41,6 +41,7 @@ namespace Capstone
         public void addMatchMember(int team, GameActorType gameActorType, FactionType factionType)
         {
             matchMembers.Add((team, gameActorType, factionType));
+            Debug.Log("added!");
         }
 
         public int getMapPlayerSlots()

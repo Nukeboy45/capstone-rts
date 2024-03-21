@@ -8,5 +8,6 @@ namespace Capstone
     public class SquadData : UnitData
     {
         public GameObject[] models;
+        public float captureRate;
     }
 }

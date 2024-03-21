@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using capstone;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +10,7 @@ namespace Capstone
     {
         public SquadData squadData;
         public GameObject[] squadMembers;
+        private float captureRate;
         private int veterancy;
         private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
@@ -250,6 +250,8 @@ namespace Capstone
             aliveMembers = squadSize;
 
             squadMembers = new GameObject[squadSize];
+
+            captureRate = squadData.captureRate;
             
             List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
@@ -340,6 +342,11 @@ namespace Capstone
 
         public Transform getCurrentTransform() {
             return this.transform;
+        }
+
+        public float getSquadCaptureRate()
+        {
+            return this.captureRate;
         }
 
         private float getSquadModelSpeed() {

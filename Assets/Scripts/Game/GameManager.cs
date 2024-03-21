@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Capstone
@@ -8,30 +10,28 @@ namespace Capstone
     {
         // ------- Public Variables -----------
         private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
+        public CapturePoint[] objectives;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
         public Camera rayCamera;
         
         // ---- Private Variables ------
-        private int team1Tickets;
-        private int team2Tickets;
+        private int team1Tickets = 100;
+        private int team2Tickets = 100;
+
+        // Timing Variables
+        private DateTime lastObjectiveTick;
+        private float objectivePointTickTime = 5f;
+
         //private static GameManager _instance;
         //public static GameManager Instance { get {return _instance; } }
 
         // Start is called before the first frame update
-        void Awake()
+        void Start()
         {
-            /*if (_instance != null && _instance != this)
-            {
-                Destroy(this);
-            } else {
-                _instance = this;
-            }*/
-            matchMembers = MatchManager.instance.getMatchMembers();
-            InitializeTeams();
-            InitalizeSpawnPoints();
+            lastObjectiveTick = DateTime.Now;
+            StartCoroutine(waitForMatchManager());
         }
-        
 
         /// <summary>
         /// Goes through the GameManager lists for each team and initalizes their
@@ -40,7 +40,7 @@ namespace Capstone
         /// </summary>
         void InitializeTeams()
         {
-            players = new GameObject[8];
+            players = new GameObject[MatchManager.instance.mapSlots];
             int playerCount = 1;
             int aiCount = 1;
             int ownerTag = 0;
@@ -65,6 +65,7 @@ namespace Capstone
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
+                        StartCoroutine(waitForPlayerUI(playerComponent));
                         ownerTag++;
                         break;
                     }
@@ -107,69 +108,6 @@ namespace Capstone
                         break;
                 }
             }
-            ownerTag = 4;
-            /*foreach (GameActorType type in team2)
-            {
-                switch (type)
-                {
-                    case (GameActorType.player): {
-                        GameObject newTeamMember = Instantiate(playerPrefab, new Vector3(0,0,0), Quaternion.identity);
-                        Player playerComponent = newTeamMember.GetComponent<Player>();
-                        if (playerComponent != null) 
-                        {
-                            playerComponent.ownerTag = ownerTag;
-                            playerComponent.team = 1;
-                            playerComponent.faction = "ita";
-                            playerComponent.rayCamera = rayCamera;
-                            newTeamMember.name = "Player" + playerCount + "Team2";
-                            playerCount++;
-                        }
-                        players[ownerTag] = newTeamMember;
-                        ownerTag++;
-                        break;
-                    }
-                    case (GameActorType.aiEasy): {
-                        GameObject newTeamMember = Instantiate(aiPrefab, new Vector3(0,0,0), Quaternion.identity);
-                        ComputerPlayer computerPlayerComponent = newTeamMember.GetComponent<ComputerPlayer>();
-                        if (computerPlayerComponent != null)
-                        {
-                            computerPlayerComponent.ownerTag = ownerTag;
-                            computerPlayerComponent.team = 1;
-                            computerPlayerComponent.faction = "ita";
-                            computerPlayerComponent.rayCamera = rayCamera;
-                            computerPlayerComponent.difficulty = "easy";
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team2";
-                            aiCount++;
-                        }
-                        players[ownerTag] = newTeamMember;
-                        ownerTag++;
-                        break;
-                    }
-                    case (GameActorType.aiHard): {
-                        GameObject newTeamMember = Instantiate(aiPrefab, new Vector3(0,0,0), Quaternion.identity);
-                        ComputerPlayer computerPlayerComponent = newTeamMember.GetComponent<ComputerPlayer>();
-                        if (computerPlayerComponent != null)
-                        {
-                            computerPlayerComponent.ownerTag = ownerTag;
-                            computerPlayerComponent.team = 1;
-                            computerPlayerComponent.faction = "ita";
-                            computerPlayerComponent.rayCamera = rayCamera;
-                            computerPlayerComponent.difficulty = "hard";
-                            newTeamMember.name = "AI" + aiCount + computerPlayerComponent.difficulty + "Team2";
-                            aiCount++;
-                        }
-                        players[ownerTag] = newTeamMember;
-                        ownerTag++;
-                        break;
-                    }
-                    default: 
-                        Debug.Log("Incorrect Player Object defined, could not instantiate");
-                        break;
-                    
-                }
-                
-            }
-            */
         }
 
         private void InitalizeSpawnPoints()
@@ -192,9 +130,67 @@ namespace Capstone
         // Update is called once per frame
         void Update()
         {
-            
+            TimeSpan elapsedObjectiveTime = DateTime.Now - lastObjectiveTick;
+            if (elapsedObjectiveTime.Seconds >= objectivePointTickTime)
+            {
+                checkCapturePoints();
+                lastObjectiveTick = DateTime.Now;
+            }
         }
 
+        private void checkCapturePoints()
+        {
+            int team1Points = 0;
+            int team2Points = 0;
+            foreach (CapturePoint point in objectives)
+            {
+                if (point.owner == 1)
+                    team1Points++;
+                else if (point.owner == 2)
+                    team2Points++;
+            }
+            if (team1Points > team2Points)
+                team2Tickets -= team1Points;
+            else if (team2Points > team1Points)
+                team1Tickets -= team2Tickets;
+            
+            foreach(GameObject gameActor in players)
+            {
+                Player playerComp = gameActor.GetComponent<Player>();
+                if (playerComp != null)
+                    playerComp.playerUI.updateScoreBars(team1Tickets, team2Tickets);
+            }
+        }
+
+        private IEnumerator waitForMatchManager()
+        {
+            while (MatchManager.instance == null)
+            {
+                Debug.Log("Waiting, no MatchManager for data");
+                yield return null;
+            }
+
+            while (MatchManager.instance.getMatchMembers().Count < 2)
+            {
+                Debug.Log("Waiting, not enough players");
+                yield return null;
+            }
+
+            matchMembers = MatchManager.instance.getMatchMembers();
+            Debug.Log("Initializing teams!");
+            InitializeTeams();
+            InitalizeSpawnPoints();
+        }
+
+        private IEnumerator waitForPlayerUI(Player playerComponent)
+        {
+            while (playerComponent.playerUI == null)
+            {
+                yield return null;
+            }
+
+            playerComponent.playerUI.updateScoreBars(team1Tickets, team2Tickets);
+        }
 
     }
 }

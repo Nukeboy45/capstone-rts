@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using capstone;
 using UnityEngine;
 
 namespace Capstone
@@ -36,7 +35,7 @@ namespace Capstone
 
                 playerUI.setPlayerObj(this);
 
-                playerUI.faction = this.faction;
+                playerUI.setFaction(this.faction);
 
                 Camera uiCamera = playerUI.GetComponentInChildren<Camera>();
 

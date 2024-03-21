@@ -1,20 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 namespace Capstone
 {
     public class UnitManager : MonoBehaviour
     {
         
-        void Start()
+        void Awake()
         {
-            SquadData data = Resources.Load<SquadData>("Units/Austrian/Infantry/ausRifle");
-            EntitySpawner.SquadSpawn(data, new Vector3(0,0,0), 0, 0);
-            EntitySpawner.SquadSpawn(data, new Vector3(5,0,5), 0, 0);
-            EntitySpawner.SquadSpawn(data, new Vector3(-5,0,-5), 0, 0);
-            EntitySpawner.SquadSpawn(data, new Vector3(5,0,-5), 1, 4);
-            EntitySpawner.SquadSpawn(data, new Vector3(0,0,-15), 0, 0);
-            
+            StartCoroutine(waitForMatchManager());
         }
-        
+
+        private IEnumerator waitForMatchManager()
+        {
+            while (MatchManager.instance == null)
+            {
+                Debug.Log("Waiting, no MatchManager for initialization");
+                yield return null;
+            }
+
+            MatchManager.instance.resetMatchVariables();
+            MatchManager.instance.setMapPlayerSlots(2);
+            MatchManager.instance.addMatchMember(0, GameActorType.player, FactionType.centralPowers);
+            MatchManager.instance.addMatchMember(1, GameActorType.aiEasy, FactionType.alliedForces);
+        }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using capstone;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,10 +9,9 @@ namespace Capstone {
     {
         public Player playerObj; 
         public Button[] buttons;
-        public Button buttonMenu1;
-        public Button buttonMenu2;
-        public FactionType faction;
-        private UIState uiState = UIState.menu1;
+        public List<scoreBarList> scoreBars = new List<scoreBarList>();
+        private FactionType faction;
+        private UIState uiState = UIState.defaultMenu;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
         public void Start()
         {
@@ -28,21 +27,8 @@ namespace Capstone {
         {   
             if (playerObj.selected.Count == 0)
             {
-                if (buttonMenu1.interactable == false)
-                {
-                    if (uiState != UIState.menu1)
-                    {
-                        uiState = UIState.menu1;
-                        updateMenu();
-                    }
-                } else if (buttonMenu2.interactable == false)
-                {
-                    if (uiState != UIState.menu2)
-                    {
-                        uiState = UIState.menu2;
-                        updateMenu();
-                    }
-                }
+                uiState = UIState.defaultMenu;
+                updateMenu();
             }
             else if (playerObj.selected.Count == 1)
             {
@@ -65,7 +51,7 @@ namespace Capstone {
         {
             switch (uiState)
             {
-                case UIState.menu1:
+                case UIState.defaultMenu:
                     if (faction == FactionType.centralPowers)
                     {
                         playerObj.spawnPoint.addToBuildQueue(Resources.Load<SquadData>("Units/Austrian/Infantry/ausRifle"));
@@ -110,7 +96,7 @@ namespace Capstone {
         {
             switch (uiState)
             {
-                case UIState.menu1:
+                case UIState.defaultMenu:
                     if (faction == FactionType.centralPowers)
                     {
                         buttons[0].GetComponent<Image>().sprite = buttonImages["ausRifle"];
@@ -120,10 +106,6 @@ namespace Capstone {
                     {
 
                     }
-                    break;
-
-                case UIState.menu2:
-
                     break;
 
                 case UIState.squad:
@@ -136,9 +118,32 @@ namespace Capstone {
             }
         }
 
+        public void updateScoreBars(int team1Tickets, int team2Tickets)
+        {
+            if (playerObj.team == 0)
+            {
+                scoreBars[0].sliderComponent.value = team1Tickets;
+                scoreBars[0].textComponent.text = team1Tickets.ToString();
+                scoreBars[1].sliderComponent.value = team2Tickets;
+                scoreBars[1].textComponent.text = team2Tickets.ToString();
+            }
+            else 
+            {
+                scoreBars[1].sliderComponent.value = team1Tickets;
+                scoreBars[1].textComponent.text = team1Tickets.ToString();
+                scoreBars[0].sliderComponent.value = team2Tickets;
+                scoreBars[0].textComponent.text = team2Tickets.ToString();
+            }
+        }
+
         public void setPlayerObj(Player player)
         {
             playerObj = player;
+        }
+
+        public void setFaction(FactionType factionType)
+        {
+            faction = factionType;
         }
     }
 

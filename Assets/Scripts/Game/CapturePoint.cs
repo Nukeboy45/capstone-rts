@@ -15,15 +15,13 @@ namespace Capstone {
         public float captureValue = 0.0f;
         public int owner = 0;
         private bool checking = false;
-
-        void Start()
-        {
-
-        }
+        private float dTime;
 
         // Update is called once per frame
         void Update()
         {
+            dTime = Time.deltaTime;
+
             checkOwnershipChange();
 
             Collider[] collisions = Physics.OverlapSphere(pointCollider.transform.position + pointCollider.center, pointCollider.radius, layerMask);
@@ -104,12 +102,13 @@ namespace Capstone {
 
             if (captureTeams.Count == 1)
             {
+                float highestCaptureRate = getHighestCaptureRate();
                 switch (captureTeams[0])
                 {
                     case 1:
                         if (captureValue <= (100.0f + 0.2f))
                         {
-                            captureValue += 0.2f;
+                            captureValue += highestCaptureRate * dTime;
                             updateFlagPosition();
                         }
                         break;
@@ -117,7 +116,7 @@ namespace Capstone {
                     case 2:
                         if (captureValue >= (-100.0f - 0.2f))
                         {
-                            captureValue -= 0.2f;
+                            captureValue -= highestCaptureRate * dTime;
                             updateFlagPosition();
                         }
                         break;
@@ -131,25 +130,25 @@ namespace Capstone {
                 case 0:
                     if (captureValue >= 1.0f)
                     {
-                        captureValue -= 0.2f;
+                        captureValue -= 5f * dTime;
                         updateFlagPosition(); 
                     } else if (captureValue <= -1.0f)
                     {
-                        captureValue += 0.2f;
+                        captureValue += 5f * dTime;
                         updateFlagPosition();
                     }
                     break;
                 case 1:
                     if (captureValue <= (100f + 0.2f))
                     {
-                        captureValue += 0.2f;
+                        captureValue += 5f * dTime;
                         updateFlagPosition();
                     }
                     break;
                 case 2:
                     if (captureValue >= (-100.0f - 0.2f))
                     {
-                        captureValue -= 0.2f;
+                        captureValue -= 5f * dTime;
                         updateFlagPosition();
                     }
                     break;
@@ -159,11 +158,12 @@ namespace Capstone {
         /// <summary>
         /// 
         /// </summary>
-        private void updateFlagPosition() {
+        private void updateFlagPosition() 
+        {
             Vector3 flagPosition = flag.transform.position;
             if (flagPosition.y < 5.4)
             {
-                flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 1.2f; 
+                flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 1.3f; 
             }
             flag.transform.position = flagPosition;
         }
@@ -178,11 +178,12 @@ namespace Capstone {
                 updateOwner(1);
             } else if (captureValue <= -100.0f && owner != 2) {
                 updateOwner(2);
-            } else if ((captureValue >= -1.0f && captureValue <= 1.0f) && owner != 0) {
+            } else if (captureValue >= -1.0f && captureValue <= 1.0f && owner != 0) {
                 updateOwner(0);
             }
         }
-        private void updateOwner(int newOwner) {
+        private void updateOwner(int newOwner) 
+        {
             Renderer flagRender = flag.GetComponent<Renderer>();
             owner = newOwner;
             if (flagRender != null) 
@@ -199,6 +200,25 @@ namespace Capstone {
                         break;
                 }
             }
+        }
+
+        private float getHighestCaptureRate()
+        {  
+            float highestCaptureRate = 0f;
+            foreach (GameObject model in insidePoint)
+            {
+                SquadMember squadMemberComponent = model.GetComponent<SquadMember>();
+                if (squadMemberComponent != null)
+                {
+                    float squadCaptureRate = squadMemberComponent.parent.getSquadCaptureRate();
+                    Debug.Log(squadCaptureRate);
+                    if (squadCaptureRate > highestCaptureRate)
+                    {
+                        highestCaptureRate = squadCaptureRate;
+                    }
+                }
+            }
+            return highestCaptureRate;
         }
     }
 }
