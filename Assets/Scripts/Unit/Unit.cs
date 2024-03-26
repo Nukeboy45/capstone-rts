@@ -10,6 +10,8 @@ namespace Capstone
         public GameActor owner;
         public bool? showSelect = null;
         public bool selected = false;
+        protected UnitIconUI uiIcon;
+        protected UnitIconWorld worldIcon;
 
         /// ---------- Generic Methods to Inherit ---------------
         

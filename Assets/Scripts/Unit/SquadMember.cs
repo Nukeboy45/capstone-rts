@@ -24,6 +24,7 @@ namespace Capstone
         // Start is called before the first frame update
         void Start()
         {
+            currHealth = maxHealth;
             myAgent = GetComponent<NavMeshAgent>();
         }
 
@@ -37,10 +38,21 @@ namespace Capstone
         void Update()
         {
             if (currHealth <= 0) {
-                //parent.killModel(modelObj);
+                parent.killModel(this.gameObject);
             }
         } 
 
+        // ------ Getters / Setters
+        public float getCurrentHealth()
+        {
+            return currHealth;
+        }
 
+        public void takeDamage(float damage)
+        {
+            currHealth -= damage;
+            parent.updateUIHealth();
+            Debug.Log("Current health: " + currHealth.ToString());
+        }
     }
 }

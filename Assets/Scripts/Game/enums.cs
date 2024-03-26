@@ -34,5 +34,12 @@ namespace Capstone
         aiEasy,
         aiHard
     }
+
+    public enum IconStatus
+    {
+        queued,
+        building, 
+        active
+    }
     
 }

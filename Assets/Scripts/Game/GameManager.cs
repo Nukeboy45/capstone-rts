@@ -118,6 +118,11 @@ namespace Capstone
                 {
                     GameActor component = gameActor.GetComponent<GameActor>();
                     component.spawnPoint = spawns[component.ownerTag];
+                    if (component is Player)
+                    {
+                        Player playerComp = (Player)component;
+                        StartCoroutine(waitForPlayerCamera(playerComp, playerComp.spawnPoint.getCameraSpawnPosition()));
+                    }
                     component.spawnPoint.faction = component.faction;
                     component.spawnPoint.team = component.team;
                     component.spawnPoint.ownerTag = component.ownerTag;
@@ -190,6 +195,16 @@ namespace Capstone
             }
 
             playerComponent.playerUI.updateScoreBars(team1Tickets, team2Tickets);
+        }
+
+        private IEnumerator waitForPlayerCamera(Player playerComponent, Vector3 position)
+        {
+            while (playerComponent.getPlayerCamera() == null)
+            {
+                yield return null;
+            }
+
+            playerComponent.setCameraPosition(position);
         }
 
     }

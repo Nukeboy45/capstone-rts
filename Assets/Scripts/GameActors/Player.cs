@@ -13,13 +13,17 @@ namespace Capstone
         public List<GameObject> selected = new List<GameObject>();
 
         // --------- Camera Variables ----------
-        private float minZoom = 130;
+        private float minZoom = 110;
         private int minZoomY = 8;
         private float maxZoom = 50;
         private int maxZoomY = 4;
         private float zoomRateFOV = 5;
-        private float zoomRateY = 0.25f;
-        private float cameraSensitivity = 10.0f;
+        private float zoomRateY = 15.0f;
+        private float cameraSensitivityHorizontal = 60.0f;
+        private float cameraSensitivityRotate = 5.0f;
+
+        // -------- Utility Variables -----------
+        private float dTime;
 
         // Start is called before the first frame update
         void Start()
@@ -55,6 +59,7 @@ namespace Capstone
         // Update is called once per frame
         void Update()
         {
+            dTime = Time.deltaTime;
             cameraUpdate();
             mouseUpdate();
             keyboardUpdate();
@@ -70,8 +75,8 @@ namespace Capstone
                 float MouseX = Input.GetAxis("Mouse X"); 
                 float MouseY = Input.GetAxis("Mouse Y");
 
-                playerCamera.transform.Rotate(Vector3.up, MouseX * cameraSensitivity);
-                playerCamera.transform.Rotate(Vector3.left, MouseY * cameraSensitivity);
+                playerCamera.transform.Rotate(Vector3.up, MouseX * cameraSensitivityRotate);
+                playerCamera.transform.Rotate(Vector3.left, MouseY * cameraSensitivityRotate);
 
                 Vector3 currentRotation = playerCamera.transform.eulerAngles;
                 currentRotation.z = 0f;
@@ -92,14 +97,14 @@ namespace Capstone
             MoveDirection = cameraTransform.TransformDirection(MoveDirection);
             // Uses MoveDirection to apply the transformation. Space.world specifies the modifications are
             // being performed on the object's world coordinates not a local coordinate system.
-            cameraTransform.Translate(0.5f * new Vector3(MoveDirection.x, 0f, MoveDirection.z), Space.World);
+            cameraTransform.Translate(cameraSensitivityHorizontal * dTime * new Vector3(MoveDirection.x, 0f, MoveDirection.z), Space.World);
 
             float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
             if (scrollWheel > 0f) // Scrolling Up
             {
                 if ((playerCamera.transform.position.y > maxZoomY) & (playerCamera.fieldOfView > maxZoom))
                 {
-                    playerCamera.transform.position = new Vector3(currX, currY - zoomRateY, currZ);
+                    playerCamera.transform.position = new Vector3(currX, currY - zoomRateY * dTime, currZ);
                     playerCamera.fieldOfView -= zoomRateFOV;
                 }
             }
@@ -107,7 +112,7 @@ namespace Capstone
             {
                 if ((playerCamera.transform.position.y < minZoomY) & (playerCamera.fieldOfView < minZoom))
                 {
-                   playerCamera.transform.position = new Vector3(currX, currY + zoomRateY, currZ);
+                   playerCamera.transform.position = new Vector3(currX, currY + zoomRateY * dTime, currZ);
                    playerCamera.fieldOfView += zoomRateFOV; 
                 }
             }
@@ -226,14 +231,38 @@ namespace Capstone
                     Selection.deselectAll(this);
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (selected.Count > 0)
+                {
+                    foreach (GameObject gameObject in selected)
+                    {
+                        Unit unitComp = Selection.getSelectionComponent<Unit>(gameObject);
+                        if (unitComp is Squad)
+                        {
+                            Squad squadComp = (Squad)unitComp;
+                            squadComp.dealDebugDamage(10f);
+                        }
+                    }
+                }
+            }
         }
 
-        // ------------------- Getter / Setter Functions ----------------
-
+        // ------------------- Getter / Setter / Accessibility Functions ----------------
         public List<GameObject> getSelected() {
             return selected;
         }
 
+        public Camera getPlayerCamera()
+        {
+            return playerCamera;
+        }
+
+        public void setCameraPosition(Vector3 position)
+        {
+            playerCamera.transform.position = position;
+        }
 
     }
 }

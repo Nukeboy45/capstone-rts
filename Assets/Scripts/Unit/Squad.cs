@@ -29,6 +29,13 @@ namespace Capstone
         void Update()
         {
             if (aliveMembers <= 0) {
+                if (owner is Player)
+                {
+                    Player playerComponent = (Player)owner;
+                    playerComponent.playerUI.removeUnitIcon(uiIcon.gameObject);
+                    Destroy(uiIcon.gameObject);
+                }
+                base.deselect();
                 Destroy(this.gameObject);
             }
 
@@ -299,11 +306,11 @@ namespace Capstone
                 
                 GameObject iconObject = Instantiate(squadData.iconObj, new Vector3(0,0,0), Quaternion.identity);
                 iconObject.transform.SetParent(iconPosition.transform, false);
-                SpriteRenderer renderer = iconObject.GetComponent<SpriteRenderer>();
-                if (renderer != null) 
-                {
-                    renderer.sprite = squadData.icon;
-                }
+
+                UnitIconWorld unitIconWorld = iconObject.GetComponent<UnitIconWorld>();
+
+                StartCoroutine(initializeSquadIcon(unitIconWorld));
+                
                 iconObject.layer = LayerMask.NameToLayer("Selectable");
             } else {
                 Debug.Log("Icon Position Object not found!");
@@ -332,7 +339,25 @@ namespace Capstone
                     }
                 }    
             }
-    
+
+            // Updating the Squad UI Icon
+            uiIcon.setAliveModels(aliveMembers);
+            uiIcon.setHealtBarColor(Color.blue);
+            uiIcon.setCurrentHealth(1.0f);
+            uiIcon.setReferenceUnit(this);
+        }
+
+        private IEnumerator initializeSquadIcon(UnitIconWorld unitIconWorld)
+        {
+            while (unitIconWorld.checkFullyInitialized() == false)
+            {
+                yield return null;
+            }
+
+            unitIconWorld.setCurrentHealth(getCurrentSquadHealth());
+            unitIconWorld.setUnitIcon(squadData.icon);
+            unitIconWorld.setAliveModels(aliveMembers);
+            setSquadWorldUI(unitIconWorld);
         }
 
         // ---------------------- Getter / Setter methods ------------------------------
@@ -349,9 +374,59 @@ namespace Capstone
             return this.captureRate;
         }
 
+        public void setSquadIconUI(UnitIconUI unitIconUI)
+        {
+            uiIcon = unitIconUI;
+        }
+
+        public void setSquadWorldUI(UnitIconWorld unitIconWorld)
+        {
+            worldIcon = unitIconWorld;
+        }
+
+        public void updateUIHealth()
+        {
+            uiIcon.setCurrentHealth(getCurrentSquadHealth());
+            worldIcon.setCurrentHealth(getCurrentSquadHealth());
+        }
+
         private float getSquadModelSpeed() {
             SquadMember component = squadMembers[0].GetComponent<SquadMember>();
             return component.moveSpeed;
+        }
+
+        private float getCurrentSquadHealth()
+        {
+            float currentHealth = 0.0f;
+            foreach(GameObject model in squadMembers)
+            {
+                SquadMember squadMember = model.GetComponent<SquadMember>();
+                currentHealth += squadMember.getCurrentHealth();
+            }
+            return currentHealth / getSquadMaxHealth() * 1.0f;
+        }
+
+        private float getSquadMaxHealth()
+        {
+            float maxHealth = 0.0f;
+            foreach(GameObject model in squadData.models)
+            {
+                SquadMember squadMember = model.GetComponent<SquadMember>();
+                maxHealth += squadMember.maxHealth;
+            }
+            return maxHealth;
+        }
+
+        // -------------- Debug Functions -------------------
+
+        public void dealDebugDamage(float damage)
+        {
+            Debug.Log("Dealing damage!");
+            foreach (GameObject squadMember in squadMembers)
+            {
+                SquadMember squadMemberComponent = squadMember.GetComponent<SquadMember>();
+                squadMemberComponent.takeDamage(damage);
+            }
         }
 
     }

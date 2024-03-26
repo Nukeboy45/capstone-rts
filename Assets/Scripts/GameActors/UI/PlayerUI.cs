@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,19 +8,34 @@ using UnityEngine.UI;
 namespace Capstone {
     public class PlayerUI : MonoBehaviour
     {
+        // public / editor variables
         public Player playerObj; 
         public Button[] buttons;
         public List<scoreBarList> scoreBars = new List<scoreBarList>();
+        public List<GameObject> unitIconPositions = new List<GameObject>();
+        private List<GameObject> unitIconList = new List<GameObject>();
         private FactionType faction;
+
+        // private / runtime variables
         private UIState uiState = UIState.defaultMenu;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
+        
+        // Prefabs
+        private GameObject emptyUnitIconUI;
         public void Start()
         {
-            // Menu and Unit Construction buttons
-            buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
-
-            // Unit control buttons
+            switch (faction)
+            {
+                case (FactionType.centralPowers):
+                    // Menu and Unit Construction buttons - Central Powers
+                    buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
+                    break;
+            }
+            // Generic Button Images
             buttonImages.Add("retreat", Resources.Load<Sprite>("Art/ui/uiButtonRetreat"));
+
+            // Initializing the Empty UnitIconUI Prefab
+            emptyUnitIconUI = Resources.Load<GameObject>("Prefabs/UI/UnitIconUI");
 
             updateMenu();
         }
@@ -45,7 +61,6 @@ namespace Capstone {
             {
 
             }
-
         }
         public void Button1()
         {
@@ -91,7 +106,8 @@ namespace Capstone {
         {
 
         }
-
+        
+        // Update Functions
         public void updateMenu()
         {
             switch (uiState)
@@ -136,6 +152,17 @@ namespace Capstone {
             }
         }
 
+        public void updateUnitIconBarPositions()
+        {
+            for (int i = 0; i < unitIconList.Count; i++)
+            {
+                unitIconList[i].transform.parent = unitIconPositions[i].transform;
+                Debug.Log("Updated Parent!");
+                unitIconList[i].transform.localPosition = Vector3.zero;
+            }
+        }
+        
+        // ---------- Getters / Setters / Modification Functions --------------
         public void setPlayerObj(Player player)
         {
             playerObj = player;
@@ -144,6 +171,33 @@ namespace Capstone {
         public void setFaction(FactionType factionType)
         {
             faction = factionType;
+        }
+
+        public UnitIconUI addNewUnitIcon(Sprite portraitImage, Sprite iconImage)
+        {
+            GameObject newIcon = Instantiate(emptyUnitIconUI, Vector3.zero, Quaternion.identity);
+            unitIconList.Add(newIcon);
+            UnitIconUI returnIconUI = newIcon.GetComponent<UnitIconUI>();
+            StartCoroutine(waitForIconInitialization(returnIconUI, portraitImage, iconImage));
+            updateUnitIconBarPositions();
+            return returnIconUI;
+        }
+
+        public void removeUnitIcon(GameObject removeIcon)
+        {
+            unitIconList.Remove(removeIcon);
+            updateUnitIconBarPositions();
+        }
+
+        // INumerators
+        private IEnumerator waitForIconInitialization(UnitIconUI newIcon, Sprite portraitImage, Sprite iconImage)
+        {
+            while (newIcon.checkFullyInitialized() == false)
+            {
+                yield return null;
+            }
+            newIcon.setUnitPortrait(portraitImage);
+            newIcon.setUnitIcon(iconImage);
         }
     }
 

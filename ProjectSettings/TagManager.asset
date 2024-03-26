@@ -42,3 +42,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: boundaryGraphics
+    uniqueID: 2902853507
+    locked: 0
+  - name: unitSelection
+    uniqueID: 1521099617
+    locked: 0
+  - name: iconGraphics
+    uniqueID: 971921699
+    locked: 0
