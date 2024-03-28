@@ -11,6 +11,7 @@ namespace Capstone
         private Camera playerCamera;
         public PlayerUI playerUI;
         public List<GameObject> selected = new List<GameObject>();
+        public squadMoveMarkerPool moveMarkerPool;
 
         // --------- Camera Variables ----------
         private float minZoom = 110;
@@ -144,6 +145,14 @@ namespace Capstone
                     else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { squadMember.parent.showSelect = true; }
                 }
 
+                if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
+                {
+                    Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                    List<RaycastHit> hits = new List<RaycastHit>();
+                    hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                    moveMarkerPool.showMoveMarkers(hits);
+                }
+
                 // Check if LMB has been clicked
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -160,29 +169,30 @@ namespace Capstone
                         }
                         
                     } else {
-                        // Assuming player is not in multi-select mode, deselect all units
-                        if (!Input.GetKey(KeyCode.LeftShift)) { Selection.deselectAll(this); } 
+                        // Assuming player is not in multi-select mode, deselect all units and hide any move markers
+                        if (!Input.GetKey(KeyCode.LeftShift)) 
+                        { 
+                            Selection.deselectAll(this); 
+                            if (moveMarkerPool.markersActive == true)
+                            {
+                                moveMarkerPool.hideMoveMarkers();
+                            }
+                        } 
                     }
                 }
-            }
-            if (Input.GetMouseButton(1))
-            {
-                if (selected.Count > 0)
+                // Check if RMB has been clicked
+                if (Input.GetMouseButton(1))
                 {
-                    if (selected.Count == 1)
+                    if (selected.Count > 0)
                     {
-                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                        if (selected.Count == 1)
                         {
-                            if (Selection.getSelectionComponent<Unit>(selected[0]) is Unit)
+                            if (Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
                             {
-                                Unit unit = Selection.getSelectionComponent<Unit>(selected[0]);
-                                if (unit is Squad) 
-                                {
-                                    Squad squad = (Squad)unit;
-                                    List<RaycastHit> hits = new List<RaycastHit>();
-                                    hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                                    squad.moveTo(hits);
-                                }
+                                Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                                List<RaycastHit> hits = new List<RaycastHit>();
+                                hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                                squad.moveTo(hits);
                             } else if (Selection.getSelectionComponent<Building>(selected[0]) is Building) {
                                 Building building = Selection.getSelectionComponent<Building>(selected[0]);
                                 if (building is PassiveBuilding)
@@ -191,11 +201,11 @@ namespace Capstone
                                     passiveBuildComp.setRallyPoint(hit);
                                 }
                             }
-                        }
-                    } else {
-                        foreach (GameObject gameObject in selected)
-                        {
-                            Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
+                        } else {
+                            foreach (GameObject gameObject in selected)
+                            {
+                                Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
+                            }
                         }
                     }
                 }

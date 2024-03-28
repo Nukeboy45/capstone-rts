@@ -52,7 +52,6 @@ namespace Capstone
         {
             currHealth -= damage;
             parent.updateUIHealth();
-            Debug.Log("Current health: " + currHealth.ToString());
         }
     }
 }

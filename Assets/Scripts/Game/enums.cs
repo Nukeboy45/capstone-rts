@@ -41,5 +41,12 @@ namespace Capstone
         building, 
         active
     }
+
+    public enum UnitIconRender
+    {
+        player,
+        playerTeam,
+        enemy
+    }
     
 }

@@ -28,21 +28,21 @@ namespace Capstone
             {
 
             }
-            Transform healthBarTransform = this.transform.Find("Canvas/SquadHealth/Health");
+            Transform healthBarTransform = this.transform.Find("SquadHealth/Health");
             healthBarColor = healthBarTransform.GetComponent<Image>();
             if (healthBarColor != null)
             {
 
             }
 
-            Transform unitPortraitTransform = this.transform.Find("Canvas/PortraitImage");
+            Transform unitPortraitTransform = this.transform.Find("PortraitImage");
             unitPortrait = unitPortraitTransform.GetComponent<Image>();
             if (unitPortrait != null)
             {
 
             }
 
-            Transform unitIconTransform = this.transform.Find("Canvas/IconImage");
+            Transform unitIconTransform = this.transform.Find("IconImage");
             unitIcon = unitIconTransform.GetComponent<Image>();
             if (unitIcon != null)
             {

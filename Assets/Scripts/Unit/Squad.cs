@@ -78,7 +78,7 @@ namespace Capstone
         /// <param name="hit"></param>
         public override void moveTo(List<RaycastHit> hits)
         {
-            Dictionary<GameObject, RaycastHit> movePositions = getOptimalMovePositions(hits);
+            Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
             float longestMoveTime = getMaxMoveTime(movePositions, getSquadModelSpeed());
             foreach (var pair in movePositions)
             {
@@ -107,85 +107,6 @@ namespace Capstone
         private float getNormalizedMoveSpeed(float distance, float maxMoveTime, float moveSpeed)
         {
             return distance / maxMoveTime;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hits"></param>
-        /// <returns></returns>
-        private Dictionary<GameObject, RaycastHit> getOptimalMovePositions(List<RaycastHit> hits) 
-        {
-            List<Dictionary<GameObject, RaycastHit>> permutations = getPermutations(squadMembers, hits);
-
-            Dictionary<GameObject, RaycastHit> returnDict = new Dictionary<GameObject, RaycastHit>();
-            
-            float minH = 99999f;
-
-            foreach (Dictionary<GameObject, RaycastHit> permutation in permutations)
-            {   
-                float cost = 0f;
-                foreach (var pair in permutation)
-                {
-                    cost += Vector3.Distance(pair.Key.transform.position, pair.Value.point);
-                }
-                if (cost < minH && permutation[squadLead].point == hits[0].point)
-                {
-                    minH = cost;
-                    returnDict = permutation;
-                }
-            }
-            return returnDict;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="GameObject"></typeparam>
-        /// <typeparam name="RaycastHit"></typeparam>
-        /// <param name="members"></param>
-        /// <param name="hits"></param>
-        /// <returns></returns>
-        private List<Dictionary<GameObject, RaycastHit>> getPermutations<GameObject, RaycastHit>(GameObject[] members, List<RaycastHit> hits)
-        {
-            List<Dictionary<GameObject, RaycastHit>> result = new List<Dictionary<GameObject, RaycastHit>>();
-            int len = members.Length;
-            RaycastHit[] hitsArray = hits.ToArray();
-
-            RaycastHit squadLeadPosition = hits[0];
-
-            void heaps(int l)
-            {
-                if (l == 1)
-                {
-                    Dictionary<GameObject, RaycastHit> temp = new Dictionary<GameObject, RaycastHit>();
-                    for (int i=0; i < len; i++)
-                    {
-                        if (i == 0) {
-                            temp[members[i]] = squadLeadPosition;
-                        } else {
-                            temp[members[i]] = hitsArray[i];
-                        }
-                    }
-                    result.Add(temp);
-                } 
-                else 
-                {
-                    for (int i=0; i < len; i++)
-                    {
-                        heaps(l-1);
-
-                        if (l % 2 == 1)
-                        {
-                            (members[i], members[l - 1]) = (members[l - 1], members[i]);
-                        } else {
-                            (members[0], members[l - 1]) = (members[l - 1], members[0]);
-                        }
-                    }
-                }
-            }
-            heaps(len);
-            return result;
         }
 
         /// <summary>
@@ -221,7 +142,7 @@ namespace Capstone
         public void retreat(List<RaycastHit> hits)
         {
             squadState = SquadState.retreating;
-            Dictionary<GameObject, RaycastHit> movePositions = getOptimalMovePositions(hits);
+            Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
             float longestMoveTime = getMaxMoveTime(movePositions, 10.0f);
             foreach (var pair in movePositions)
             {
@@ -313,7 +234,7 @@ namespace Capstone
                 
                 iconObject.layer = LayerMask.NameToLayer("Selectable");
             } else {
-                Debug.Log("Icon Position Object not found!");
+                //Debug.Log("Icon Position Object not found!");
             }
 
             // Setting the render color of the selection circles
@@ -342,7 +263,7 @@ namespace Capstone
 
             // Updating the Squad UI Icon
             uiIcon.setAliveModels(aliveMembers);
-            uiIcon.setHealtBarColor(Color.blue);
+            uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
             uiIcon.setCurrentHealth(1.0f);
             uiIcon.setReferenceUnit(this);
         }
@@ -357,6 +278,14 @@ namespace Capstone
             unitIconWorld.setCurrentHealth(getCurrentSquadHealth());
             unitIconWorld.setUnitIcon(squadData.icon);
             unitIconWorld.setAliveModels(aliveMembers);
+
+            Player playerObj = FindObjectOfType<Player>();
+            if (owner.team != playerObj.team)
+                unitIconWorld.setHealthBarColor(UnitIconRender.enemy);
+            else if (owner.team == playerObj.team && owner.ownerTag != playerObj.ownerTag)
+                unitIconWorld.setHealthBarColor(UnitIconRender.playerTeam);
+            else    
+                unitIconWorld.setHealthBarColor(UnitIconRender.player);
             setSquadWorldUI(unitIconWorld);
         }
 
@@ -421,7 +350,7 @@ namespace Capstone
 
         public void dealDebugDamage(float damage)
         {
-            Debug.Log("Dealing damage!");
+            //Debug.Log("Dealing damage!");
             foreach (GameObject squadMember in squadMembers)
             {
                 SquadMember squadMemberComponent = squadMember.GetComponent<SquadMember>();
