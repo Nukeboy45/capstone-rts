@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
 
-    public Canvas mainCanvas;
-    public Canvas settingCanvas;
-    public Canvas skirmishCanvas;
-    public Camera menuCamera;
+    [SerializeField] private Canvas mainCanvas;
+    [SerializeField] private Canvas settingCanvas;
+    [SerializeField] private Canvas skirmishCanvas;
+    [SerializeField] private Camera menuCamera;
 
     public void settingMenu()
     {

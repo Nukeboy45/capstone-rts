@@ -10,15 +10,17 @@ namespace Capstone {
     {
         // public / editor variables
         public Player playerObj; 
-        public Button[] buttons;
-        public List<scoreBarList> scoreBars = new List<scoreBarList>();
-        public List<GameObject> unitIconPositions = new List<GameObject>();
-        private List<GameObject> unitIconList = new List<GameObject>();
-        private FactionType faction;
 
-        // private / runtime variables
+        // Private, Editor-Accessible Variables
+        [SerializeField] private Button[] buttons;
+        [SerializeField] private List<scoreBarList> scoreBars = new List<scoreBarList>();
+        [SerializeField] private List<GameObject> unitIconPositions = new List<GameObject>();
+
+        // Private Runtime Variables
         private UIState uiState = UIState.defaultMenu;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
+        private List<GameObject> unitIconList = new List<GameObject>();
+        private FactionType faction;
         
         // Prefabs
         private GameObject emptyUnitIconUI;

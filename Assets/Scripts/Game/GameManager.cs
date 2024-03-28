@@ -149,9 +149,9 @@ namespace Capstone
             int team2Points = 0;
             foreach (CapturePoint point in objectives)
             {
-                if (point.owner == 1)
+                if (point.getOwner() == 1)
                     team1Points++;
-                else if (point.owner == 2)
+                else if (point.getOwner() == 2)
                     team2Points++;
             }
             if (team1Points > team2Points)

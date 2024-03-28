@@ -129,6 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b007a1f1ce7e941ad1a4e7ef645d64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healtBar: {fileID: 7881403086532224407}
+  healthBarColor: {fileID: 4817426991261284423}
+  unitPortrait: {fileID: 9168550210244629695}
+  unitIcon: {fileID: 4488439466779329788}
+  aliveModels: {fileID: 990209072357189687}
 --- !u!223 &3595166856492901090
 Canvas:
   m_ObjectHideFlags: 0

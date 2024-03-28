@@ -48,5 +48,11 @@ namespace Capstone
         playerTeam,
         enemy
     }
+
+    public enum PlayerState
+    {
+        Default,
+        Building
+    }
     
 }

@@ -7,13 +7,19 @@ using UnityEngine;
 namespace Capstone {
     public class CapturePoint : MonoBehaviour
     {
-        public SphereCollider pointCollider;
-        public GameObject flag;
-        public LayerMask layerMask;
-        public Material[] flagTextures = new Material[3]; // 0 is neutral, 1 is aus, 2 is ita
-        public List<GameObject> insidePoint = new List<GameObject>();
-        public float captureValue = 0.0f;
-        public int owner = 0;
+        // Public Variables
+
+        // Private, Editor-Accessible Variables
+        [SerializeField] private SphereCollider pointCollider;
+        [SerializeField] private GameObject flag;
+        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private Material[] flagTextures = new Material[3]; // 0 is neutral, 1 is aus, 2 is ita
+        [SerializeField] private List<GameObject> insidePoint = new List<GameObject>();
+        [SerializeField] private GameObject fogReveal;
+
+        // Private Runtime Variables
+        private float captureValue = 0.0f;
+        private int owner = 0;
         private bool checking = false;
         private float dTime;
 
@@ -186,6 +192,15 @@ namespace Capstone {
         {
             Renderer flagRender = flag.GetComponent<Renderer>();
             owner = newOwner;
+            Player playerObj = FindObjectOfType<Player>();
+            Debug.Log(playerObj.ownerTag);
+            Debug.Log(owner);   
+            if (owner - 1 == playerObj.ownerTag)
+            {
+                fogReveal.SetActive(true);
+            } else {
+                fogReveal.SetActive(false);
+            }
             if (flagRender != null) 
             {
                 switch (owner) {
@@ -219,6 +234,13 @@ namespace Capstone {
                 }
             }
             return highestCaptureRate;
+        }
+
+        // ---- Getter / Setter Methods ------
+
+        public int getOwner()
+        {
+            return owner;
         }
     }
 }

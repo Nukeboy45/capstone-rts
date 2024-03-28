@@ -7,18 +7,21 @@ namespace Capstone
 {
     public class UnitIconUI : MonoBehaviour
     {
-        private Slider healtBar;
-        private Image healthBarColor;
-        private Image unitPortrait;
-        private Image unitIcon;
-        private TextMeshProUGUI aliveModels;
+        // Private, Editor-Accessible Variables
+        [SerializeField] private Slider healtBar;
+        [SerializeField] private Image healthBarColor;
+        [SerializeField] private Image unitPortrait;
+        [SerializeField] private Image unitIcon;
+        [SerializeField] private TextMeshProUGUI aliveModels;
+
+        // Private Runtime Variables
         private IconStatus state = IconStatus.queued;
         private GameObject selfReference;
         private Unit referenceUnit;
         // Start is called before the first frame update
         void Start()
         {
-            healtBar = this.GetComponentInChildren<Slider>();
+            /*healtBar = this.GetComponentInChildren<Slider>();
             if (healtBar != null)
             {
 
@@ -47,7 +50,7 @@ namespace Capstone
             if (unitIcon != null)
             {
 
-            }
+            }*/
         }
 
         // Update is called once per frame

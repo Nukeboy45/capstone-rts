@@ -295,7 +295,7 @@ namespace Capstone
         }
 
         public Transform getCurrentTransform() {
-            return this.transform;
+            return this.squadLead.transform;
         }
 
         public float getSquadCaptureRate()

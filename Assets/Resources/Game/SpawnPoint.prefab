@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ba6271a94f6f04bb1c9bc0f24833c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  faction: 0
+  team: 0
+  ownerTag: 0
+  cameraSpawnPos: {fileID: 0}
+  buildQueue: []

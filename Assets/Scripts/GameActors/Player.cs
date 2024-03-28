@@ -33,7 +33,11 @@ namespace Capstone
             GameObject ui = Resources.Load("Prefabs/UI/PlayerUI") as GameObject;
             playerCamera.transform.position = new Vector3(0,6,0);
             playerCamera.transform.rotation = Quaternion.Euler(45.0f, 0f, 0f);
-
+            
+            int fogCullLayer = LayerMask.NameToLayer("FOV");
+            if (fogCullLayer >= 0)
+                playerCamera.cullingMask &= ~(1 << fogCullLayer);
+                
             if (ui != null)
             {
                 playerUI = Instantiate(ui).GetComponentInChildren<PlayerUI>();
@@ -113,8 +117,8 @@ namespace Capstone
             {
                 if ((playerCamera.transform.position.y < minZoomY) & (playerCamera.fieldOfView < minZoom))
                 {
-                   playerCamera.transform.position = new Vector3(currX, currY + zoomRateY * dTime, currZ);
-                   playerCamera.fieldOfView += zoomRateFOV; 
+                    playerCamera.transform.position = new Vector3(currX, currY + zoomRateY * dTime, currZ);
+                    playerCamera.fieldOfView += zoomRateFOV; 
                 }
             }
         }
