@@ -226,7 +226,6 @@ namespace Capstone {
                 if (squadMemberComponent != null)
                 {
                     float squadCaptureRate = squadMemberComponent.parent.getSquadCaptureRate();
-                    Debug.Log(squadCaptureRate);
                     if (squadCaptureRate > highestCaptureRate)
                     {
                         highestCaptureRate = squadCaptureRate;

@@ -11,7 +11,7 @@ namespace Capstone
         private Camera playerCamera;
         public PlayerUI playerUI;
         public List<GameObject> selected = new List<GameObject>();
-        public squadMoveMarkerPool moveMarkerPool;
+        public SquadMoveMarkerPool moveMarkerPool;
 
         // --------- Camera Variables ----------
         private float minZoom = 110;
@@ -38,6 +38,9 @@ namespace Capstone
             if (fogCullLayer >= 0)
                 playerCamera.cullingMask &= ~(1 << fogCullLayer);
                 
+            int hiddenLayer = LayerMask.NameToLayer("Hidden");
+            if (hiddenLayer >= 0)
+                playerCamera.cullingMask &= ~(1 << hiddenLayer);
             if (ui != null)
             {
                 playerUI = Instantiate(ui).GetComponentInChildren<PlayerUI>();
@@ -153,8 +156,14 @@ namespace Capstone
                 {
                     Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
                     List<RaycastHit> hits = new List<RaycastHit>();
-                    hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                    moveMarkerPool.showMoveMarkers(hits);
+                    Transform squadLeadTransform = squad.getCurrentTransform();
+                    if (squadLeadTransform != null)
+                    {
+                        hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                        moveMarkerPool.showMoveMarkers(hits);
+                    }
+                } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
+                    moveMarkerPool.hideMoveMarkers();
                 }
 
                 // Check if LMB has been clicked

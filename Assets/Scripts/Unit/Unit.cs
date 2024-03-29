@@ -15,7 +15,6 @@ namespace Capstone
 
         /// ---------- Generic Methods to Inherit ---------------
         
-        
         public virtual void Start()
         {
             owner.unitList.Add(this.gameObject);
@@ -48,5 +47,7 @@ namespace Capstone
         }
 
         public virtual void moveTo(List<RaycastHit> hit) {}
+
+        public virtual bool checkRevealed() {return false;}
     }
 }

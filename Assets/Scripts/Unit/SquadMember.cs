@@ -17,7 +17,10 @@ namespace Capstone
         public float moveSpeed;
         public int modelPriority;
         public LayerMask ground;
-        NavMeshAgent myAgent;
+        [SerializeField] private NavMeshAgent myAgent;
+        
+        [SerializeField] private GameObject sightRadius;
+
 
 
 
@@ -28,12 +31,6 @@ namespace Capstone
             myAgent = GetComponent<NavMeshAgent>();
         }
 
-        public void moveToPosition(Vector3 point, float speed)
-        {
-            myAgent.speed = speed;
-            myAgent.SetDestination(point);
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -41,6 +38,22 @@ namespace Capstone
                 parent.killModel(this.gameObject);
             }
         } 
+
+        public void moveToPosition(Vector3 point, float speed)
+        {
+            myAgent.speed = speed;
+            myAgent.SetDestination(point);
+        }
+
+        public void setSightRadiusStatus(bool status)
+        {
+            if (status)
+            {
+                sightRadius.SetActive(true);
+            } else {
+                sightRadius.SetActive(false);
+            }
+        }
 
         // ------ Getters / Setters
         public float getCurrentHealth()

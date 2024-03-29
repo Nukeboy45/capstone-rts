@@ -158,7 +158,7 @@ namespace Capstone {
         {
             for (int i = 0; i < unitIconList.Count; i++)
             {
-                unitIconList[i].transform.parent = unitIconPositions[i].transform;
+                unitIconList[i].transform.SetParent(unitIconPositions[i].transform);
                 Debug.Log("Updated Parent!");
                 unitIconList[i].transform.localPosition = Vector3.zero;
             }

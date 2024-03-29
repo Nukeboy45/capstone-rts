@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Capstone
 {
-    public static class EntitySpawner
+    public class EntitySpawner : MonoBehaviour
     {
         /*public static void SpawnBuilding(BuildingData buildingData, Vector3 position, int team, int ownerTag)
         {
@@ -14,9 +14,14 @@ namespace Capstone
 
             }
         }*/
-        public static GameManager gameManager;
+        [SerializeField] private GameManager gameManager;
 
-        public static void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
+        public void Start()
+        {
+            StartCoroutine(spawnDebugEnemySquad());
+        }
+
+        public void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
         {
             GameObject squadObj = new GameObject(squadData.unitName);
             Squad squad = squadObj.AddComponent<Squad>();
@@ -32,6 +37,15 @@ namespace Capstone
             {
                 squad.moveTo(rallyMove);
             }
+        }
+
+        private IEnumerator spawnDebugEnemySquad()
+        {
+            while (gameManager.players.Length < 2)
+            {
+                yield return null;
+            }
+            SquadSpawn(Resources.Load<SquadData>("Units/Austrian/Infantry/ausRifle"), new Vector3(60, 0, 60), 1, 1);
         }
     }
 }

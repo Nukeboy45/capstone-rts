@@ -6,9 +6,9 @@ using UnityEngine.Timeline;
 
 namespace Capstone 
 {
-    public class squadMoveMarkerPool : MonoBehaviour
+    public class SquadMoveMarkerPool: MonoBehaviour
     {
-        public static squadMoveMarkerPool sharedInstance;
+        public static SquadMoveMarkerPool sharedInstance;
         public List<GameObject> moveMarkers;
         public GameObject moveMarkerPrefab;
         public int maxMarkers;
@@ -51,6 +51,11 @@ namespace Capstone
                 }
             }
             markersActive = false;
+        }
+
+        public bool checkActive()
+        {
+            return markersActive;
         }
     }
 

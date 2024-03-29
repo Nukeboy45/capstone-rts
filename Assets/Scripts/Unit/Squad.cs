@@ -8,14 +8,18 @@ namespace Capstone
 {
     public class Squad : Unit
     {
-        public SquadData squadData;
-        public GameObject[] squadMembers;
+        // Public Variables
+        [SerializeField] public SquadData squadData;
+
+        // Private, Runtime Variables
+        private GameObject[] squadMembers;
         private float captureRate;
         private int veterancy;
         private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
+        private bool revealed = true;
         public SquadState squadState = SquadState.stationary;
         
         // --------------------- Class Methods ---------------------------------
@@ -166,6 +170,71 @@ namespace Capstone
             aliveMembers--; 
         }
 
+        // Fog of War Code
+
+        private IEnumerator fogLoop()
+        {
+            while (true)
+            {
+                while (checkRevealed() == false)
+                {
+                    if (revealed != false)
+                    {
+                        revealed = false;
+                        setSquadVisibility(false);
+                    }
+                    yield return null;
+                }
+
+                if (revealed != true)
+                {
+                    revealed = true;                    
+                    setSquadVisibility(true);
+                }
+                yield return new WaitForSecondsRealtime(1);
+            }
+        }
+        public override bool checkRevealed()
+        {
+            if (FogLayerManager.instance.getPlayerTeam() != this.team)
+            {
+                foreach (GameObject squadMember in squadMembers)
+                {
+                    if (squadMember != null)
+                    {
+                        if (FogLayerManager.instance.isInFog(squadMember.transform.position) && revealed == false)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            // Default for Player / Ally Units
+            return true;
+        }
+
+        public void setSquadVisibility(bool state)
+        {
+            Debug.Log("Calling");
+            if (state)
+            {
+                int selectableLayer = LayerMask.NameToLayer("Selectable");
+                foreach (GameObject member in squadMembers)
+                {
+                    member.layer = selectableLayer;
+                }       
+            } else {
+                int hiddenLayer = LayerMask.NameToLayer("Hidden");
+                foreach (GameObject member in squadMembers)
+                {
+                    member.layer = hiddenLayer;
+                }
+            }
+        }
+
+        // ---- Initialization Code ----
+
         /// <summary>
         /// Used when spawning a new squad. Generates a new squad at target coordinates with relevant variables
         /// </summary>
@@ -261,11 +330,32 @@ namespace Capstone
                 }    
             }
 
+            // Deactivating / Activating FOV sight based on team
+            if (owner.team != playerObj.team)
+            {
+                foreach(GameObject member in squadMembers)
+                {
+                    SquadMember squadMemberComponent = member.GetComponent<SquadMember>();
+                    squadMemberComponent.setSightRadiusStatus(false);
+                }
+            } else {
+                foreach(GameObject member in squadMembers)
+                {
+                    SquadMember squadMemberComponent = member.GetComponent<SquadMember>();
+                    squadMemberComponent.setSightRadiusStatus(true);
+                }     
+            }
+
             // Updating the Squad UI Icon
-            uiIcon.setAliveModels(aliveMembers);
-            uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
-            uiIcon.setCurrentHealth(1.0f);
-            uiIcon.setReferenceUnit(this);
+            if (owner == playerObj)
+            {
+                uiIcon.setAliveModels(aliveMembers);
+                uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
+                uiIcon.setCurrentHealth(1.0f);
+                uiIcon.setReferenceUnit(this);
+            }
+
+            StartCoroutine(fogLoop());
         }
 
         private IEnumerator initializeSquadIcon(UnitIconWorld unitIconWorld)
@@ -295,7 +385,9 @@ namespace Capstone
         }
 
         public Transform getCurrentTransform() {
-            return this.squadLead.transform;
+            if (this.squadLead != null)
+                return this.squadLead.transform;
+            return null;
         }
 
         public float getSquadCaptureRate()

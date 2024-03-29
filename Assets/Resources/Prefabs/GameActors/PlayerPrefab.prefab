@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 255898212907704419}
   - component: {fileID: 4410025210882535353}
-  - component: {fileID: 1251647763864920155}
+  - component: {fileID: 7910412180159225269}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -61,8 +61,8 @@ MonoBehaviour:
   techTier: 0
   playerUI: {fileID: 0}
   selected: []
-  moveMarkerPool: {fileID: 1251647763864920155}
---- !u!114 &1251647763864920155
+  moveMarkerPool: {fileID: 7910412180159225269}
+--- !u!114 &7910412180159225269
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,3 +77,4 @@ MonoBehaviour:
   moveMarkers: []
   moveMarkerPrefab: {fileID: 349887243637400390, guid: ceea7ccdf9612384a92fc3a3a7910517, type: 3}
   maxMarkers: 6
+  markersActive: 0
