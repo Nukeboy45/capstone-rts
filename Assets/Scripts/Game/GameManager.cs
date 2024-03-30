@@ -157,7 +157,7 @@ namespace Capstone
             if (team1Points > team2Points)
                 team2Tickets -= team1Points;
             else if (team2Points > team1Points)
-                team1Tickets -= team2Tickets;
+                team1Tickets -= team2Points;
             
             foreach(GameObject gameActor in players)
             {

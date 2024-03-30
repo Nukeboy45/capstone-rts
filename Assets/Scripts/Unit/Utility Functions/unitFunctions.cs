@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Capstone
@@ -64,11 +65,7 @@ namespace Capstone
         {
             List<Vector3> moveCoordinates = new List<Vector3>();
 
-            Vector3 targetDirection = targetPosition - currentTransform.position;
-            float angleDif = Vector3.Angle(targetDirection, currentTransform.forward);
-
             Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, targetPosition - currentTransform.position);
-            Debug.Log(rotation);
             switch (aliveMembers)
             {
                 case 1:
@@ -192,6 +189,17 @@ namespace Capstone
             }
             heaps(len);
             return result;
+        }
+
+        public static float getCameraRotationDifference(Transform cameraTransform, Transform targetTransform)
+        {
+            Vector3 NormalizedVector = new Vector3(targetTransform.position.x - cameraTransform.position.x, 0f, targetTransform.position.z - cameraTransform.position.z);
+
+            float angle = Vector3.Angle(NormalizedVector, cameraTransform.forward);
+
+            Debug.Log(angle);
+            
+            return angle;
         }
 
     }

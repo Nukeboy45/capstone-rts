@@ -54,7 +54,7 @@ MonoBehaviour:
   flag: {fileID: 5259249237890371807}
   layerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 1032
   flagTextures:
   - {fileID: 2100000, guid: 1a75cc221c6cae447bea5dec940cf141, type: 2}
   - {fileID: 2100000, guid: 7e695cb3085ab9e40928e405887a68a9, type: 2}

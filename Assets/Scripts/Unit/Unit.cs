@@ -11,7 +11,10 @@ namespace Capstone
         public bool? showSelect = null;
         public bool selected = false;
         protected UnitIconUI uiIcon;
-        protected UnitIconWorld worldIcon;
+        protected GameObject worldIconObj;
+        protected UnitIconUIWorld worldIcon;
+        protected bool revealed = false;
+        protected bool revealStatus = true;
 
         /// ---------- Generic Methods to Inherit ---------------
         
@@ -48,6 +51,13 @@ namespace Capstone
 
         public virtual void moveTo(List<RaycastHit> hit) {}
 
-        public virtual bool checkRevealed() {return false;}
+        public virtual bool checkReveal() {return false;}
+
+        // --- Getters / Setter Methods ---
+
+        public bool getRevealedIcon()
+        {
+            return revealStatus;
+        }
     }
 }

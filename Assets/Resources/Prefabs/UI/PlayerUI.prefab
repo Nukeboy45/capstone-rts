@@ -566,7 +566,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerUI, Assembly-CSharp
         m_MethodName: Button2
         m_Mode: 1
@@ -907,7 +907,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button6
         m_Mode: 1
@@ -1173,7 +1173,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button3
         m_Mode: 1
@@ -1416,7 +1416,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button5
         m_Mode: 1
@@ -1682,8 +1682,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
-        m_TargetAssemblyTypeName: PlayerUI, Assembly-CSharp
+      - m_Target: {fileID: 8679733190010428672}
+        m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button1
         m_Mode: 1
         m_Arguments:
@@ -2001,6 +2001,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2034551870314401364}
   - {fileID: 433965528896245576}
   - {fileID: 4079605157442235225}
   - {fileID: 5686900883606925893}
@@ -2197,7 +2198,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button4
         m_Mode: 1
@@ -2519,7 +2520,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button5
         m_Mode: 1
@@ -2540,6 +2541,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 587749828222486928}
+  - component: {fileID: 8679733190010428672}
   m_Layer: 0
   m_Name: PlayerUI
   m_TagString: Untagged
@@ -2564,6 +2566,45 @@ Transform:
   - {fileID: 8995549697608996036}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8679733190010428672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6169292559571629278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608e9d0a60903e9469e8ca9adde51a92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerObj: {fileID: 0}
+  buttons:
+  - {fileID: 701328528721008760}
+  - {fileID: 3011060956251303828}
+  - {fileID: 6464708004437992776}
+  - {fileID: 638478435014660289}
+  - {fileID: 8658340453087816113}
+  - {fileID: 2919993910501976917}
+  scoreBars:
+  - sliderComponent: {fileID: 899870133181215482}
+    textComponent: {fileID: 8268270827947886345}
+  - sliderComponent: {fileID: 6641533891768564414}
+    textComponent: {fileID: 728704656566142970}
+  unitIconPositions:
+  - {fileID: 5336502231869402552}
+  - {fileID: 655490260481092176}
+  - {fileID: 608478424900033474}
+  - {fileID: 2461598180482720113}
+  - {fileID: 2615890190081893792}
+  - {fileID: 6744723320181667036}
+  - {fileID: 8042121638055716726}
+  - {fileID: 6397039486145963699}
+  - {fileID: 1610974337717789789}
+  - {fileID: 5416840100537819074}
+  worldSpaceIconsParent: {fileID: 7964443000827793396}
+  playerCamera: {fileID: 0}
+  unitIconWorldList: []
 --- !u!1 &6236553431792460158
 GameObject:
   m_ObjectHideFlags: 0
@@ -2684,7 +2725,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button6
         m_Mode: 1
@@ -2853,7 +2894,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8050997704474018795}
   - component: {fileID: 5738203952623162049}
-  - component: {fileID: 5599751107641291640}
   m_Layer: 0
   m_Name: uiCamera
   m_TagString: Untagged
@@ -2927,42 +2967,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &5599751107641291640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7104279537072302234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 608e9d0a60903e9469e8ca9adde51a92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerObj: {fileID: 0}
-  buttons:
-  - {fileID: 701328528721008760}
-  - {fileID: 3011060956251303828}
-  - {fileID: 6464708004437992776}
-  - {fileID: 638478435014660289}
-  - {fileID: 8658340453087816113}
-  - {fileID: 2919993910501976917}
-  scoreBars:
-  - sliderComponent: {fileID: 899870133181215482}
-    textComponent: {fileID: 8268270827947886345}
-  - sliderComponent: {fileID: 6641533891768564414}
-    textComponent: {fileID: 728704656566142970}
-  unitIconPositions:
-  - {fileID: 5336502231869402552}
-  - {fileID: 655490260481092176}
-  - {fileID: 608478424900033474}
-  - {fileID: 2461598180482720113}
-  - {fileID: 2615890190081893792}
-  - {fileID: 6744723320181667036}
-  - {fileID: 8042121638055716726}
-  - {fileID: 6397039486145963699}
-  - {fileID: 1610974337717789789}
-  - {fileID: 5416840100537819074}
 --- !u!1 &7909006560280425135
 GameObject:
   m_ObjectHideFlags: 0
@@ -3083,7 +3087,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5599751107641291640}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Capstone.PlayerUI, Assembly-CSharp
         m_MethodName: Button4
         m_Mode: 1
@@ -3095,6 +3099,41 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &7964443000827793396
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2034551870314401364}
+  m_Layer: 5
+  m_Name: WorldSpaceUnitIcons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2034551870314401364
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7964443000827793396}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8995549697608996036}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8042121638055716726
 GameObject:
   m_ObjectHideFlags: 0

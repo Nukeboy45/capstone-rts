@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,13 +14,16 @@ namespace Capstone {
 
         // Private, Editor-Accessible Variables
         [SerializeField] private Button[] buttons;
-        [SerializeField] private List<scoreBarList> scoreBars = new List<scoreBarList>();
+        [SerializeField] private List<ScoreBarList> scoreBars = new List<ScoreBarList>();
         [SerializeField] private List<GameObject> unitIconPositions = new List<GameObject>();
+        [SerializeField] private GameObject worldSpaceIconsParent;
 
         // Private Runtime Variables
         private UIState uiState = UIState.defaultMenu;
+        [SerializeField] private Camera playerCamera;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
-        private List<GameObject> unitIconList = new List<GameObject>();
+        private List<GameObject> unitIconBarList = new List<GameObject>();
+        [SerializeField] private List<UnitIconUIWorldPair> unitIconWorldList = new List<UnitIconUIWorldPair>();
         private FactionType faction;
         
         // Prefabs
@@ -37,7 +41,7 @@ namespace Capstone {
             buttonImages.Add("retreat", Resources.Load<Sprite>("Art/ui/uiButtonRetreat"));
 
             // Initializing the Empty UnitIconUI Prefab
-            emptyUnitIconUI = Resources.Load<GameObject>("Prefabs/UI/UnitIconUI");
+            emptyUnitIconUI = Resources.Load<GameObject>("Prefabs/UI/UnitIconUIBar");
 
             updateMenu();
         }
@@ -63,6 +67,8 @@ namespace Capstone {
             {
 
             }
+
+            updateWorldSpaceIconPositions();
         }
         public void Button1()
         {
@@ -98,15 +104,44 @@ namespace Capstone {
         {
 
         }
+        
 
-        public void MenuButton1()
+        public void updateWorldSpaceIconPositions()
         {
-
+            foreach (UnitIconUIWorldPair pair in unitIconWorldList)
+            {
+                float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, pair.position.transform);
+                if (angle < 60f && pair.icon.GetComponent<UnitIconUIWorld>().getUnit().getRevealedIcon() == true)
+                {
+                    pair.icon.SetActive(true);
+                    Vector3 screenPosition = playerCamera.WorldToScreenPoint(pair.position.transform.position);
+                    float distance = Vector3.Distance(playerCamera.transform.position, pair.position.transform.position);     
+                    pair.icon.transform.position = screenPosition;
+                    float scaleFactor = Mathf.Clamp(1000f / distance, 1f, 130f);
+                    pair.icon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                } else {
+                    pair.icon.SetActive(false);
+                }
+            }
         }
 
-        public void MenuButton2()
+        public GameObject spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
         {
+            float distance = Vector3.Distance(playerCamera.transform.position, iconPosition.transform.position);
+            Vector3 screenPosition = playerCamera.WorldToScreenPoint(iconPosition.transform.position);
+            GameObject newIcon = Instantiate(iconPrefab);
+            newIcon.transform.SetParent(worldSpaceIconsParent.transform);
+            newIcon.transform.position = screenPosition;
+            float scaleFactor = Mathf.Clamp(1000f / distance, 1f, 130f);
+            newIcon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
+            UnitIconUIWorldPair newPair = new UnitIconUIWorldPair();
+            newPair.icon = newIcon;
+            newPair.position = iconPosition;
+        
+            unitIconWorldList.Add(newPair);
+            
+            return newIcon;
         }
         
         // Update Functions
@@ -156,11 +191,11 @@ namespace Capstone {
 
         public void updateUnitIconBarPositions()
         {
-            for (int i = 0; i < unitIconList.Count; i++)
+            for (int i = 0; i < unitIconBarList.Count; i++)
             {
-                unitIconList[i].transform.SetParent(unitIconPositions[i].transform);
+                unitIconBarList[i].transform.SetParent(unitIconPositions[i].transform);
                 Debug.Log("Updated Parent!");
-                unitIconList[i].transform.localPosition = Vector3.zero;
+                unitIconBarList[i].transform.localPosition = Vector3.zero;
             }
         }
         
@@ -168,6 +203,11 @@ namespace Capstone {
         public void setPlayerObj(Player player)
         {
             playerObj = player;
+        }
+
+        public void setPlayerCamera(Camera playerCam)
+        {
+            playerCamera = playerCam;
         }
 
         public void setFaction(FactionType factionType)
@@ -178,7 +218,7 @@ namespace Capstone {
         public UnitIconUI addNewUnitIcon(Sprite portraitImage, Sprite iconImage)
         {
             GameObject newIcon = Instantiate(emptyUnitIconUI, Vector3.zero, Quaternion.identity);
-            unitIconList.Add(newIcon);
+            unitIconBarList.Add(newIcon);
             UnitIconUI returnIconUI = newIcon.GetComponent<UnitIconUI>();
             StartCoroutine(waitForIconInitialization(returnIconUI, portraitImage, iconImage));
             updateUnitIconBarPositions();
@@ -187,7 +227,7 @@ namespace Capstone {
 
         public void removeUnitIcon(GameObject removeIcon)
         {
-            unitIconList.Remove(removeIcon);
+            unitIconBarList.Remove(removeIcon);
             updateUnitIconBarPositions();
         }
 

@@ -3,22 +3,23 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Capstone
-{
-    public class UnitIconUI : MonoBehaviour
+namespace Capstone {
+    public class UnitIconUIWorld : MonoBehaviour
     {
-        // Private, Editor-Accessible Variables
+    // Private, Editor-Accessible Variables
         [SerializeField] private Slider healtBar;
         [SerializeField] private Image healthBarColor;
-        [SerializeField] private Image unitPortrait;
         [SerializeField] private Image unitIcon;
         [SerializeField] private TextMeshProUGUI aliveModels;
 
         // Private Runtime Variables
-        private IconStatus state = IconStatus.queued;
         private GameObject selfReference;
         private Unit referenceUnit;
         // Start is called before the first frame update
+        void Start()
+        {
+
+        }
 
         // Update is called once per frame
         void Update()
@@ -37,15 +38,14 @@ namespace Capstone
         {
             return healthBarColor;
         }
-
-        public Image getPortrait()
-        {
-            return unitPortrait;
-        }
-
         public Image getIcon()
         {
             return unitIcon;
+        }
+
+        public Unit getUnit()
+        {
+            return referenceUnit;
         }
 
         public void setMaxHealth(float maxHealth)
@@ -57,24 +57,25 @@ namespace Capstone
             healtBar.value = health;
         }
 
-        public void setHealtBarColor(Color newColor)
+        public void setHealthBarColor(UnitIconRender renderType)
         {
-            healthBarColor.color = newColor;
+            switch (renderType)
+            {
+                case UnitIconRender.player:
+                    healthBarColor.color = new Color(0.0f, 0.04f, 0.42f, 1.0f);
+                    break;
+                case UnitIconRender.playerTeam:
+                    healthBarColor.color = new Color(0.0f, 0.71f, 0.59f, 1.0f);
+                    break;
+                case UnitIconRender.enemy:
+                    healthBarColor.color = new Color(0.66f, 0.0f, 0.0f, 1.0f);
+                    break;
+            }
         }
 
         public void setAliveModels(int aliveMembers)
         {
             aliveModels.text = aliveMembers.ToString();
-        }
-
-        public void setIconStatus(IconStatus status)
-        {
-            state = status;
-        }
-
-        public void setUnitPortrait(Sprite portrait)
-        {
-            unitPortrait.sprite = portrait;
         }
         public void setUnitIcon(Sprite icon)
         {
@@ -88,7 +89,7 @@ namespace Capstone
 
         public bool checkFullyInitialized()
         {
-            if (healtBar == null || healthBarColor == null || unitPortrait == null || unitIcon == null || aliveModels == null)
+            if (healtBar == null || healthBarColor == null || unitIcon == null || aliveModels == null)
             {
                 return false;
             }

@@ -46,6 +46,7 @@ namespace Capstone
                 playerUI = Instantiate(ui).GetComponentInChildren<PlayerUI>();
 
                 playerUI.setPlayerObj(this);
+                playerUI.setPlayerCamera(playerCamera);
 
                 playerUI.setFaction(this.faction);
 
@@ -59,9 +60,11 @@ namespace Capstone
             if (Camera.main != null) {
                 Camera.main.tag = "Untagged";
             }
+
+            FogLayerManager.instance.setPlayerUI(playerUI);
             
             playerCamera.tag = "MainCamera";
-            playerUI.name = this.name + " UI";
+            playerUI.name = this.name + "UI";
         }
 
         // Update is called once per frame

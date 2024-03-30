@@ -19,7 +19,6 @@ namespace Capstone
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
-        private bool revealed = true;
         public SquadState squadState = SquadState.stationary;
         
         // --------------------- Class Methods ---------------------------------
@@ -174,27 +173,23 @@ namespace Capstone
 
         private IEnumerator fogLoop()
         {
+            bool previousRevealed = true;
+
             while (true)
             {
-                while (checkRevealed() == false)
+                bool currentRevealed = checkReveal();
+                
+                if (currentRevealed != previousRevealed)
                 {
-                    if (revealed != false)
-                    {
-                        revealed = false;
-                        setSquadVisibility(false);
-                    }
-                    yield return null;
+                    revealStatus = currentRevealed;
+                    setSquadVisibility(currentRevealed);
+                    previousRevealed = currentRevealed;
                 }
-
-                if (revealed != true)
-                {
-                    revealed = true;                    
-                    setSquadVisibility(true);
-                }
-                yield return new WaitForSecondsRealtime(1);
+                
+                yield return new WaitForSecondsRealtime(0.01f);
             }
         }
-        public override bool checkRevealed()
+        public override bool checkReveal()
         {
             if (FogLayerManager.instance.getPlayerTeam() != this.team)
             {
@@ -202,7 +197,7 @@ namespace Capstone
                 {
                     if (squadMember != null)
                     {
-                        if (FogLayerManager.instance.isInFog(squadMember.transform.position) && revealed == false)
+                        if (FogLayerManager.instance.isInFog(squadMember.transform.position))
                         {
                             return true;
                         }
@@ -210,7 +205,6 @@ namespace Capstone
                 }
                 return false;
             }
-            // Default for Player / Ally Units
             return true;
         }
 
@@ -294,14 +288,9 @@ namespace Capstone
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
                 
-                GameObject iconObject = Instantiate(squadData.iconObj, new Vector3(0,0,0), Quaternion.identity);
-                iconObject.transform.SetParent(iconPosition.transform, false);
+                worldIconObj = FogLayerManager.instance.addNewWorldUnitIcon(squadData.iconObj, iconPosition);
 
-                UnitIconWorld unitIconWorld = iconObject.GetComponent<UnitIconWorld>();
-
-                StartCoroutine(initializeSquadIcon(unitIconWorld));
-                
-                iconObject.layer = LayerMask.NameToLayer("Selectable");
+                StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
             } else {
                 //Debug.Log("Icon Position Object not found!");
             }
@@ -358,25 +347,26 @@ namespace Capstone
             StartCoroutine(fogLoop());
         }
 
-        private IEnumerator initializeSquadIcon(UnitIconWorld unitIconWorld)
+        private IEnumerator initializeSquadIcon(UnitIconUIWorld unitIconUIWorld)
         {
-            while (unitIconWorld.checkFullyInitialized() == false)
+            while (unitIconUIWorld.checkFullyInitialized() == false)
             {
                 yield return null;
             }
 
-            unitIconWorld.setCurrentHealth(getCurrentSquadHealth());
-            unitIconWorld.setUnitIcon(squadData.icon);
-            unitIconWorld.setAliveModels(aliveMembers);
+            unitIconUIWorld.setCurrentHealth(getCurrentSquadHealth());
+            unitIconUIWorld.setUnitIcon(squadData.icon);
+            unitIconUIWorld.setAliveModels(aliveMembers);
+            unitIconUIWorld.setReferenceUnit(this);
 
             Player playerObj = FindObjectOfType<Player>();
             if (owner.team != playerObj.team)
-                unitIconWorld.setHealthBarColor(UnitIconRender.enemy);
+                unitIconUIWorld.setHealthBarColor(UnitIconRender.enemy);
             else if (owner.team == playerObj.team && owner.ownerTag != playerObj.ownerTag)
-                unitIconWorld.setHealthBarColor(UnitIconRender.playerTeam);
+                unitIconUIWorld.setHealthBarColor(UnitIconRender.playerTeam);
             else    
-                unitIconWorld.setHealthBarColor(UnitIconRender.player);
-            setSquadWorldUI(unitIconWorld);
+                unitIconUIWorld.setHealthBarColor(UnitIconRender.player);
+            setSquadWorldUI(unitIconUIWorld);
         }
 
         // ---------------------- Getter / Setter methods ------------------------------
@@ -400,7 +390,7 @@ namespace Capstone
             uiIcon = unitIconUI;
         }
 
-        public void setSquadWorldUI(UnitIconWorld unitIconWorld)
+        public void setSquadWorldUI(UnitIconUIWorld unitIconWorld)
         {
             worldIcon = unitIconWorld;
         }
