@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Capstone {
@@ -111,13 +113,13 @@ namespace Capstone {
             foreach (UnitIconUIWorldPair pair in unitIconWorldList)
             {
                 float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, pair.position.transform);
-                if (angle < 60f && pair.icon.GetComponent<UnitIconUIWorld>().getUnit().getRevealedIcon() == true)
+                if (angle < playerCamera.fieldOfView && pair.icon.GetComponent<UnitIconUIWorld>().getReferenceUnitComponent().getRevealedIcon() == true)
                 {
                     pair.icon.SetActive(true);
                     Vector3 screenPosition = playerCamera.WorldToScreenPoint(pair.position.transform.position);
                     float distance = Vector3.Distance(playerCamera.transform.position, pair.position.transform.position);     
                     pair.icon.transform.position = screenPosition;
-                    float scaleFactor = Mathf.Clamp(1000f / distance, 1f, 130f);
+                    float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
                     pair.icon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 } else {
                     pair.icon.SetActive(false);
@@ -132,7 +134,7 @@ namespace Capstone {
             GameObject newIcon = Instantiate(iconPrefab);
             newIcon.transform.SetParent(worldSpaceIconsParent.transform);
             newIcon.transform.position = screenPosition;
-            float scaleFactor = Mathf.Clamp(1000f / distance, 1f, 130f);
+            float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
             newIcon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
             UnitIconUIWorldPair newPair = new UnitIconUIWorldPair();
@@ -194,9 +196,49 @@ namespace Capstone {
             for (int i = 0; i < unitIconBarList.Count; i++)
             {
                 unitIconBarList[i].transform.SetParent(unitIconPositions[i].transform);
-                Debug.Log("Updated Parent!");
+                //Debug.Log("Updated Parent!");
                 unitIconBarList[i].transform.localPosition = Vector3.zero;
             }
+        }
+
+        public GameObject iconCheck;
+        public GameObject checkMouseOverWorldIcon(Vector3 mousePosition, string checkTag)
+        {
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = mousePosition;
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, raycastResults);
+
+            if (raycastResults.Count > 0)
+            {
+                foreach (RaycastResult result in raycastResults)
+                    {
+                    GameObject hitObject = result.gameObject;
+                    iconCheck = hitObject;
+                    List<GameObject> iconsList = unitIconWorldList.Select(pair => pair.icon).ToList();
+                    if (hitObject.GetComponent<GetParentIcon>() != null)
+                        hitObject = hitObject.GetComponent<GetParentIcon>().getParentIcon();
+                        iconCheck = hitObject;
+                    if (iconsList.Contains(hitObject) && hitObject.CompareTag(checkTag))
+                    {
+                        return hitObject;
+                    }
+                }
+            }
+            return null;
+
+            /*if (EventSystem.current.IsPointerOverGameObject())
+            {
+                PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+                pointerEventData.position = Input.mousePosition;
+
+                List<RaycastResult> results = new List<RaycastResult>();
+                RaycastResult raycastResult = EventSystem.current.RaycastAll(pointerEventData, results); // Assuming you want the first raycast result
+
+                // Get the game object that was hit by the raycast
+                GameObject hitGameObject = raycastResult.gameObject;
+            }
+            return false;*/
         }
         
         // ---------- Getters / Setters / Modification Functions --------------

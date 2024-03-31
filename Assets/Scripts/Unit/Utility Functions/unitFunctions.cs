@@ -196,8 +196,6 @@ namespace Capstone
             Vector3 NormalizedVector = new Vector3(targetTransform.position.x - cameraTransform.position.x, 0f, targetTransform.position.z - cameraTransform.position.z);
 
             float angle = Vector3.Angle(NormalizedVector, cameraTransform.forward);
-
-            Debug.Log(angle);
             
             return angle;
         }

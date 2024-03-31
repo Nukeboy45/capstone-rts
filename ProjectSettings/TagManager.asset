@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Terrain
+  - SquadMember
+  - SquadIcon
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Selectable
+  - Visible
   - Water
   - UI
   - UI-World

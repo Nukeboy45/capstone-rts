@@ -6,7 +6,9 @@ using UnityEngine.UI;
 namespace Capstone {
     public class UnitIconUIWorld : MonoBehaviour
     {
-    // Private, Editor-Accessible Variables
+        // Private, Editor-Accessible Variables
+        [SerializeField] private Canvas removeEditorCanvas;
+        [SerializeField] private CanvasScaler removeEditorScaler;
         [SerializeField] private Slider healtBar;
         [SerializeField] private Image healthBarColor;
         [SerializeField] private Image unitIcon;
@@ -14,11 +16,13 @@ namespace Capstone {
 
         // Private Runtime Variables
         private GameObject selfReference;
-        private Unit referenceUnit;
+        private GameObject unitIconReference;
+        private Unit unitComponent;
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
-
+            Destroy(removeEditorScaler);
+            Destroy(removeEditorCanvas);
         }
 
         // Update is called once per frame
@@ -43,9 +47,14 @@ namespace Capstone {
             return unitIcon;
         }
 
-        public Unit getUnit()
+        public GameObject getReferenceUnit()
         {
-            return referenceUnit;
+            return unitIconReference;
+        }
+
+        public Unit getReferenceUnitComponent()
+        {
+            return unitComponent;
         }
 
         public void setMaxHealth(float maxHealth)
@@ -54,7 +63,13 @@ namespace Capstone {
         }
         public void setCurrentHealth(float health)
         {
+            //Debug.Log("Health set:" + health);
             healtBar.value = health;
+        }
+
+        public void setIconTag(string tag)
+        {
+            this.tag = tag;
         }
 
         public void setHealthBarColor(UnitIconRender renderType)
@@ -82,9 +97,14 @@ namespace Capstone {
             unitIcon.sprite = icon;
         }
 
-        public void setReferenceUnit(Unit unit)
+        public void setReferenceObj(GameObject reference)
         {
-            referenceUnit = unit;
+            unitIconReference = reference;
+        }
+
+        public void setReferenceUnitComponent(Unit unit)
+        {
+            unitComponent = unit;
         }
 
         public bool checkFullyInitialized()

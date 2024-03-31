@@ -135,13 +135,99 @@ namespace Capstone
         private void mouseUpdate() 
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            SquadMember squadMember;
-            PassiveBuilding passiveBuilding;
-            //DefenseBuilding defenseBuilding;
+            RaycastHit[] hits = Physics.RaycastAll(ray);
 
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+            Squad mouseSquad = null;
+
+            foreach (RaycastHit hit in hits)
+            {
+                if ((hit.collider.gameObject.CompareTag("SquadMember") || playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon") != null) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Visible"))
+                {
+                    SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>(); 
+
+                    if (squadMember == null) {
+                        mouseSquad = playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon").GetComponent<UnitIconUIWorld>().getReferenceUnit().GetComponent<Squad>();
+                    } else
+                        mouseSquad = squadMember.parent;
+                    break;
+                }
+            }
+
+            RaycastHit maskHit;
+
+            if (Physics.Raycast(ray, out maskHit, Mathf.Infinity, ground))
+            {
+                
+                if (mouseSquad != null) 
+                {
+                    if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
+                    else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
+                } 
+
+                if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
+                {
+                    Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                    List<RaycastHit> raycastHits;
+                    Transform squadLeadTransform = squad.getCurrentTransform();
+                    if (squadLeadTransform != null)
+                    {
+                        raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                        moveMarkerPool.showMoveMarkers(raycastHits);
+                    }
+                } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
+                    moveMarkerPool.hideMoveMarkers();
+                }
+
+                // Check if LMB has been clicked
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    if (mouseSquad != null)
+                    {
+                        if (mouseSquad != null && mouseSquad.squadState != SquadState.retreating)
+                        {
+                            Selection.squadSelect(mouseSquad, selected, this);
+                        }
+                    } else {
+                        // Assuming player is not in multi-select mode, deselect all units and hide any move markers
+                        if (!Input.GetKey(KeyCode.LeftShift)) 
+                        { 
+                            Selection.deselectAll(this); 
+                            if (moveMarkerPool.markersActive == true)
+                            {
+                                moveMarkerPool.hideMoveMarkers();
+                            }
+                        } 
+                    }
+                }
+                // Check if RMB has been clicked
+                if (Input.GetMouseButton(1))
+                {
+                    if (selected.Count > 0)
+                    {
+                        if (selected.Count == 1)
+                        {
+                            if (Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
+                            {
+                                Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                                List<RaycastHit> raycastHits;
+                                raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                                squad.moveTo(raycastHits);
+                            } 
+                        } else {
+                            foreach (GameObject gameObject in selected)
+                            {
+                                Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
+                            }
+                        }
+                    }
+                }
+            }
+    
+
+            /*
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {   
                 Transform hitTransform = hit.collider.transform;
 
@@ -172,7 +258,8 @@ namespace Capstone
                 // Check if LMB has been clicked
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    //if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
+                    if (hit.collider.gameObject.GetComponent<SquadMember>() != null)
                     {
                         if (squadMember != null && squadMember.parent.squadState != SquadState.retreating)
                         {
@@ -225,7 +312,7 @@ namespace Capstone
                         }
                     }
                 }
-            }
+            }*/
         }
         
         private void keyboardUpdate()

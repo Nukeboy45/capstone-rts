@@ -49,24 +49,24 @@ namespace Capstone
             /// <param name="squadMember"></param>
             /// <param name="selected"></param>
             /// <param name="owner"></param>
-            public static void squadSelect(SquadMember squadMember, List<GameObject> selected, GameActor owner)
+            public static void squadSelect(Squad squad, List<GameObject> selected, GameActor owner)
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                     {
-                        if (!selected.Contains(squadMember.parent.gameObject))
+                        if (!selected.Contains(squad.gameObject))
                         {
-                            if (squadMember.parent.owner == owner) {
-                                squadMember.parent.select();
+                            if (squad.owner == owner) {
+                                squad.select();
                             }
                         } else {
-                            squadMember.parent.deselect();
+                            squad.deselect();
                         }
                     } else {
-                        deselectAll(squadMember.parent.owner);
-                        if (!selected.Contains(squadMember.parent.gameObject))
+                        deselectAll(squad.owner);
+                        if (!selected.Contains(squad.gameObject))
                         {
-                            if (squadMember.parent.owner == owner) {
-                                squadMember.parent.select();
+                            if (squad.owner == owner) {
+                                squad.select();
                             }
                         }
                     }

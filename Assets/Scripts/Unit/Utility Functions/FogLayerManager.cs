@@ -54,9 +54,14 @@ namespace Capstone
             {
                 Color sampledColor = tex.GetPixelBilinear(objectCoord.x, objectCoord.y);
                 // Returns True if it is not fully transparent (i.e - in fog)*/
+                // Destroy texture to prevent buildup of unused, outdated textures for processing
+                Destroy(tex);
                 return sampledColor.a != 0f;
             }
+            
 
+            // Destroy texture to prevent buildup of unused, outdated textures for processing
+            Destroy(tex);
             return true;
         }
 

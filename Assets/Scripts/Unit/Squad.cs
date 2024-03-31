@@ -210,10 +210,10 @@ namespace Capstone
 
         public void setSquadVisibility(bool state)
         {
-            Debug.Log("Calling");
+            //Debug.Log("Calling visibility method - squad");
             if (state)
             {
-                int selectableLayer = LayerMask.NameToLayer("Selectable");
+                int selectableLayer = LayerMask.NameToLayer("Visible");
                 foreach (GameObject member in squadMembers)
                 {
                     member.layer = selectableLayer;
@@ -354,10 +354,11 @@ namespace Capstone
                 yield return null;
             }
 
-            unitIconUIWorld.setCurrentHealth(getCurrentSquadHealth());
+            unitIconUIWorld.setIconTag("SquadIcon");
             unitIconUIWorld.setUnitIcon(squadData.icon);
             unitIconUIWorld.setAliveModels(aliveMembers);
-            unitIconUIWorld.setReferenceUnit(this);
+            unitIconUIWorld.setReferenceObj(this.gameObject);
+            unitIconUIWorld.setReferenceUnitComponent(this);
 
             Player playerObj = FindObjectOfType<Player>();
             if (owner.team != playerObj.team)
@@ -366,6 +367,12 @@ namespace Capstone
                 unitIconUIWorld.setHealthBarColor(UnitIconRender.playerTeam);
             else    
                 unitIconUIWorld.setHealthBarColor(UnitIconRender.player);
+
+            while (getCurrentSquadHealth() == 0f)
+            {
+                yield return null;
+            }
+            unitIconUIWorld.setCurrentHealth(getCurrentSquadHealth());
             setSquadWorldUI(unitIconUIWorld);
         }
 
