@@ -7,20 +7,23 @@ namespace Capstone
     {
         // Object functionality Variables
         public Squad parent;
-        private SquadMember target; // Reference to the enemy SquadMember to be firing at
-        private float currHealth;
-        public WeaponData weaponData;
-        public float maxHealth;
-        public float attackSpeed;
-        public float range;
-        public float defense;
-        public float moveSpeed;
-        public int modelPriority;
-        public LayerMask ground;
+
+        // Private, Editor-Accessible Variables
+        [SerializeField] private WeaponData weaponData;
+        [SerializeField] private float maxHealth;
+        [SerializeField] private float currHealth;    
+        [SerializeField] private float attackSpeed;
+        [SerializeField] private float range;
+        [SerializeField] private float defense;
+        [SerializeField] private float moveSpeed;
+        [SerializeField] private int modelPriority;
         [SerializeField] private NavMeshAgent myAgent;
-        
         [SerializeField] private GameObject sightRadius;
 
+
+        // Private Runtime Variables
+        private GameObject target; 
+        private TargetType targetType;
 
 
 
@@ -59,6 +62,16 @@ namespace Capstone
         public float getCurrentHealth()
         {
             return currHealth;
+        }
+
+        public float getMoveSpeed()
+        {
+            return moveSpeed;
+        }
+
+        public float getMaxHealth()
+        {
+            return maxHealth;
         }
 
         public void takeDamage(float damage)

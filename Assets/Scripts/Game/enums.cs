@@ -55,4 +55,9 @@ namespace Capstone
         Building
     }
     
+    public enum TargetType
+    {
+        infantry,
+        building
+    }
 }

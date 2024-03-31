@@ -1,4 +1,4 @@
-using UnityEngine;
+/*sing UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -10,4 +10,4 @@ namespace Capstone
         public GameObject[] models;
         public float captureRate;
     }
-}
+}*/

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,12 +9,12 @@ namespace Capstone
 {
     public class Squad : Unit
     {
-        // Public Variables
-        [SerializeField] public SquadData squadData;
+        // Private, Editor Accessible Variables
+        [SerializeField] private GameObject[] models;
+        [SerializeField] private float captureRate;
 
         // Private, Runtime Variables
         private GameObject[] squadMembers;
-        private float captureRate;
         private int veterancy;
         private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
@@ -23,10 +24,14 @@ namespace Capstone
         
         // --------------------- Class Methods ---------------------------------
 
+        public void Awake()
+        {
+
+        }
         public override void Start()
         {
             base.Start();
-            InstantiateSquad();
+            StartCoroutine(InstantiateSquad());
         }
 
         void Update()
@@ -232,27 +237,28 @@ namespace Capstone
         /// <summary>
         /// Used when spawning a new squad. Generates a new squad at target coordinates with relevant variables
         /// </summary>
-        void InstantiateSquad() 
+        private IEnumerator InstantiateSquad() 
         {
+            while (models == null)
+            {
+                yield return null;
+            }
             // Initializing the SquadList, the intended SquadSize, and 
             //"aliveMembers" which is used to track the current alive members of the squad
-            squadSize = squadData.models.Length;
+            squadSize = models.Length;
 
             aliveMembers = squadSize;
 
             squadMembers = new GameObject[squadSize];
-
-            captureRate = squadData.captureRate;
             
             List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
             // Setting the squad's icon based on whether or not it belongs to player's team
-            Player playerObj = FindObjectOfType<Player>();
-            if (owner.team != playerObj.team) 
+            if (owner.team != GameManager.Instance.playerReference.team) 
             {
-                squadData.icon = squadData.icons[1];
+                icon = icons[1];
             } else {
-                squadData.icon = squadData.icons[0];
+                icon = icons[0];
             }
 
             // Spawn loop for initializing each model of squad according to 
@@ -260,7 +266,7 @@ namespace Capstone
             for (int i = 0; i < squadSize; i++)
             {   
                 // Spawns the prefab and ties the reference to the squadMembers list
-                squadMembers[i] = Instantiate(squadData.models[i], spacing[i], Quaternion.identity);
+                squadMembers[i] = Instantiate(models[i], spacing[i], Quaternion.identity);
 
                 // Retrieves the squadMember script reference from the newly instantiated
                 // infantry model
@@ -288,7 +294,7 @@ namespace Capstone
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
                 
-                worldIconObj = FogLayerManager.instance.addNewWorldUnitIcon(squadData.iconObj, iconPosition);
+                worldIconObj = FogLayerManager.instance.addNewWorldUnitIcon(iconObj, iconPosition);
 
                 StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
             } else {
@@ -296,7 +302,7 @@ namespace Capstone
             }
 
             // Setting the render color of the selection circles
-            if (owner.team != playerObj.team)
+            if (owner.team != GameManager.Instance.playerReference.team)
             {
                 foreach(GameObject member in squadMembers)
                 {
@@ -320,7 +326,7 @@ namespace Capstone
             }
 
             // Deactivating / Activating FOV sight based on team
-            if (owner.team != playerObj.team)
+            if (owner.team != GameManager.Instance.playerReference.team)
             {
                 foreach(GameObject member in squadMembers)
                 {
@@ -336,7 +342,7 @@ namespace Capstone
             }
 
             // Updating the Squad UI Icon
-            if (owner == playerObj)
+            if (owner == GameManager.Instance.playerReference)
             {
                 uiIcon.setAliveModels(aliveMembers);
                 uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
@@ -355,7 +361,7 @@ namespace Capstone
             }
 
             unitIconUIWorld.setIconTag("SquadIcon");
-            unitIconUIWorld.setUnitIcon(squadData.icon);
+            unitIconUIWorld.setUnitIcon(icon);
             unitIconUIWorld.setAliveModels(aliveMembers);
             unitIconUIWorld.setReferenceObj(this.gameObject);
             unitIconUIWorld.setReferenceUnitComponent(this);
@@ -410,7 +416,7 @@ namespace Capstone
 
         private float getSquadModelSpeed() {
             SquadMember component = squadMembers[0].GetComponent<SquadMember>();
-            return component.moveSpeed;
+            return component.getMoveSpeed();
         }
 
         private float getCurrentSquadHealth()
@@ -427,10 +433,10 @@ namespace Capstone
         private float getSquadMaxHealth()
         {
             float maxHealth = 0.0f;
-            foreach(GameObject model in squadData.models)
+            foreach(GameObject model in models)
             {
                 SquadMember squadMember = model.GetComponent<SquadMember>();
-                maxHealth += squadMember.maxHealth;
+                maxHealth += squadMember.getMaxHealth();
             }
             return maxHealth;
         }

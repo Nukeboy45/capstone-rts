@@ -1,15 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Capstone 
 {
     public class Unit : MonoBehaviour
     {
+        // Public Variables
         public int team;
         public GameActor owner;
         public bool? showSelect = null;
         public bool selected = false;
+
+        // Private / Protected, Editor-Accessible Variables
+        [SerializeField] protected GameObject iconObj;
+        [SerializeField] protected Sprite[] icons;
+        [SerializeField] protected Sprite portrait;
+        [SerializeField] protected float buildTime;
+        
+
+        // Private / Protected Runtime Variables for Child Classes
+        protected Sprite icon;
         protected UnitIconUI uiIcon;
         protected GameObject worldIconObj;
         protected UnitIconUIWorld worldIcon;
@@ -55,6 +67,20 @@ namespace Capstone
 
         // --- Getters / Setter Methods ---
 
+        public float getBuildTime()
+        {
+            return buildTime;
+        }
+
+        public Sprite getIcon(int index)
+        {
+            return icons[index];
+        }
+
+        public Sprite getPortrait()
+        {
+            return portrait;
+        }
         public bool getRevealedIcon()
         {
             return revealStatus;

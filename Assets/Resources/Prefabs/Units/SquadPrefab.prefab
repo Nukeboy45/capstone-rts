@@ -47,6 +47,16 @@ MonoBehaviour:
   team: 0
   owner: {fileID: 0}
   selected: 0
-  squadData: {fileID: 0}
-  squadMembers: []
+  iconObj: {fileID: 3544985342347442964, guid: 6b234a8e71fc7184eb100c34d2529656, type: 3}
+  icons:
+  - {fileID: 21300000, guid: a00ae151c19227b4aa6eb022b38fc432, type: 3}
+  - {fileID: 21300000, guid: b45f3abea7010914ebcab32e97fea325, type: 3}
+  buildTime: 5
+  models:
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  captureRate: 10
   squadState: 0

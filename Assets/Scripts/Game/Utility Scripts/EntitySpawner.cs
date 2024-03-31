@@ -21,11 +21,10 @@ namespace Capstone
             StartCoroutine(spawnDebugEnemySquad());
         }
 
-        public void SquadSpawn(SquadData squadData, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
+        public void SquadSpawn(GameObject squadPrefab, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
         {
-            GameObject squadObj = new GameObject(squadData.unitName);
-            Squad squad = squadObj.AddComponent<Squad>();
-            squad.squadData = squadData;
+            GameObject squadObj = Instantiate(squadPrefab, position, Quaternion.identity);
+            Squad squad = squadObj.GetComponent<Squad>();
             squad.team = team;
             GameActor component = gameManager.players[ownerTag].GetComponent<GameActor>();
             if (component != null)
@@ -45,7 +44,7 @@ namespace Capstone
             {
                 yield return null;
             }
-            SquadSpawn(Resources.Load<SquadData>("Units/Austrian/Infantry/ausRifle"), new Vector3(60, 0, 60), 1, 1);
+            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/ausRifleSquad"), new Vector3(60, 0, 60), 1, 1);
         }
     }
 }

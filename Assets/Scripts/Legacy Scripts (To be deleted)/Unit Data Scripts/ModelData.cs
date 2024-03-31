@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 namespace Capstone
 {
     [CreateAssetMenu(menuName = "Capstone/New Squad Member")]
@@ -13,4 +13,4 @@ namespace Capstone
         public float moveSpeed;
         public int modelPriority;
     }
-}
+}*/

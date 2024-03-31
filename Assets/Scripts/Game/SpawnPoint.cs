@@ -14,7 +14,7 @@ namespace Capstone {
         public int ownerTag;
         public RaycastHit rallyPoint;
         public GameObject cameraSpawnPos;
-        public List<UnitData> buildQueue = new List<UnitData>();
+        public List<GameObject> buildQueue = new List<GameObject>();
         private List<UnitIconUI> unitIcons = new List<UnitIconUI>();
         private GameManager gameManager;
 
@@ -33,7 +33,7 @@ namespace Capstone {
             TimeSpan elapsedBuildTime = DateTime.Now - lastBuildTick;
             if (buildQueue.Count != 0 && currentBuildTime <= 0.0f) 
             {
-                currentBuildTime = buildQueue[0].buildTime;
+                currentBuildTime = buildQueue[0].GetComponent<Unit>().getBuildTime();
             }
 
             if (buildQueue.Count != 0 && elapsedBuildTime.Seconds < currentBuildTime)
@@ -57,47 +57,46 @@ namespace Capstone {
                     currentBuildTime = 0.0f;
                 } else {
                     lastBuildTick = DateTime.Now;
-                    currentBuildTime = buildQueue[0].buildTime;
+                    currentBuildTime = buildQueue[0].GetComponent<Unit>().getBuildTime();
                 }
             }
         }
-        public void addToBuildQueue(UnitData unitData) 
+        public void addToBuildQueue(GameObject unitPrefab) 
         {
             if (buildQueue.Count < 3)
             {
+                Unit unitComponent = unitPrefab.GetComponent<Unit>();
                 if (owner is Player)
                 {
                     Player playerComponent = (Player)owner;
-                    if (unitData is SquadData)
-                    {
-                        SquadData data = (SquadData)unitData;
-                        unitIcons.Add(playerComponent.playerUI.addNewUnitIcon(data.portrait, data.icons[0]));
-                    }
+                    unitIcons.Add(playerComponent.playerUI.addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0)));
                     if (currentBuildTime <= 0.0f)
                         lastBuildTick = DateTime.Now;
-                    buildQueue.Add(unitData);
+                    buildQueue.Add(unitPrefab);
                 } else {
-                    buildQueue.Add(unitData);
+                    buildQueue.Add(unitPrefab);
                 }
             }
         }
 
-        public void spawnUnit(UnitData unitData, UnitIconUI unitIconUI, RaycastHit rallyPoint = new RaycastHit())
+        public void spawnUnit(GameObject unitPrefab, UnitIconUI unitIconUI, RaycastHit rallyPoint = new RaycastHit())
         {
-            if (unitData is SquadData)
+            if (unitPrefab.GetComponent<Squad>() != null)
             {
-                SquadData squadData = (SquadData)unitData;
-                GameObject squadObj = new GameObject(squadData.unitName, typeof(Squad));
+                GameObject squadObj = Instantiate(unitPrefab, transform.position, Quaternion.identity);
                 Squad squad = squadObj.GetComponent<Squad>();
-                squad.squadData = squadData;
-                squad.team = team;
                 squad.setSquadIconUI(unitIconUI);
+                squad.team = team;
                 GameActor component = gameManager.players[ownerTag].GetComponent<GameActor>();
                 if (component != null)
                 {
                     squad.owner = component;
                 }
                 squadObj.transform.position = transform.position;
+                if (!rallyPoint.Equals(default(RaycastHit)))
+                {
+                    List<RaycastHit> hits = Selection.getAdditionalCasts(rallyPoint, GameManager.Instance.rayCamera, transform, squad.getAliveMembers(), LayerMask.NameToLayer("Ground"));
+                }
             }
         }
 

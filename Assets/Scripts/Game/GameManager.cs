@@ -10,11 +10,12 @@ namespace Capstone
     {
         // ------- Public Variables -----------
         private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
+        public Player playerReference;
         public CapturePoint[] objectives;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
         public Camera rayCamera;
-        
+
         // ---- Private Variables ------
         private int team1Tickets = 100;
         private int team2Tickets = 100;
@@ -23,8 +24,24 @@ namespace Capstone
         private DateTime lastObjectiveTick;
         private float objectivePointTickTime = 5f;
 
-        //private static GameManager _instance;
-        //public static GameManager Instance { get {return _instance; } }
+        private static GameManager instance;
+        public static GameManager Instance { get {return instance; } }
+
+        private void Awake()
+        {
+            createGameManager();
+        }
+
+        void createGameManager()
+        {
+            if (instance == null)
+            {
+                instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+                Destroy(gameObject);
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -65,6 +82,7 @@ namespace Capstone
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
+                        playerReference = playerComponent;
                         StartCoroutine(waitForPlayerUI(playerComponent));
                         ownerTag++;
                         break;
