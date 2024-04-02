@@ -39,9 +39,8 @@ namespace Capstone
             if (aliveMembers <= 0) {
                 if (owner is Player)
                 {
-                    Player playerComponent = (Player)owner;
-                    playerComponent.playerUI.removeUnitIcon(uiIcon.gameObject);
-                    Destroy(uiIcon.gameObject);
+                    GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
+                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIconPair);
                 }
                 base.deselect();
                 Destroy(this.gameObject);
@@ -124,10 +123,13 @@ namespace Capstone
         {
             foreach (GameObject member in squadMembers)
             {
-                SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
-                if (render != null)
-                {   
-                    render.enabled = true;
+                if (member != null)
+                {
+                    SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                    if (render != null)
+                    {   
+                        render.enabled = true;
+                    }
                 }
             }
         }
@@ -139,10 +141,13 @@ namespace Capstone
         {
             foreach (GameObject member in squadMembers)
             {
-                SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
-                if (render != null)
-                {   
-                    render.enabled = false;
+                if (member != null)
+                {
+                    SpriteRenderer render = member.GetComponentInChildren<SpriteRenderer>();
+                    if (render != null)
+                    {   
+                        render.enabled = false;
+                    }
                 }
             }
         }
@@ -172,6 +177,24 @@ namespace Capstone
         {
             Destroy(modelObject);
             aliveMembers--; 
+
+            if (squadLead == null)
+            {
+                foreach (GameObject model in squadMembers)
+                {
+                    if (model != null)
+                    {
+                        squadLead = model;
+                        GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
+                        if (iconPosition != null) 
+                            iconPosition.SetActive(true);
+                        worldIconPair.position = iconPosition;
+                        break;
+                    }
+                }
+            }
+
+            updateUIHealth();
         }
 
         // Fog of War Code
@@ -221,13 +244,15 @@ namespace Capstone
                 int selectableLayer = LayerMask.NameToLayer("Visible");
                 foreach (GameObject member in squadMembers)
                 {
-                    member.layer = selectableLayer;
+                    if (member != null)
+                        member.layer = selectableLayer;
                 }       
             } else {
                 int hiddenLayer = LayerMask.NameToLayer("Hidden");
                 foreach (GameObject member in squadMembers)
                 {
-                    member.layer = hiddenLayer;
+                    if (member != null)
+                        member.layer = hiddenLayer;
                 }
             }
         }
@@ -294,7 +319,8 @@ namespace Capstone
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
                 
-                worldIconObj = FogLayerManager.instance.addNewWorldUnitIcon(iconObj, iconPosition);
+                worldIconPair = GameManager.Instance.playerUIReference.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
+                worldIconObj = worldIconPair.icon;
 
                 StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
             } else {
@@ -349,8 +375,9 @@ namespace Capstone
                 uiIcon.setCurrentHealth(1.0f);
                 uiIcon.setReferenceUnit(this);
             }
-
+            
             StartCoroutine(fogLoop());
+            yield break;
         }
 
         private IEnumerator initializeSquadIcon(UnitIconUIWorld unitIconUIWorld)
@@ -359,7 +386,8 @@ namespace Capstone
             {
                 yield return null;
             }
-
+            
+            worldIcon = unitIconUIWorld;
             unitIconUIWorld.setIconTag("SquadIcon");
             unitIconUIWorld.setUnitIcon(icon);
             unitIconUIWorld.setAliveModels(aliveMembers);
@@ -410,8 +438,13 @@ namespace Capstone
 
         public void updateUIHealth()
         {
-            uiIcon.setCurrentHealth(getCurrentSquadHealth());
-            worldIcon.setCurrentHealth(getCurrentSquadHealth());
+            if (uiIcon != null)
+            {
+                uiIcon.setCurrentHealth(getCurrentSquadHealth());
+                worldIcon.setCurrentHealth(getCurrentSquadHealth());
+            } else {
+                worldIcon.setCurrentHealth(getCurrentSquadHealth());
+            }
         }
 
         private float getSquadModelSpeed() {
@@ -424,8 +457,11 @@ namespace Capstone
             float currentHealth = 0.0f;
             foreach(GameObject model in squadMembers)
             {
-                SquadMember squadMember = model.GetComponent<SquadMember>();
-                currentHealth += squadMember.getCurrentHealth();
+                if (model != null)
+                {
+                    SquadMember squadMember = model.GetComponent<SquadMember>();
+                    currentHealth += squadMember.getCurrentHealth();
+                }
             }
             return currentHealth / getSquadMaxHealth() * 1.0f;
         }

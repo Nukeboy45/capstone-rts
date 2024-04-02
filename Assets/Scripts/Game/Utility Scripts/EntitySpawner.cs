@@ -14,7 +14,6 @@ namespace Capstone
 
             }
         }*/
-        [SerializeField] private GameManager gameManager;
 
         public void Start()
         {
@@ -26,7 +25,7 @@ namespace Capstone
             GameObject squadObj = Instantiate(squadPrefab, position, Quaternion.identity);
             Squad squad = squadObj.GetComponent<Squad>();
             squad.team = team;
-            GameActor component = gameManager.players[ownerTag].GetComponent<GameActor>();
+            GameActor component = GameManager.Instance.players[ownerTag].GetComponent<GameActor>();
             if (component != null)
             {
                 squad.owner = component;
@@ -40,7 +39,7 @@ namespace Capstone
 
         private IEnumerator spawnDebugEnemySquad()
         {
-            while (gameManager.players.Length < 2)
+            while (GameManager.Instance.players.Length < 2 || GameManager.Instance.playerUIReference == null)
             {
                 yield return null;
             }

@@ -60,8 +60,6 @@ namespace Capstone
             if (Camera.main != null) {
                 Camera.main.tag = "Untagged";
             }
-
-            FogLayerManager.instance.setPlayerUI(playerUI);
             
             playerCamera.tag = "MainCamera";
             playerUI.name = this.name + "UI";
@@ -224,95 +222,6 @@ namespace Capstone
                     }
                 }
             }
-    
-
-            /*
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {   
-                Transform hitTransform = hit.collider.transform;
-
-                squadMember = Selection.getSelectionComponent<SquadMember>(hitTransform);
-
-                passiveBuilding = Selection.getSelectionComponent<PassiveBuilding>(hitTransform);
-
-                if (squadMember != null) 
-                {
-                    if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { squadMember.parent.showSelect = true; }
-                    else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { squadMember.parent.showSelect = true; }
-                }
-
-                if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
-                {
-                    Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
-                    List<RaycastHit> hits = new List<RaycastHit>();
-                    Transform squadLeadTransform = squad.getCurrentTransform();
-                    if (squadLeadTransform != null)
-                    {
-                        hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                        moveMarkerPool.showMoveMarkers(hits);
-                    }
-                } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
-                    moveMarkerPool.hideMoveMarkers();
-                }
-
-                // Check if LMB has been clicked
-                if (Input.GetMouseButtonDown(0))
-                {
-                    //if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
-                    if (hit.collider.gameObject.GetComponent<SquadMember>() != null)
-                    {
-                        if (squadMember != null && squadMember.parent.squadState != SquadState.retreating)
-                        {
-                            Selection.squadSelect(squadMember, selected, this);
-                        }
-
-                        if (passiveBuilding != null)
-                        {
-                            Selection.buildingSelect(passiveBuilding, selected, this);
-                        }
-                        
-                    } else {
-                        // Assuming player is not in multi-select mode, deselect all units and hide any move markers
-                        if (!Input.GetKey(KeyCode.LeftShift)) 
-                        { 
-                            Selection.deselectAll(this); 
-                            if (moveMarkerPool.markersActive == true)
-                            {
-                                moveMarkerPool.hideMoveMarkers();
-                            }
-                        } 
-                    }
-                }
-                // Check if RMB has been clicked
-                if (Input.GetMouseButton(1))
-                {
-                    if (selected.Count > 0)
-                    {
-                        if (selected.Count == 1)
-                        {
-                            if (Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
-                            {
-                                Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
-                                List<RaycastHit> hits = new List<RaycastHit>();
-                                hits = Selection.getAdditionalCasts(hit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                                squad.moveTo(hits);
-                            } else if (Selection.getSelectionComponent<Building>(selected[0]) is Building) {
-                                Building building = Selection.getSelectionComponent<Building>(selected[0]);
-                                if (building is PassiveBuilding)
-                                {
-                                    PassiveBuilding passiveBuildComp = (PassiveBuilding)building;
-                                    passiveBuildComp.setRallyPoint(hit);
-                                }
-                            }
-                        } else {
-                            foreach (GameObject gameObject in selected)
-                            {
-                                Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
-                            }
-                        }
-                    }
-                }
-            }*/
         }
         
         private void keyboardUpdate()

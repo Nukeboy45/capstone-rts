@@ -112,6 +112,8 @@ namespace Capstone {
         {
             foreach (UnitIconUIWorldPair pair in unitIconWorldList)
             {
+                if (pair.icon == null || pair.position == null)
+                    break;
                 float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, pair.position.transform);
                 if (angle < playerCamera.fieldOfView && pair.icon.GetComponent<UnitIconUIWorld>().getReferenceUnitComponent().getRevealedIcon() == true)
                 {
@@ -127,7 +129,7 @@ namespace Capstone {
             }
         }
 
-        public GameObject spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
+        public UnitIconUIWorldPair spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
         {
             float distance = Vector3.Distance(playerCamera.transform.position, iconPosition.transform.position);
             Vector3 screenPosition = playerCamera.WorldToScreenPoint(iconPosition.transform.position);
@@ -143,7 +145,25 @@ namespace Capstone {
         
             unitIconWorldList.Add(newPair);
             
-            return newIcon;
+            return newPair;
+        }
+
+        public void updateExistingWorldIconPosition(GameObject updateIcon, GameObject newPosition)
+        {
+            foreach (UnitIconUIWorldPair pair in unitIconWorldList)
+            {
+                if (pair.icon == updateIcon)
+                {
+                    pair.position = newPosition;
+                    break;
+                }
+            }
+        }
+
+        public void removeWorldSpaceUnitIcon(UnitIconUIWorldPair unitIconUIWorldPair)
+        {
+            unitIconWorldList.Remove(unitIconUIWorldPair);
+            Destroy(unitIconUIWorldPair.icon);
         }
         
         // Update Functions

@@ -261,16 +261,15 @@ MonoBehaviour:
   parent: {fileID: 0}
   weaponData: {fileID: 11400000, guid: 9313c28fe23444a41a16aae16edf9134, type: 2}
   maxHealth: 50
+  currHealth: 0
   attackSpeed: 2
   range: 10
   defense: 1
   moveSpeed: 4
   modelPriority: 0
-  ground:
-    serializedVersion: 2
-    m_Bits: 256
   myAgent: {fileID: 0}
   sightRadius: {fileID: 3884659755232260043}
+  rangeCollider: {fileID: 9111785920330317944}
 --- !u!23 &1627643841959228000
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -365,10 +364,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8278848561863199119}
-  - component: {fileID: 976216146103497560}
+  - component: {fileID: 9111785920330317944}
   m_Layer: 3
   m_Name: range
-  m_TagString: Untagged
+  m_TagString: UnitRange
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -388,8 +387,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8533033131784394164}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!136 &976216146103497560
-CapsuleCollider:
+--- !u!135 &9111785920330317944
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -398,16 +397,14 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1911
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Radius: 9.5
-  m_Height: 1
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
