@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38f5162da2eb0934d9c349e6f88e53ae, type: 3}
+  m_Name: M95Long
+  m_EditorClassIdentifier: 
+  MagazineCapacity: 5
+  FiringCooldown: 3
+  ReloadTime: 5
+  MinAimTime: 0.5
+  MaxAimTime: 2.5
+  MaxAccuracy: 0.8
+  MaxAccuracyRange: 10
+  AccuracyFalloffFactor: 0.5
+  AccuracyFalloffDistance: 10
+  Damage: 25
+  weaponSounds:
+  - {fileID: 8300000, guid: 56a6be13b0e0a90408f6789b5771c1cf, type: 3}
+  - {fileID: 0}
