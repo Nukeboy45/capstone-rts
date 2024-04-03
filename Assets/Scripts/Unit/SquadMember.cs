@@ -23,6 +23,8 @@ namespace Capstone
         [SerializeField] private NavMeshAgent myAgent;
         [SerializeField] private GameObject sightRadius;
         [SerializeField] private SphereCollider rangeCollider;
+        [SerializeField] private WeaponAudio weaponAudio;
+
 
 
         // Private Runtime Variables
@@ -33,12 +35,12 @@ namespace Capstone
         [SerializeField] private Coroutine firingLoop = null;
         [SerializeField] private float weaponDamage;
         [SerializeField] private float weaponAccuracy;
-        [SerializeField]private DateTime lastFiringTick = DateTime.MinValue;
-        [SerializeField]private float firingCooldown;
-        [SerializeField]private DateTime lastReloadTick;
-        [SerializeField]private bool reloading = false;
-        [SerializeField]private float reloadTime;
-        [SerializeField]private int ammo;
+        [SerializeField] private DateTime lastFiringTick = DateTime.MinValue;
+        [SerializeField] private float firingCooldown;
+        [SerializeField] private DateTime lastReloadTick;
+        [SerializeField] private bool reloading = false;
+        [SerializeField] private float reloadTime;
+        [SerializeField] private int ammo;
         [SerializeField] private int ammoCapacity;
 
         // Debug Variables
@@ -138,6 +140,7 @@ namespace Capstone
 
         private void shootAtTarget()
         {
+            weaponAudio.PlaySound(0);
             switch (targetType)
             {
                 case TargetType.infantry:
@@ -186,6 +189,7 @@ namespace Capstone
             firingCooldown = weaponData.FiringCooldown;
             weaponDamage = weaponData.Damage;
             weaponAccuracy = weaponData.Accuracy;
+            weaponAudio.setWeaponSounds(weaponData.weaponSounds);
         }
 
         // ------ Getters / Setters

@@ -165,15 +165,20 @@ namespace Capstone
         /// <param name="modelObject"></param>
         public void killModel(GameObject modelObject) 
         {
+            if (modelObject == squadLead)
+            {
+                squadLead = null;
+            }
+
+            squadMembers.Remove(modelObject);
+            Destroy(modelObject);
             aliveMembers--;
+            worldIcon.setAliveModels(aliveMembers);
+            if (uiIcon != null)
+                uiIcon.setAliveModels(aliveMembers);
             if (aliveMembers >= 1)
             {
-                if (modelObject == squadLead)
-                {
-                    squadLead = null;
-                }
-                squadMembers.Remove(modelObject);
-                Destroy(modelObject);
+
                 if (squadLead == null)
                 {
                     squadLead = squadMembers[0];
@@ -186,8 +191,6 @@ namespace Capstone
             }
             else {
                 killSquad();
-                squadMembers.Remove(modelObject);
-                Destroy(modelObject);
             }
         }
         private void killSquad()
@@ -195,7 +198,7 @@ namespace Capstone
             if (aliveMembers <= 0) {
                 if (owner is Player)
                 {
-                    //GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
+                    GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
                     GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIcon);
                     base.deselect();
                 } else {
@@ -221,13 +224,13 @@ namespace Capstone
                     setSquadVisibility(currentRevealed);
                     previousRevealed = currentRevealed;
                 }
-                
+
                 yield return new WaitForSecondsRealtime(0.01f);
             }
         }
         public override bool checkReveal()
         {
-            if (FogLayerManager.instance.getPlayerTeam() != this.team)
+            if (FogLayerManager.instance.getPlayerTeam() != team)
             {
                 foreach (GameObject squadMember in squadMembers)
                 {
@@ -246,7 +249,6 @@ namespace Capstone
 
         public void setSquadVisibility(bool state)
         {
-            //Debug.Log("Calling visibility method - squad");
             if (state)
             {
                 int selectableLayer = LayerMask.NameToLayer("Visible");
@@ -383,7 +385,13 @@ namespace Capstone
                     uiIcon.setCurrentHealth(1.0f);
                     uiIcon.setReferenceUnit(this);
                 } else {
-                    
+                    // Accounting for Debug Spawning
+                    uiIcon = GameManager.Instance.playerUIReference.addNewUnitIcon(getPortrait(), getIcon(0));
+                    setSquadIconUI(uiIcon);
+                    uiIcon.setAliveModels(aliveMembers);
+                    uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
+                    uiIcon.setCurrentHealth(1.0f);
+                    uiIcon.setReferenceUnit(this);
                 }
             }
             
