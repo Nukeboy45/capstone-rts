@@ -117,7 +117,7 @@ namespace Capstone
         /// </summary>
         /// <param name="hits"></param>
         /// <returns></returns>
-        public static Dictionary<GameObject, RaycastHit> getOptimalMovePositions(List<RaycastHit> hits, GameObject[] squadMembers, GameObject squadLead) 
+        public static Dictionary<GameObject, RaycastHit> getOptimalMovePositions(List<RaycastHit> hits, List<GameObject> squadMembers, GameObject squadLead) 
         {
             List<Dictionary<GameObject, RaycastHit>> permutations = getPermutations(squadMembers, hits);
 
@@ -149,10 +149,10 @@ namespace Capstone
         /// <param name="members"></param>
         /// <param name="hits"></param>
         /// <returns></returns>
-        private static List<Dictionary<GameObject, RaycastHit>> getPermutations<GameObject, RaycastHit>(GameObject[] members, List<RaycastHit> hits)
+        private static List<Dictionary<GameObject, RaycastHit>> getPermutations<GameObject, RaycastHit>(List<GameObject> members, List<RaycastHit> hits)
         {
             List<Dictionary<GameObject, RaycastHit>> result = new List<Dictionary<GameObject, RaycastHit>>();
-            int len = members.Length;
+            int len = members.Count;
             RaycastHit[] hitsArray = hits.ToArray();
 
             RaycastHit squadLeadPosition = hits[0];

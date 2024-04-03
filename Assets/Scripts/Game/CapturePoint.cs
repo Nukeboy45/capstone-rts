@@ -18,7 +18,7 @@ namespace Capstone {
         [SerializeField] private GameObject fogReveal;
 
         // Private Runtime Variables
-        private float captureValue = 0.0f;
+        [SerializeField] private float captureValue = 0.0f;
         private int owner = 0;
         private bool checking = false;
         private float dTime;
@@ -34,16 +34,19 @@ namespace Capstone {
 
             foreach (Collider collider in collisions)
             {
-                GameObject obj = collider.GetComponent<Collider>().gameObject;
-                SquadMember component = obj.GetComponent<SquadMember>();
-
-                if (component != null)
+                if (collider.gameObject.CompareTag("SquadMember"))
                 {
-                    if (!insidePoint.Contains(obj))
+                    GameObject obj = collider.GetComponent<Collider>().gameObject;
+                    if (obj != null)
                     {
-                        insidePoint.Add(obj);
+                        if (!insidePoint.Contains(obj))
+                        {
+                            insidePoint.Add(obj);
+                        }
                     }
                 }
+                //GameObject obj = collider.GetComponent<Collider>().gameObject;
+                //SquadMember component = obj.GetComponent<SquadMember>();
             }
 
             if (!checking)
@@ -167,10 +170,9 @@ namespace Capstone {
         private void updateFlagPosition() 
         {
             Vector3 flagPosition = flag.transform.position;
-            if (flagPosition.y < 5.4)
-            {
-                flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 1.3f; 
-            }
+            captureValue = Mathf.Clamp(captureValue, -100f, 100f);
+            flagPosition.y = 4.2f * (Mathf.Abs(captureValue) / 100.0f) + 1.2f; 
+            flagPosition.y = Mathf.Clamp(flagPosition.y, 1.2f, 5.37f);
             flag.transform.position = flagPosition;
         }
 

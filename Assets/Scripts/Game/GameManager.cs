@@ -11,6 +11,7 @@ namespace Capstone
         // ------- Public Variables -----------
         private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
         public Player playerReference;
+        public PlayerUI playerUIReference;
         public CapturePoint[] objectives;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
@@ -24,6 +25,7 @@ namespace Capstone
         private DateTime lastObjectiveTick;
         private float objectivePointTickTime = 5f;
 
+        // Singleton
         private static GameManager instance;
         public static GameManager Instance { get {return instance; } }
 
@@ -212,6 +214,7 @@ namespace Capstone
                 yield return null;
             }
 
+            playerUIReference = playerComponent.playerUI;
             playerComponent.playerUI.updateScoreBars(team1Tickets, team2Tickets);
         }
 

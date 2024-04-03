@@ -14,11 +14,10 @@ namespace Capstone
 
             }
         }*/
-        [SerializeField] private GameManager gameManager;
 
         public void Start()
         {
-            StartCoroutine(spawnDebugEnemySquad());
+            StartCoroutine(spawnDebugSquads());
         }
 
         public void SquadSpawn(GameObject squadPrefab, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
@@ -26,7 +25,7 @@ namespace Capstone
             GameObject squadObj = Instantiate(squadPrefab, position, Quaternion.identity);
             Squad squad = squadObj.GetComponent<Squad>();
             squad.team = team;
-            GameActor component = gameManager.players[ownerTag].GetComponent<GameActor>();
+            GameActor component = GameManager.Instance.players[ownerTag].GetComponent<GameActor>();
             if (component != null)
             {
                 squad.owner = component;
@@ -38,13 +37,14 @@ namespace Capstone
             }
         }
 
-        private IEnumerator spawnDebugEnemySquad()
+        private IEnumerator spawnDebugSquads()
         {
-            while (gameManager.players.Length < 2)
+            while (GameManager.Instance.players.Length < 2 || GameManager.Instance.playerUIReference == null)
             {
                 yield return null;
             }
             SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/ausRifleSquad"), new Vector3(60, 0, 60), 1, 1);
+            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/ausRifleSquad"), new Vector3(50, 0, 50), 0, 0);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Capstone
 
         // Private Runtime Variables
         private Texture2D tex;
-        private PlayerUI playerUI;
         private int playerTeam;
 
         void Awake()
@@ -65,21 +64,11 @@ namespace Capstone
             return true;
         }
 
-        public GameObject addNewWorldUnitIcon(GameObject icon, GameObject position)
-        {
-            return playerUI.spawnWorldSpaceUnitIcon(icon, position);
-        }
-
         // --- Getters / Setter Methods ---
         
         public void setPlayerTeam(int newTeam)
         {
             playerTeam = newTeam;  
-        }
-
-        public void setPlayerUI(PlayerUI ui)
-        {
-            playerUI = ui;
         }
 
         public int getPlayerTeam()

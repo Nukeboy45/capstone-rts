@@ -1,4 +1,5 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,8 @@ namespace Capstone {
 
         // Private Runtime Variables
         private GameObject selfReference;
-        private GameObject unitIconReference;
+        private GameObject unitReference;
+        private GameObject unitIconPosition;
         private Unit unitComponent;
         // Start is called before the first frame update
         void Awake()
@@ -25,10 +27,29 @@ namespace Capstone {
             Destroy(removeEditorCanvas);
         }
 
-        // Update is called once per frame
-        void Update()
+        public void updateUIPosition(Camera playerCamera)
+        {          
+            if (unitIconPosition != null)
+            {
+                float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, unitIconPosition.transform);
+                if (angle < playerCamera.fieldOfView && getReferenceUnitComponent().getRevealedIcon() == true)
+                {
+                    selfReference.SetActive(true);
+                    Vector3 screenPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);
+                    float distance = Vector3.Distance(playerCamera.transform.position, unitIconPosition.transform.position);     
+                    selfReference.transform.position = screenPosition;
+                    float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
+                    selfReference.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                } else {
+                    selfReference.SetActive(false);
+                }
+            }
+        }
+
+        public void destroySelf(List<UnitIconUIWorld> iconList)
         {
-            
+            iconList.Remove(this);
+            Destroy(this.gameObject);
         }
 
         // Getters / Setters
@@ -47,14 +68,33 @@ namespace Capstone {
             return unitIcon;
         }
 
-        public GameObject getReferenceUnit()
+        public GameObject getIconObject()
         {
-            return unitIconReference;
+            return selfReference;
         }
-
         public Unit getReferenceUnitComponent()
         {
             return unitComponent;
+        }
+
+        public GameObject getReferenceUnitGameObject()
+        {
+            return unitReference;
+        }
+
+        public void setIconObject(GameObject icon)
+        {
+            selfReference = icon;
+        }
+
+        public void setReferencePosition(GameObject position)
+        {
+            unitIconPosition = position;
+        }
+        
+        public void setUnitReference(GameObject unit)
+        {
+            unitReference = unit;
         }
 
         public void setMaxHealth(float maxHealth)
@@ -96,12 +136,6 @@ namespace Capstone {
         {
             unitIcon.sprite = icon;
         }
-
-        public void setReferenceObj(GameObject reference)
-        {
-            unitIconReference = reference;
-        }
-
         public void setReferenceUnitComponent(Unit unit)
         {
             unitComponent = unit;

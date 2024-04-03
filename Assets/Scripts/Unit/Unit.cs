@@ -23,8 +23,8 @@ namespace Capstone
         // Private / Protected Runtime Variables for Child Classes
         protected Sprite icon;
         protected UnitIconUI uiIcon;
-        protected GameObject worldIconObj;
         protected UnitIconUIWorld worldIcon;
+        protected GameObject worldIconObj;
         protected bool revealed = false;
         protected bool revealStatus = true;
 
