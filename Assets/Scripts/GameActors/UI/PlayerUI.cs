@@ -25,7 +25,7 @@ namespace Capstone {
         [SerializeField] private Camera playerCamera;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
         private List<GameObject> unitIconBarList = new List<GameObject>();
-        [SerializeField] private List<UnitIconUIWorldPair> unitIconWorldList = new List<UnitIconUIWorldPair>();
+        [SerializeField] private List<UnitIconUIWorld> unitIconWorldList = new List<UnitIconUIWorld>();
         private FactionType faction;
         
         // Prefabs
@@ -46,6 +46,8 @@ namespace Capstone {
             emptyUnitIconUI = Resources.Load<GameObject>("Prefabs/UI/UnitIconUIBar");
 
             updateMenu();
+
+            StartCoroutine(updateWorldSpaceIconPositions());
         }
         public void Update()
         {   
@@ -69,8 +71,6 @@ namespace Capstone {
             {
 
             }
-
-            updateWorldSpaceIconPositions();
         }
         public void Button1()
         {
@@ -108,12 +108,13 @@ namespace Capstone {
         }
         
 
-        public void updateWorldSpaceIconPositions()
+        /*public void updateWorldSpaceIconPositions()
         {
             foreach (UnitIconUIWorldPair pair in unitIconWorldList)
             {
                 if (pair.icon == null || pair.position == null)
                     break;
+                    
                 float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, pair.position.transform);
                 if (angle < playerCamera.fieldOfView && pair.icon.GetComponent<UnitIconUIWorld>().getReferenceUnitComponent().getRevealedIcon() == true)
                 {
@@ -127,9 +128,29 @@ namespace Capstone {
                     pair.icon.SetActive(false);
                 }
             }
+        }*/
+
+        private IEnumerator updateWorldSpaceIconPositions()
+        {
+            while (true)
+            {
+                if (unitIconWorldList.Count == 0)
+                {
+                    yield return null;
+                } else {
+                    if (playerCamera != null)
+                    {
+                        foreach (UnitIconUIWorld icon in unitIconWorldList)
+                        {
+                            icon.updateUIPosition(playerCamera);
+                        }
+                    }
+                }
+                yield return null;
+            }
         }
 
-        public UnitIconUIWorldPair spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
+        public UnitIconUIWorld spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
         {
             float distance = Vector3.Distance(playerCamera.transform.position, iconPosition.transform.position);
             Vector3 screenPosition = playerCamera.WorldToScreenPoint(iconPosition.transform.position);
@@ -139,31 +160,17 @@ namespace Capstone {
             float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
             newIcon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
-            UnitIconUIWorldPair newPair = new UnitIconUIWorldPair();
-            newPair.icon = newIcon;
-            newPair.position = iconPosition;
-        
-            unitIconWorldList.Add(newPair);
+            UnitIconUIWorld worldIconComponent = newIcon.GetComponent<UnitIconUIWorld>();
+            worldIconComponent.setIconObject(newIcon);
+            worldIconComponent.setReferencePosition(iconPosition);
+            unitIconWorldList.Add(worldIconComponent);
             
-            return newPair;
+            return worldIconComponent;
         }
 
-        public void updateExistingWorldIconPosition(GameObject updateIcon, GameObject newPosition)
+        public void removeWorldSpaceUnitIcon(UnitIconUIWorld unitIconUIWorld)
         {
-            foreach (UnitIconUIWorldPair pair in unitIconWorldList)
-            {
-                if (pair.icon == updateIcon)
-                {
-                    pair.position = newPosition;
-                    break;
-                }
-            }
-        }
-
-        public void removeWorldSpaceUnitIcon(UnitIconUIWorldPair unitIconUIWorldPair)
-        {
-            unitIconWorldList.Remove(unitIconUIWorldPair);
-            Destroy(unitIconUIWorldPair.icon);
+            unitIconUIWorld.destroySelf(unitIconWorldList);
         }
         
         // Update Functions
@@ -235,7 +242,7 @@ namespace Capstone {
                     {
                     GameObject hitObject = result.gameObject;
                     iconCheck = hitObject;
-                    List<GameObject> iconsList = unitIconWorldList.Select(pair => pair.icon).ToList();
+                    List<GameObject> iconsList = unitIconWorldList.Select(iconComp => iconComp.gameObject).ToList();
                     if (hitObject.GetComponent<GetParentIcon>() != null)
                         hitObject = hitObject.GetComponent<GetParentIcon>().getParentIcon();
                         iconCheck = hitObject;
@@ -290,6 +297,7 @@ namespace Capstone {
         public void removeUnitIcon(GameObject removeIcon)
         {
             unitIconBarList.Remove(removeIcon);
+            Destroy(removeIcon);
             updateUnitIconBarPositions();
         }
 

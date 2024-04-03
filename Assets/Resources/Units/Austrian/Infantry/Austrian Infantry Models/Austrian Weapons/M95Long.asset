@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f5162da2eb0934d9c349e6f88e53ae, type: 3}
   m_Name: M95Long
   m_EditorClassIdentifier: 
-  BurstSize: 1
-  FiringCooldown: 3
+  MagazineCapacity: 5
+  FiringCooldown: 1
+  ReloadTime: 3
   Accuracy: 0.5
   Damage: 10

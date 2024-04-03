@@ -145,7 +145,7 @@ namespace Capstone
                     SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>(); 
 
                     if (squadMember == null) {
-                        mouseSquad = playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon").GetComponent<UnitIconUIWorld>().getReferenceUnit().GetComponent<Squad>();
+                        mouseSquad = playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon").GetComponent<UnitIconUIWorld>().getReferenceUnitGameObject().GetComponent<Squad>();
                     } else
                         mouseSquad = squadMember.parent;
                     break;

@@ -117,18 +117,21 @@ namespace Capstone
                     }
                 }
 
-                if (lastFiringTick == DateTime.MinValue && !reloading)
+                if (!reloading)
                 {
-                    shootAtTarget();
-                    lastFiringTick = DateTime.Now;
-                } else {
-                    TimeSpan timeSinceLastShot = DateTime.Now - lastFiringTick;
-                    if (timeSinceLastShot.Seconds >= firingCooldown && !reloading)
+                    if (lastFiringTick == DateTime.MinValue)
                     {
                         shootAtTarget();
                         lastFiringTick = DateTime.Now;
-                    }
-                }   
+                    } else {
+                        TimeSpan timeSinceLastShot = DateTime.Now - lastFiringTick;
+                        if (timeSinceLastShot.Seconds >= firingCooldown && !reloading)
+                        {
+                            shootAtTarget();
+                            lastFiringTick = DateTime.Now;
+                        }
+                    }   
+                }
                 yield return new WaitForSecondsRealtime(0.15f);
             }
         }

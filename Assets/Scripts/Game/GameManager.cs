@@ -228,16 +228,5 @@ namespace Capstone
             playerComponent.setCameraPosition(position);
         }
 
-        // PlayerUI Update Functions
-        public UnitIconUIWorldPair addNewWorldUnitIcon(GameObject icon, GameObject position)
-        {
-            return playerUIReference.spawnWorldSpaceUnitIcon(icon, position);
-        }
-
-        public void updateWorldUnitIcon(GameObject updateIcon, GameObject newPosition)
-        {
-            playerUIReference.updateExistingWorldIconPosition(updateIcon, newPosition);
-        }
-
     }
 }

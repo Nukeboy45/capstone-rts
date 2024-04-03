@@ -14,9 +14,9 @@ namespace Capstone
         [SerializeField] private float captureRate;
 
         // Private, Runtime Variables
-        private GameObject[] squadMembers;
+        [SerializeField] private List<GameObject> squadMembers = new List<GameObject>();
         private int veterancy;
-        private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
+        [SerializeField] private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
@@ -36,16 +36,6 @@ namespace Capstone
 
         void Update()
         {
-            if (aliveMembers <= 0) {
-                if (owner is Player)
-                {
-                    GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
-                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIconPair);
-                }
-                base.deselect();
-                Destroy(this.gameObject);
-            }
-
             if (showSelect != null && selected == false)
             {
                 if (showSelect == true)
@@ -175,26 +165,44 @@ namespace Capstone
         /// <param name="modelObject"></param>
         public void killModel(GameObject modelObject) 
         {
-            Destroy(modelObject);
-            aliveMembers--; 
-
-            if (squadLead == null)
+            aliveMembers--;
+            if (aliveMembers >= 1)
             {
-                foreach (GameObject model in squadMembers)
+                if (modelObject == squadLead)
                 {
-                    if (model != null)
-                    {
-                        squadLead = model;
-                        GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
-                        if (iconPosition != null) 
-                            iconPosition.SetActive(true);
-                        worldIconPair.position = iconPosition;
-                        break;
-                    }
+                    squadLead = null;
                 }
+                squadMembers.Remove(modelObject);
+                Destroy(modelObject);
+                if (squadLead == null)
+                {
+                    squadLead = squadMembers[0];
+                    GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
+                    if (iconPosition != null) 
+                        iconPosition.SetActive(true);
+                    worldIcon.setReferencePosition(iconPosition);
+                }
+                updateUIHealth();
             }
-
-            updateUIHealth();
+            else {
+                killSquad();
+                squadMembers.Remove(modelObject);
+                Destroy(modelObject);
+            }
+        }
+        private void killSquad()
+        {
+            if (aliveMembers <= 0) {
+                if (owner is Player)
+                {
+                    //GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
+                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIcon);
+                    base.deselect();
+                } else {
+                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIcon);
+                }
+                Destroy(this);
+            }
         }
 
         // Fog of War Code
@@ -273,9 +281,7 @@ namespace Capstone
             squadSize = models.Length;
 
             aliveMembers = squadSize;
-
-            squadMembers = new GameObject[squadSize];
-            
+      
             List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
             // Setting the squad's icon based on whether or not it belongs to player's team
@@ -291,7 +297,7 @@ namespace Capstone
             for (int i = 0; i < squadSize; i++)
             {   
                 // Spawns the prefab and ties the reference to the squadMembers list
-                squadMembers[i] = Instantiate(models[i], spacing[i], Quaternion.identity);
+                squadMembers.Add(Instantiate(models[i], spacing[i], Quaternion.identity));
 
                 // Retrieves the squadMember script reference from the newly instantiated
                 // infantry model
@@ -318,9 +324,9 @@ namespace Capstone
             GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
-                
-                worldIconPair = GameManager.Instance.playerUIReference.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
-                worldIconObj = worldIconPair.icon;
+
+                worldIcon = GameManager.Instance.playerUIReference.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
+                worldIconObj = worldIcon.gameObject;
 
                 StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
             } else {
@@ -370,10 +376,15 @@ namespace Capstone
             // Updating the Squad UI Icon
             if (owner == GameManager.Instance.playerReference)
             {
-                uiIcon.setAliveModels(aliveMembers);
-                uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
-                uiIcon.setCurrentHealth(1.0f);
-                uiIcon.setReferenceUnit(this);
+                if (uiIcon != null)
+                {
+                    uiIcon.setAliveModels(aliveMembers);
+                    uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
+                    uiIcon.setCurrentHealth(1.0f);
+                    uiIcon.setReferenceUnit(this);
+                } else {
+                    
+                }
             }
             
             StartCoroutine(fogLoop());
@@ -391,7 +402,7 @@ namespace Capstone
             unitIconUIWorld.setIconTag("SquadIcon");
             unitIconUIWorld.setUnitIcon(icon);
             unitIconUIWorld.setAliveModels(aliveMembers);
-            unitIconUIWorld.setReferenceObj(this.gameObject);
+            unitIconUIWorld.setUnitReference(this.gameObject);
             unitIconUIWorld.setReferenceUnitComponent(this);
 
             Player playerObj = FindObjectOfType<Player>();
