@@ -57,9 +57,18 @@ namespace Capstone
             healtBar.value = health;
         }
 
-        public void setHealtBarColor(Color newColor)
+        public void setHealtBarColor(int team)
         {
-            healthBarColor.color = newColor;
+            // team 0 = same team as player, team 1 = enemy team
+            Color color;
+            if (team == 0)
+                color = new Color(0.22f, 0.58f, 0.77f, 1.0f);
+            else if (team == 1)
+                color = new Color(0.66f, 0.0f, 0.0f, 1.0f);
+            else
+                color = new Color();
+
+            healthBarColor.color = color;
         }
 
         public void setAliveModels(int aliveMembers)

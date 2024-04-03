@@ -109,9 +109,6 @@ namespace Capstone {
             gameManager = instance;
         }
 
-        public Vector3 getCameraSpawnPosition()
-        {
-            return cameraSpawnPos.transform.position;
-        }
+        public Vector3 getCameraSpawnPosition() { return cameraSpawnPos.transform.position; }
     }
 }

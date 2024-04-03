@@ -117,7 +117,7 @@ namespace Capstone {
             switch (renderType)
             {
                 case UnitIconRender.player:
-                    healthBarColor.color = new Color(0.0f, 0.04f, 0.42f, 1.0f);
+                    healthBarColor.color = new Color(0.22f, 0.58f, 0.77f, 1.0f);
                     break;
                 case UnitIconRender.playerTeam:
                     healthBarColor.color = new Color(0.0f, 0.71f, 0.59f, 1.0f);

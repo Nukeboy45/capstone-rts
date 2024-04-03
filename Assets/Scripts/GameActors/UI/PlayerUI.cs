@@ -36,7 +36,8 @@ namespace Capstone {
             {
                 case (FactionType.centralPowers):
                     // Menu and Unit Construction buttons - Central Powers
-                    buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
+                    if (!buttonImages.ContainsKey("ausRifle"))
+                        buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
                     break;
             }
             // Generic Button Images
@@ -106,29 +107,6 @@ namespace Capstone {
         {
 
         }
-        
-
-        /*public void updateWorldSpaceIconPositions()
-        {
-            foreach (UnitIconUIWorldPair pair in unitIconWorldList)
-            {
-                if (pair.icon == null || pair.position == null)
-                    break;
-                    
-                float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, pair.position.transform);
-                if (angle < playerCamera.fieldOfView && pair.icon.GetComponent<UnitIconUIWorld>().getReferenceUnitComponent().getRevealedIcon() == true)
-                {
-                    pair.icon.SetActive(true);
-                    Vector3 screenPosition = playerCamera.WorldToScreenPoint(pair.position.transform.position);
-                    float distance = Vector3.Distance(playerCamera.transform.position, pair.position.transform.position);     
-                    pair.icon.transform.position = screenPosition;
-                    float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
-                    pair.icon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-                } else {
-                    pair.icon.SetActive(false);
-                }
-            }
-        }*/
 
         private IEnumerator updateWorldSpaceIconPositions()
         {
@@ -253,36 +231,14 @@ namespace Capstone {
                 }
             }
             return null;
-
-            /*if (EventSystem.current.IsPointerOverGameObject())
-            {
-                PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-                pointerEventData.position = Input.mousePosition;
-
-                List<RaycastResult> results = new List<RaycastResult>();
-                RaycastResult raycastResult = EventSystem.current.RaycastAll(pointerEventData, results); // Assuming you want the first raycast result
-
-                // Get the game object that was hit by the raycast
-                GameObject hitGameObject = raycastResult.gameObject;
-            }
-            return false;*/
         }
         
         // ---------- Getters / Setters / Modification Functions --------------
-        public void setPlayerObj(Player player)
-        {
-            playerObj = player;
-        }
+        public void setPlayerObj(Player player) { playerObj = player; }
 
-        public void setPlayerCamera(Camera playerCam)
-        {
-            playerCamera = playerCam;
-        }
+        public void setPlayerCamera(Camera playerCam) { playerCamera = playerCam; }
 
-        public void setFaction(FactionType factionType)
-        {
-            faction = factionType;
-        }
+        public void setFaction(FactionType factionType) { faction = factionType; }
 
         public UnitIconUI addNewUnitIcon(Sprite portraitImage, Sprite iconImage)
         {

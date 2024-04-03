@@ -566,6 +566,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 113ef7b8e5028364589ac23018d575a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  playerUI: {fileID: 0}
   objectives:
   - {fileID: 969252191}
   players: []
@@ -750,7 +752,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 190cb65b10152c44bb048b290ca09b0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 731881787}
 --- !u!1 &1530230119
 GameObject:
   m_ObjectHideFlags: 0
@@ -761,7 +762,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1530230120}
   - component: {fileID: 1530230122}
-  - component: {fileID: 1530230121}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -784,14 +784,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2051264124}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!81 &1530230121
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530230119}
-  m_Enabled: 1
 --- !u!20 &1530230122
 Camera:
   m_ObjectHideFlags: 0

@@ -62,6 +62,7 @@ namespace Capstone
             }
             
             playerCamera.tag = "MainCamera";
+            playerCamera.gameObject.AddComponent<AudioListener>();
             playerUI.name = this.name + "UI";
         }
 

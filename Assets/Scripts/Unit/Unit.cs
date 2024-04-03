@@ -15,15 +15,15 @@ namespace Capstone
 
         // Private / Protected, Editor-Accessible Variables
         [SerializeField] protected GameObject iconObj;
-        [SerializeField] protected Sprite[] icons;
+        [SerializeField] protected Sprite[] iconSprites;
         [SerializeField] protected Sprite portrait;
         [SerializeField] protected float buildTime;
         
 
         // Private / Protected Runtime Variables for Child Classes
-        protected Sprite icon;
-        protected UnitIconUI uiIcon;
-        protected UnitIconUIWorld worldIcon;
+        protected Sprite iconSprite;
+        protected UnitIconUI uiIconComponent;
+        protected UnitIconUIWorld worldIconComponent;
         protected GameObject worldIconObj;
         protected bool revealed = false;
         protected bool revealStatus = true;
@@ -67,23 +67,11 @@ namespace Capstone
 
         // --- Getters / Setter Methods ---
 
-        public float getBuildTime()
-        {
-            return buildTime;
-        }
+        public float getBuildTime() { return buildTime; }
 
-        public Sprite getIcon(int index)
-        {
-            return icons[index];
-        }
+        public Sprite getIcon(int index) { return iconSprites[index]; }
 
-        public Sprite getPortrait()
-        {
-            return portrait;
-        }
-        public bool getRevealedIcon()
-        {
-            return revealStatus;
-        }
+        public Sprite getPortrait() { return portrait; }
+        public bool getRevealedIcon() { return revealStatus; }
     }
 }

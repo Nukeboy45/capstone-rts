@@ -39,7 +39,7 @@ namespace Capstone
 
         private IEnumerator spawnDebugSquads()
         {
-            while (GameManager.Instance.players.Length < 2 || GameManager.Instance.playerUIReference == null)
+            while (GameManager.Instance.players.Length < 2 || GameManager.Instance.playerUI == null)
             {
                 yield return null;
             }

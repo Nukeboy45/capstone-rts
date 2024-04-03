@@ -10,8 +10,8 @@ namespace Capstone
     {
         // ------- Public Variables -----------
         private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
-        public Player playerReference;
-        public PlayerUI playerUIReference;
+        public Player player;
+        public PlayerUI playerUI;
         public CapturePoint[] objectives;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
@@ -84,7 +84,7 @@ namespace Capstone
                             playerCount++;
                         }
                         players[ownerTag] = newTeamMember;
-                        playerReference = playerComponent;
+                        player = playerComponent;
                         StartCoroutine(waitForPlayerUI(playerComponent));
                         ownerTag++;
                         break;
@@ -214,7 +214,7 @@ namespace Capstone
                 yield return null;
             }
 
-            playerUIReference = playerComponent.playerUI;
+            playerUI = playerComponent.playerUI;
             playerComponent.playerUI.updateScoreBars(team1Tickets, team2Tickets);
         }
 

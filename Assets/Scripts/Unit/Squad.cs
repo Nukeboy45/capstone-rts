@@ -16,7 +16,7 @@ namespace Capstone
         // Private, Runtime Variables
         [SerializeField] private List<GameObject> squadMembers = new List<GameObject>();
         private int veterancy;
-        [SerializeField] private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit icon is rendered, upon death another member
+        [SerializeField] private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit iconSprite isiconSpritesered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
         private int squadSize;
         private int aliveMembers; // Tracks current size of the squad to allow for reinforcement and generate spacings 
@@ -173,9 +173,9 @@ namespace Capstone
             squadMembers.Remove(modelObject);
             Destroy(modelObject);
             aliveMembers--;
-            worldIcon.setAliveModels(aliveMembers);
-            if (uiIcon != null)
-                uiIcon.setAliveModels(aliveMembers);
+            worldIconComponent.setAliveModels(aliveMembers);
+            if (uiIconComponent != null)
+                uiIconComponent.setAliveModels(aliveMembers);
             if (aliveMembers >= 1)
             {
 
@@ -185,7 +185,7 @@ namespace Capstone
                     GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
                     if (iconPosition != null) 
                         iconPosition.SetActive(true);
-                    worldIcon.setReferencePosition(iconPosition);
+                    worldIconComponent.setReferencePosition(iconPosition);
                 }
                 updateUIHealth();
             }
@@ -198,11 +198,11 @@ namespace Capstone
             if (aliveMembers <= 0) {
                 if (owner is Player)
                 {
-                    GameManager.Instance.playerUIReference.removeUnitIcon(uiIcon.gameObject);
-                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIcon);
+                    GameManager.Instance.playerUI.removeUnitIcon(uiIconComponent.gameObject);
+                    GameManager.Instance.playerUI.removeWorldSpaceUnitIcon(worldIconComponent);
                     base.deselect();
                 } else {
-                    GameManager.Instance.playerUIReference.removeWorldSpaceUnitIcon(worldIcon);
+                    GameManager.Instance.playerUI.removeWorldSpaceUnitIcon(worldIconComponent);
                 }
                 Destroy(this);
             }
@@ -286,12 +286,12 @@ namespace Capstone
       
             List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
-            // Setting the squad's icon based on whether or not it belongs to player's team
-            if (owner.team != GameManager.Instance.playerReference.team) 
+            // Setting the squad's iconSprite baiconSpritesn whether or not it belongs to player's team
+            if (owner.team != GameManager.Instance.player.team) 
             {
-                icon = icons[1];
+                iconSprite = iconSprites[1];
             } else {
-                icon = icons[0];
+                iconSprite = iconSprites[0];
             }
 
             // Spawn loop for initializing each model of squad according to 
@@ -322,13 +322,13 @@ namespace Capstone
                 //squadMembers[i].transform.SetParent(this.transform, false);
             }
 
-            // Initializes the squad Icon and attaches it to the icon position empty object on the model.
+            // Initializes the squad Icon and attaches it to the iconSprite poiconSpritesn empty object on the model.
             GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
 
-                worldIcon = GameManager.Instance.playerUIReference.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
-                worldIconObj = worldIcon.gameObject;
+                worldIconComponent = GameManager.Instance.playerUI.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
+                worldIconObj = worldIconComponent.gameObject;
 
                 StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
             } else {
@@ -336,7 +336,7 @@ namespace Capstone
             }
 
             // Setting the render color of the selection circles
-            if (owner.team != GameManager.Instance.playerReference.team)
+            if (owner.team != GameManager.Instance.player.team)
             {
                 foreach(GameObject member in squadMembers)
                 {
@@ -360,7 +360,7 @@ namespace Capstone
             }
 
             // Deactivating / Activating FOV sight based on team
-            if (owner.team != GameManager.Instance.playerReference.team)
+            if (owner.team != GameManager.Instance.player.team)
             {
                 foreach(GameObject member in squadMembers)
                 {
@@ -376,22 +376,22 @@ namespace Capstone
             }
 
             // Updating the Squad UI Icon
-            if (owner == GameManager.Instance.playerReference)
+            if (owner == GameManager.Instance.player)
             {
-                if (uiIcon != null)
+                if (uiIconComponent != null)
                 {
-                    uiIcon.setAliveModels(aliveMembers);
-                    uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
-                    uiIcon.setCurrentHealth(1.0f);
-                    uiIcon.setReferenceUnit(this);
+                    uiIconComponent.setAliveModels(aliveMembers);
+                    uiIconComponent.setHealtBarColor(0);
+                    uiIconComponent.setCurrentHealth(1.0f);
+                    uiIconComponent.setReferenceUnit(this);
                 } else {
                     // Accounting for Debug Spawning
-                    uiIcon = GameManager.Instance.playerUIReference.addNewUnitIcon(getPortrait(), getIcon(0));
-                    setSquadIconUI(uiIcon);
-                    uiIcon.setAliveModels(aliveMembers);
-                    uiIcon.setHealtBarColor(new Color(0f, 0.04f, 0.42f, 1.0f));
-                    uiIcon.setCurrentHealth(1.0f);
-                    uiIcon.setReferenceUnit(this);
+                    uiIconComponent = GameManager.Instance.playerUI.addNewUnitIcon(getPortrait(), getIcon(0));
+                    setSquadIconUI(uiIconComponent);
+                    uiIconComponent.setAliveModels(aliveMembers);
+                    uiIconComponent.setHealtBarColor(0);
+                    uiIconComponent.setCurrentHealth(1.0f);
+                    uiIconComponent.setReferenceUnit(this);
                 }
             }
             
@@ -406,9 +406,9 @@ namespace Capstone
                 yield return null;
             }
             
-            worldIcon = unitIconUIWorld;
+            worldIconComponent = unitIconUIWorld;
             unitIconUIWorld.setIconTag("SquadIcon");
-            unitIconUIWorld.setUnitIcon(icon);
+            unitIconUIWorld.setUnitIcon(iconSprite);   
             unitIconUIWorld.setAliveModels(aliveMembers);
             unitIconUIWorld.setUnitReference(this.gameObject);
             unitIconUIWorld.setReferenceUnitComponent(this);
@@ -430,9 +430,7 @@ namespace Capstone
         }
 
         // ---------------------- Getter / Setter methods ------------------------------
-        public int getAliveMembers() {
-            return this.aliveMembers;
-        }
+        public int getAliveMembers() { return this.aliveMembers; }
 
         public Transform getCurrentTransform() {
             if (this.squadLead != null)
@@ -440,36 +438,12 @@ namespace Capstone
             return null;
         }
 
-        public float getSquadCaptureRate()
-        {
-            return this.captureRate;
-        }
-
-        public void setSquadIconUI(UnitIconUI unitIconUI)
-        {
-            uiIcon = unitIconUI;
-        }
-
-        public void setSquadWorldUI(UnitIconUIWorld unitIconWorld)
-        {
-            worldIcon = unitIconWorld;
-        }
-
-        public void updateUIHealth()
-        {
-            if (uiIcon != null)
-            {
-                uiIcon.setCurrentHealth(getCurrentSquadHealth());
-                worldIcon.setCurrentHealth(getCurrentSquadHealth());
-            } else {
-                worldIcon.setCurrentHealth(getCurrentSquadHealth());
-            }
-        }
-
         private float getSquadModelSpeed() {
             SquadMember component = squadMembers[0].GetComponent<SquadMember>();
             return component.getMoveSpeed();
         }
+
+        public float getSquadCaptureRate() { return this.captureRate; }
 
         private float getCurrentSquadHealth()
         {
@@ -494,6 +468,21 @@ namespace Capstone
                 maxHealth += squadMember.getMaxHealth();
             }
             return maxHealth;
+        }
+
+        public void setSquadIconUI(UnitIconUI unitIconUI) { uiIconComponent = unitIconUI; }
+
+        public void setSquadWorldUI(UnitIconUIWorld unitIconWorld) { worldIconComponent = unitIconWorld; }
+
+        public void updateUIHealth()
+        {
+            if (uiIconComponent != null)
+            {
+                uiIconComponent.setCurrentHealth(getCurrentSquadHealth());
+                worldIconComponent.setCurrentHealth(getCurrentSquadHealth());
+            } else {
+                worldIconComponent.setCurrentHealth(getCurrentSquadHealth());
+            }
         }
 
         // -------------- Debug Functions -------------------

@@ -15,10 +15,11 @@ namespace Capstone
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currHealth;    
-        [SerializeField] private float attackSpeed;
         [SerializeField] private float range;
         [SerializeField] private float defense;
         [SerializeField] private float moveSpeed;
+        [SerializeField] private float modelAccuracyModifier = 1.0f;// 1.0 is base accuracy modifier, 1.1 10% more accurate, etc.
+        [SerializeField] private float attackSpeedModifier = 1.0f; // 1.0 is base attack speed, 1.1 10% faster, etc
         [SerializeField] private int modelPriority;
         [SerializeField] private NavMeshAgent myAgent;
         [SerializeField] private GameObject sightRadius;
@@ -32,16 +33,23 @@ namespace Capstone
         private TargetType targetType;
 
         // Shooting Variables
-        [SerializeField] private Coroutine firingLoop = null;
-        [SerializeField] private float weaponDamage;
-        [SerializeField] private float weaponAccuracy;
-        [SerializeField] private DateTime lastFiringTick = DateTime.MinValue;
-        [SerializeField] private float firingCooldown;
-        [SerializeField] private DateTime lastReloadTick;
-        [SerializeField] private bool reloading = false;
-        [SerializeField] private float reloadTime;
+        private Coroutine firingLoop = null;
+        private float weaponDamage;
+        private float weaponAccuracy;
+        private float weaponAccuracyFalloffFactor;
+        private float weaponAccuracyFalloffDistance;
+        private float highestWeaponAccuracyRange;
+        private DateTime lastFiringTick = DateTime.MinValue;
+        private float firingCooldown;
+        private DateTime lastReloadTick;
+        private DateTime lastAimTick = DateTime.MinValue;
+        private float minAimTime;
+        private float maxAimTime;
+        private float currentAimTime;
+        private bool reloading = false;
+        private float reloadTime;
         [SerializeField] private int ammo;
-        [SerializeField] private int ammoCapacity;
+        private int ammoCapacity;
 
         // Debug Variables
         //[SerializeField] private Collider[] targetCollisions;
@@ -72,7 +80,6 @@ namespace Capstone
                     SquadMember component = obj.GetComponent<SquadMember>();
                     if (obj != null && target == null && component.parent.team != parent.team)
                     {
-                        Debug.Log("squad member target found");
                         targetType = TargetType.infantry;
                         target = obj;
                     }
@@ -95,11 +102,12 @@ namespace Capstone
                 Collider[] collisions = Physics.OverlapSphere(rangeCollider.transform.position + rangeCollider.center, rangeCollider.radius);
                 foreach (Collider collider in collisions)
                 {
-                    if (collider.gameObject == target)
+                    if (collider.gameObject.CompareTag("SquadMember") && collider.gameObject == target)
                     {
                         targetInRange = true;
                         break;
                     }
+                    targetInRange = false;
                 }
 
                 if (!targetInRange)
@@ -112,25 +120,40 @@ namespace Capstone
                 if (reloading)
                 {
                     TimeSpan timeSinceReload = DateTime.Now - lastReloadTick;
-                    if (timeSinceReload.Seconds >= reloadTime)
+                    if (timeSinceReload.TotalSeconds >= reloadTime)
                     {
                         reloading = false;
                         ammo = ammoCapacity;
                     }
-                }
-
-                if (!reloading)
-                {
+                } else {
                     if (lastFiringTick == DateTime.MinValue)
                     {
-                        shootAtTarget();
-                        lastFiringTick = DateTime.Now;
+                        if (lastAimTick == DateTime.MinValue)
+                            lastAimTick = DateTime.Now;
+                        else 
+                        {
+                            TimeSpan timeSinceAim = DateTime.Now - lastAimTick;
+                            if (timeSinceAim.TotalSeconds >= currentAimTime)
+                            {
+                                shootAtTarget();
+                                lastFiringTick = DateTime.Now;
+                            }
+                        }
                     } else {
                         TimeSpan timeSinceLastShot = DateTime.Now - lastFiringTick;
-                        if (timeSinceLastShot.Seconds >= firingCooldown && !reloading)
+                        if (timeSinceLastShot.TotalSeconds >= firingCooldown && !reloading)
                         {
-                            shootAtTarget();
-                            lastFiringTick = DateTime.Now;
+                            if (lastAimTick == DateTime.MinValue)
+                                lastAimTick = DateTime.Now;
+                            else 
+                            {                        
+                                TimeSpan timeSinceAim = DateTime.Now - lastAimTick;
+                                if (timeSinceAim.TotalSeconds >= currentAimTime)
+                                {
+                                    shootAtTarget();
+                                    lastFiringTick = DateTime.Now;
+                                }
+                            }
                         }
                     }   
                 }
@@ -140,13 +163,17 @@ namespace Capstone
 
         private void shootAtTarget()
         {
+            currentAimTime = UnityEngine.Random.Range(minAimTime, maxAimTime);
+            lastAimTick = DateTime.MinValue;
             weaponAudio.PlaySound(0);
             switch (targetType)
             {
                 case TargetType.infantry:
+                    float distance = Vector3.Distance(transform.position, target.transform.position);
                     SquadMember component = target.GetComponent<SquadMember>();
                     float accuracyRoll = UnityEngine.Random.Range(0f, 1f);
-                    if (accuracyRoll >= weaponAccuracy)
+                    float scaledAccuracy = accuracyWithDistance(distance);
+                    if (scaledAccuracy >= accuracyRoll)
                         component.takeHit(weaponDamage);
                     break;
             }
@@ -157,6 +184,26 @@ namespace Capstone
                 reloading = true;
                 lastReloadTick = DateTime.Now;
             }
+        }
+
+        private float accuracyWithDistance(float distance)
+        {
+            Debug.Log("distance " + distance);
+            Debug.Log("optimal dist " + highestWeaponAccuracyRange);
+            if (distance <  highestWeaponAccuracyRange && distance > 0)
+            {
+                float scaledAccuracy = weaponAccuracy * modelAccuracyModifier;
+                return scaledAccuracy;
+            }
+            else 
+            {
+                float fallOffDistance = distance - highestWeaponAccuracyRange;
+                float scaledAccuracy = weaponAccuracy * Mathf.Pow(weaponAccuracyFalloffFactor, fallOffDistance / weaponAccuracyFalloffDistance) * modelAccuracyModifier;
+
+                Debug.Log("Scaled accuracy: " + scaledAccuracy);
+                return scaledAccuracy;
+            }
+
         }
 
         public void takeHit(float weaponDamage)
@@ -188,8 +235,13 @@ namespace Capstone
             reloadTime = weaponData.ReloadTime;
             firingCooldown = weaponData.FiringCooldown;
             weaponDamage = weaponData.Damage;
-            weaponAccuracy = weaponData.Accuracy;
+            weaponAccuracy = weaponData.MaxAccuracy;
+            weaponAccuracyFalloffFactor = weaponData.AccuracyFalloffFactor;
+            weaponAccuracyFalloffDistance = weaponData.AccuracyFalloffDistance;
+            highestWeaponAccuracyRange = weaponData.MaxAccuracyRange;
             weaponAudio.setWeaponSounds(weaponData.weaponSounds);
+            minAimTime = weaponData.MinAimTime;
+            maxAimTime = weaponData.MaxAimTime;
         }
 
         // ------ Getters / Setters

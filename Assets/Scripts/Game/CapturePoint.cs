@@ -12,7 +12,7 @@ namespace Capstone {
         // Private, Editor-Accessible Variables
         [SerializeField] private SphereCollider pointCollider;
         [SerializeField] private GameObject flag;
-        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private LayerMask targetLayers;
         [SerializeField] private Material[] flagTextures = new Material[3]; // 0 is neutral, 1 is aus, 2 is ita
         [SerializeField] private List<GameObject> insidePoint = new List<GameObject>();
         [SerializeField] private GameObject fogReveal;
@@ -30,7 +30,7 @@ namespace Capstone {
 
             checkOwnershipChange();
 
-            Collider[] collisions = Physics.OverlapSphere(pointCollider.transform.position + pointCollider.center, pointCollider.radius, layerMask);
+            Collider[] collisions = Physics.OverlapSphere(pointCollider.transform.position + pointCollider.center, pointCollider.radius, targetLayers);
 
             foreach (Collider collider in collisions)
             {
@@ -239,9 +239,6 @@ namespace Capstone {
 
         // ---- Getter / Setter Methods ------
 
-        public int getOwner()
-        {
-            return owner;
-        }
+        public int getOwner() { return owner; }
     }
 }
