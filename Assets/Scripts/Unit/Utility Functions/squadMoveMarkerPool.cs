@@ -41,6 +41,14 @@ namespace Capstone
             markersActive = true;
         }
 
+        public void updateVisibleMarkers(int newActiveMarkers)
+        {
+            for (int i = maxMarkers - 1; i > newActiveMarkers - 1; i--)
+            {
+                moveMarkers[i].SetActive(false);
+            }
+        }
+
         public void hideMoveMarkers()
         {
             foreach (GameObject marker in moveMarkers)

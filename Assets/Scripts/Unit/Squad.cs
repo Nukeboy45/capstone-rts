@@ -169,10 +169,10 @@ namespace Capstone
             {
                 squadLead = null;
             }
-
             squadMembers.Remove(modelObject);
             Destroy(modelObject);
             aliveMembers--;
+            SquadMoveMarkerPool.sharedInstance.updateVisibleMarkers(aliveMembers);
             worldIconComponent.setAliveModels(aliveMembers);
             if (uiIconComponent != null)
                 uiIconComponent.setAliveModels(aliveMembers);

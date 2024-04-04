@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -147,6 +146,38 @@ namespace Capstone
                 }
             }
             return hits;
+        }
+
+        // multiple move - needs work
+        public static List<RaycastHit> getMultipleUnitMovePositions(RaycastHit parentHit, Camera castCamera, List<GameObject> currUnits, LayerMask ground)
+        {
+            //Vector3 unitsCenter = getUnitGroupRelativeCenter(currUnits);
+            List<Vector3> castTargets = unitFunctions.getMultipleUnitMoveCoordinates(parentHit.point, currUnits[0].transform.position, currUnits.Count);
+            List<RaycastHit> hits = new List<RaycastHit>();
+            foreach(Vector3 target in castTargets)
+            {
+                Ray ray = castCamera.ScreenPointToRay(castCamera.WorldToScreenPoint(target));
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+                {
+                    hits.Add(hit);
+                } else {
+                    Debug.Log("not hitting!");
+                }
+            }
+            return hits;   
+        }
+
+        public static Vector3 getUnitGroupRelativeCenter(List<GameObject> unitTransforms)
+        {
+            Vector3 center = new Vector3(0,0,0);
+            foreach (GameObject unitTransform in unitTransforms)
+            {
+                Vector3 unitVector = unitTransform.transform.position;
+                center = new Vector3(center.x + unitVector.x, 0, center.z + unitVector.x);
+            }
+            center = new Vector3(center.x / unitTransforms.Count, 0, center.z / unitTransforms.Count);
+            return center;
         }
     }
 }

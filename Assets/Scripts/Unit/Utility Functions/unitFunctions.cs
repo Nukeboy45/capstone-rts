@@ -74,13 +74,63 @@ namespace Capstone
                 
                 case 2:
                     moveCoordinates.Add(targetPosition);
-                    moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
                     break;
 
                 case 3:
                     moveCoordinates.Add(targetPosition);
                     moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,-2))));
+                    break;
+
+                case 4:
+                    moveCoordinates.Add(targetPosition);
+                    moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
                     moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
+                    break;
+
+                case 5:
+                    moveCoordinates.Add(targetPosition);
+                    moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(1,0,-2))));
+                    break;
+
+                case 6: 
+                    moveCoordinates.Add(targetPosition);
+                    moveCoordinates.Add(targetPosition - (rotation * (new Vector3(2,0,2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(4,0,-2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(2,0,0))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(1,0,-2))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(1,0,-4))));
+                    break;
+            }
+            return moveCoordinates;
+        }
+
+        // needs work
+        public static List<Vector3> getMultipleUnitMoveCoordinates(Vector3 targetPosition, Vector3 centerPosition, int unitCount) 
+        {
+            List<Vector3> moveCoordinates = new List<Vector3>();
+
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, targetPosition - centerPosition);
+            switch (unitCount)
+            {
+                case 1:
+                    moveCoordinates.Add(targetPosition);
+                    break;
+                
+                case 2:
+                    moveCoordinates.Add(targetPosition);
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(9,0,0))));
+                    break;
+
+                case 3:
+                    moveCoordinates.Add(targetPosition);
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(9,0,0))));
+                    moveCoordinates.Add(targetPosition + (rotation * (new Vector3(-9,0,0))));
                     break;
 
                 case 4:

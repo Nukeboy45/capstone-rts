@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -208,6 +206,32 @@ namespace Capstone {
 
         public GameObject iconCheck;
         public GameObject checkMouseOverWorldIcon(Vector3 mousePosition, string checkTag)
+        {
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = mousePosition;
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, raycastResults);
+
+            if (raycastResults.Count > 0)
+            {
+                foreach (RaycastResult result in raycastResults)
+                    {
+                    GameObject hitObject = result.gameObject;
+                    iconCheck = hitObject;
+                    List<GameObject> iconsList = unitIconWorldList.Select(iconComp => iconComp.gameObject).ToList();
+                    if (hitObject.GetComponent<GetParentIcon>() != null)
+                        hitObject = hitObject.GetComponent<GetParentIcon>().getParentIcon();
+                        iconCheck = hitObject;
+                    if (iconsList.Contains(hitObject) && hitObject.CompareTag(checkTag))
+                    {
+                        return hitObject;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public GameObject checkMouseOverUIIcon(Vector3 mousePosition, string checkTag)
         {
             PointerEventData eventData = new PointerEventData(EventSystem.current);
             eventData.position = mousePosition;

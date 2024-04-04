@@ -187,18 +187,20 @@ namespace Capstone
                         if (mouseSquad != null && mouseSquad.squadState != SquadState.retreating)
                         {
                             Selection.squadSelect(mouseSquad, selected, this);
-                        }
-                    } else {
-                        // Assuming player is not in multi-select mode, deselect all units and hide any move markers
-                        if (!Input.GetKey(KeyCode.LeftShift)) 
-                        { 
-                            Selection.deselectAll(this); 
-                            if (moveMarkerPool.markersActive == true)
-                            {
+                            if (selected.Count > 1)
                                 moveMarkerPool.hideMoveMarkers();
-                            }
-                        } 
+                            return;
+                        }
                     }
+                        // Assuming player is not in multi-select mode, deselect all units and hide any move markers
+                    if (!Input.GetKey(KeyCode.LeftShift)) 
+                    { 
+                        Selection.deselectAll(this); 
+                        if (moveMarkerPool.markersActive == true)
+                        {
+                            moveMarkerPool.hideMoveMarkers();
+                        }
+                    } 
                 }
                 // Check if RMB has been clicked
                 if (Input.GetMouseButton(1))
@@ -215,9 +217,18 @@ namespace Capstone
                                 squad.moveTo(raycastHits);
                             } 
                         } else {
-                            foreach (GameObject gameObject in selected)
+                            // needs work
+                            List<RaycastHit> unitSpacingHits = Selection.getMultipleUnitMovePositions(maskHit, rayCamera, selected, ground);
+                            for (int i=0; i < unitSpacingHits.Count; i++)
                             {
-                                Unit unit = Selection.getSelectionComponent<Unit>(gameObject);
+                                Unit unitComp = Selection.getSelectionComponent<Unit>(selected[i]);
+                                if (unitComp is Squad)
+                                {
+                                    Squad squad = (Squad)unitComp;
+                                    List<RaycastHit> raycastHits;
+                                    raycastHits = Selection.getAdditionalCasts(unitSpacingHits[i], rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                                    squad.moveTo(raycastHits);
+                                } 
                             }
                         }
                     }
