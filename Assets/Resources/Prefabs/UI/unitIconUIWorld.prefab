@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4930968619692271152}
   - component: {fileID: 4888435409191739569}
   - component: {fileID: 2960858447463317840}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,9 +101,9 @@ GameObject:
   - component: {fileID: 4866240670773997193}
   - component: {fileID: 3595166856492901090}
   - component: {fileID: 5383558702521248710}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: unitIconUIWorld
-  m_TagString: Untagged
+  m_TagString: SquadIcon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 3466844401518582268}
   - component: {fileID: 990209072357189687}
   - component: {fileID: 6943632668225547819}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: ModelCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 264965897950595299}
   - component: {fileID: 9168550210244629695}
   - component: {fileID: 4334286840513607186}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: IconImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +442,7 @@ GameObject:
   - component: {fileID: 6894719964478711140}
   - component: {fileID: 7881403086532224407}
   - component: {fileID: 6204588609499973351}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: SquadHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -546,7 +546,7 @@ GameObject:
   - component: {fileID: 6086203196658273451}
   - component: {fileID: 4817426991261284423}
   - component: {fileID: 8098948216602499509}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}

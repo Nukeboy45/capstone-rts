@@ -181,6 +181,15 @@ namespace Capstone
                 // Check if LMB has been clicked
                 if (Input.GetMouseButtonDown(0))
                 {
+                    if (playerUI.checkMouseOverUIIcon(Input.mousePosition, "UnitIconUI") != null)
+                    {
+                        GameObject iconObject = playerUI.checkMouseOverUIIcon(Input.mousePosition, "UnitIconUI");
+                        UnitIconUI unitIconUI = iconObject.GetComponent<UnitIconUI>();
+                        unitIconUI.playerClick();
+                        if (selected.Count > 1)
+                            moveMarkerPool.hideMoveMarkers();
+                        return;
+                    }
                     //if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Selectable"))
                     if (mouseSquad != null)
                     {

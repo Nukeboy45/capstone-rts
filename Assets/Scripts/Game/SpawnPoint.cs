@@ -57,6 +57,7 @@ namespace Capstone {
                     currentBuildTime = 0.0f;
                 } else {
                     lastBuildTick = DateTime.Now;
+                    unitIcons[0].setIconStatus(IconStatus.building);
                     currentBuildTime = buildQueue[0].GetComponent<Unit>().getBuildTime();
                 }
             }
@@ -69,7 +70,9 @@ namespace Capstone {
                 if (owner is Player)
                 {
                     Player playerComponent = (Player)owner;
-                    unitIcons.Add(playerComponent.playerUI.addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0)));
+                    UnitIconUI newIcon = playerComponent.playerUI.addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0));
+                    newIcon.setSpawnPoint(this);
+                    unitIcons.Add(newIcon);
                     if (currentBuildTime <= 0.0f)
                         lastBuildTick = DateTime.Now;
                     buildQueue.Add(unitPrefab);
@@ -98,6 +101,16 @@ namespace Capstone {
                     List<RaycastHit> hits = Selection.getAdditionalCasts(rallyPoint, GameManager.Instance.rayCamera, transform, squad.getAliveMembers(), LayerMask.NameToLayer("Ground"));
                 }
             }
+        }
+
+        public void removeFromBuildQueue(UnitIconUI removeIcon)
+        {
+            if (unitIcons[0] == removeIcon)
+                lastBuildTick = DateTime.Now;
+            GameManager.Instance.playerUI.removeUnitIcon(removeIcon.gameObject);
+            int index = unitIcons.IndexOf(removeIcon);
+            buildQueue.RemoveAt(index);
+            unitIcons.Remove(removeIcon);
         }
 
 

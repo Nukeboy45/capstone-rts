@@ -387,6 +387,7 @@ namespace Capstone
                 } else {
                     // Accounting for Debug Spawning
                     uiIconComponent = GameManager.Instance.playerUI.addNewUnitIcon(getPortrait(), getIcon(0));
+                    uiIconComponent.setIconStatus(IconStatus.active);
                     setSquadIconUI(uiIconComponent);
                     uiIconComponent.setAliveModels(aliveMembers);
                     uiIconComponent.setHealtBarColor(0);
@@ -394,6 +395,7 @@ namespace Capstone
                     uiIconComponent.setReferenceUnit(this);
                 }
             }
+
             
             StartCoroutine(fogLoop());
             yield break;
@@ -471,6 +473,8 @@ namespace Capstone
         }
 
         public void setSquadIconUI(UnitIconUI unitIconUI) { uiIconComponent = unitIconUI; }
+
+        public UnitIconUI getSquadIconUI() { return uiIconComponent; }
 
         public void setSquadWorldUI(UnitIconUIWorld unitIconWorld) { worldIconComponent = unitIconWorld; }
 

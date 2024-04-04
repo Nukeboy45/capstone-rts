@@ -188,8 +188,8 @@ namespace Capstone
 
         private float accuracyWithDistance(float distance)
         {
-            Debug.Log("distance " + distance);
-            Debug.Log("optimal dist " + highestWeaponAccuracyRange);
+            //Debug.Log("distance " + distance);
+            //Debug.Log("optimal dist " + highestWeaponAccuracyRange);
             if (distance <  highestWeaponAccuracyRange && distance > 0)
             {
                 float scaledAccuracy = weaponAccuracy * modelAccuracyModifier;
@@ -200,7 +200,7 @@ namespace Capstone
                 float fallOffDistance = distance - highestWeaponAccuracyRange;
                 float scaledAccuracy = weaponAccuracy * Mathf.Pow(weaponAccuracyFalloffFactor, fallOffDistance / weaponAccuracyFalloffDistance) * modelAccuracyModifier;
 
-                Debug.Log("Scaled accuracy: " + scaledAccuracy);
+                //Debug.Log("Scaled accuracy: " + scaledAccuracy);
                 return scaledAccuracy;
             }
 

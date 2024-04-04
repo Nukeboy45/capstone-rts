@@ -8,6 +8,8 @@ namespace Capstone
     public class UnitIconUI : MonoBehaviour
     {
         // Private, Editor-Accessible Variables
+        [SerializeField] private Canvas removeEditorCanvas;
+        [SerializeField] private CanvasScaler removeEditorScaler;
         [SerializeField] private Slider healtBar;
         [SerializeField] private Image healthBarColor;
         [SerializeField] private Image unitPortrait;
@@ -15,15 +17,43 @@ namespace Capstone
         [SerializeField] private TextMeshProUGUI aliveModels;
 
         // Private Runtime Variables
-        private IconStatus state = IconStatus.queued;
-        private GameObject selfReference;
-        private Unit referenceUnit;
+        [SerializeField] private IconStatus state = IconStatus.queued;
+        [SerializeField] private GameObject selfReference;
+        [SerializeField] private Unit referenceUnit;
         // Start is called before the first frame update
 
-        // Update is called once per frame
-        void Update()
+        // Temporary for Debug
+        private SpawnPoint spawnPoint;
+
+        public void setSpawnPoint(SpawnPoint buildQueue)
         {
-            
+            spawnPoint = buildQueue;
+        }
+
+        // Update is called once per frame
+        void Awake()
+        {
+            selfReference = this.gameObject;
+            Destroy(removeEditorScaler);
+            Destroy(removeEditorCanvas);
+            selfReference.GetComponent<RectTransform>().localScale = new Vector3(75, 75, 75);
+        }
+
+        public void playerClick()
+        {
+            switch (state)
+            {
+                case IconStatus.active:
+                    if (referenceUnit is Squad)
+                    {
+                        Squad squadComponent = (Squad)referenceUnit;
+                        Selection.squadSelect(squadComponent, GameManager.Instance.player.selected, squadComponent.owner);
+                    }
+                    break;
+                default:
+                    spawnPoint.removeFromBuildQueue(this);
+                    break;
+            }
         }
 
         // Getters / Setters
@@ -70,7 +100,6 @@ namespace Capstone
 
             healthBarColor.color = color;
         }
-
         public void setAliveModels(int aliveMembers)
         {
             aliveModels.text = aliveMembers.ToString();

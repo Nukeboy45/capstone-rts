@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 777083145212828371}
   - component: {fileID: 4930968619692271152}
   - component: {fileID: 4888435409191739569}
-  m_Layer: 3
+  - component: {fileID: 4867539756921161214}
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,6 +76,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4867539756921161214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2330453459141515641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}
 --- !u!1 &3544985342347442964
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,9 +101,9 @@ GameObject:
   - component: {fileID: 420395200485843853}
   - component: {fileID: 3595166856492901090}
   - component: {fileID: 5383558702521248710}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: unitIconUIBar
-  m_TagString: Untagged
+  m_TagString: UnitIconUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,6 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b007a1f1ce7e941ad1a4e7ef645d64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  removeEditorCanvas: {fileID: 3595166856492901090}
+  removeEditorScaler: {fileID: 5383558702521248710}
   healtBar: {fileID: 7881403086532224407}
   healthBarColor: {fileID: 4817426991261284423}
   unitPortrait: {fileID: 9168550210244629695}
@@ -191,7 +207,8 @@ GameObject:
   - component: {fileID: 4406947840910157696}
   - component: {fileID: 3466844401518582268}
   - component: {fileID: 990209072357189687}
-  m_Layer: 3
+  - component: {fileID: 1137128560600869706}
+  m_Layer: 5
   m_Name: ModelCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,6 +331,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1137128560600869706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4321857006783554176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}
 --- !u!1 &4420376931777592309
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +355,8 @@ GameObject:
   - component: {fileID: 1794648511917283455}
   - component: {fileID: 6237427538775339771}
   - component: {fileID: 4488439466779329788}
-  m_Layer: 3
+  - component: {fileID: 7445827957301173281}
+  m_Layer: 5
   m_Name: IconImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -389,6 +420,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7445827957301173281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420376931777592309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}
 --- !u!1 &4709418347684853533
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +444,8 @@ GameObject:
   - component: {fileID: 3835733347172533768}
   - component: {fileID: 264965897950595299}
   - component: {fileID: 9168550210244629695}
-  m_Layer: 3
+  - component: {fileID: 7404896558636706721}
+  m_Layer: 5
   m_Name: PortraitImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,6 +509,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7404896558636706721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709418347684853533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}
 --- !u!1 &6805760329925646570
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,7 +532,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6894719964478711140}
   - component: {fileID: 7881403086532224407}
-  m_Layer: 3
+  - component: {fileID: 8220338742029557423}
+  m_Layer: 5
   m_Name: SquadHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -553,6 +612,19 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8220338742029557423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805760329925646570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}
 --- !u!1 &9081122269714604993
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,7 +636,8 @@ GameObject:
   - component: {fileID: 5919954472020185319}
   - component: {fileID: 6086203196658273451}
   - component: {fileID: 4817426991261284423}
-  m_Layer: 3
+  - component: {fileID: 7514099807586267652}
+  m_Layer: 5
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -628,3 +701,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7514099807586267652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9081122269714604993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b2d1358b42281418e0e25a8e208aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconObj: {fileID: 3544985342347442964}

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ namespace Capstone {
         private UIState uiState = UIState.defaultMenu;
         [SerializeField] private Camera playerCamera;
         private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
-        private List<GameObject> unitIconBarList = new List<GameObject>();
+        [SerializeField] private List<GameObject> unitIconBarList = new List<GameObject>();
         [SerializeField] private List<UnitIconUIWorld> unitIconWorldList = new List<UnitIconUIWorld>();
         private FactionType faction;
         
@@ -198,7 +199,7 @@ namespace Capstone {
         {
             for (int i = 0; i < unitIconBarList.Count; i++)
             {
-                unitIconBarList[i].transform.SetParent(unitIconPositions[i].transform);
+                unitIconBarList[i].transform.SetParent(unitIconPositions[i].transform, false);
                 //Debug.Log("Updated Parent!");
                 unitIconBarList[i].transform.localPosition = Vector3.zero;
             }
@@ -244,9 +245,11 @@ namespace Capstone {
                     {
                     GameObject hitObject = result.gameObject;
                     iconCheck = hitObject;
-                    List<GameObject> iconsList = unitIconWorldList.Select(iconComp => iconComp.gameObject).ToList();
+                    List<GameObject> iconsList = unitIconBarList.Select(iconComp => iconComp.gameObject).ToList();
                     if (hitObject.GetComponent<GetParentIcon>() != null)
-                        hitObject = hitObject.GetComponent<GetParentIcon>().getParentIcon();
+                        if (hitObject.GetComponent<GetParentIcon>() != null)
+                            hitObject = hitObject.GetComponent<GetParentIcon>().getParentIcon();
+
                         iconCheck = hitObject;
                     if (iconsList.Contains(hitObject) && hitObject.CompareTag(checkTag))
                     {
