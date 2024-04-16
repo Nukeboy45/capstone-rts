@@ -273,7 +273,6 @@ namespace Capstone {
             unitIconBarList.Add(newIcon);
             UnitIconUI returnIconUI = newIcon.GetComponent<UnitIconUI>();
             StartCoroutine(waitForIconInitialization(returnIconUI, portraitImage, iconImage));
-            updateUnitIconBarPositions();
             return returnIconUI;
         }
 
@@ -293,6 +292,7 @@ namespace Capstone {
             }
             newIcon.setUnitPortrait(portraitImage);
             newIcon.setUnitIcon(iconImage);
+            updateUnitIconBarPositions();
         }
     }
 

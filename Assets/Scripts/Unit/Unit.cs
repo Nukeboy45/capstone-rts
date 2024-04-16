@@ -73,5 +73,7 @@ namespace Capstone
 
         public Sprite getPortrait() { return portrait; }
         public bool getRevealedIcon() { return revealStatus; }
+
+        public void setRevealedIcon(bool value) { revealStatus = value; }
     }
 }

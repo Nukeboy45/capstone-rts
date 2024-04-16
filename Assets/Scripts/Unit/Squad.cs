@@ -393,6 +393,7 @@ namespace Capstone
                     uiIconComponent.setHealtBarColor(0);
                     uiIconComponent.setCurrentHealth(1.0f);
                     uiIconComponent.setReferenceUnit(this);
+                    GameManager.Instance.playerUI.updateUnitIconBarPositions();
                 }
             }
 

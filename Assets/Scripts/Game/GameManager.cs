@@ -12,7 +12,9 @@ namespace Capstone
         private List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
         public Player player;
         public PlayerUI playerUI;
-        public CapturePoint[] objectives;
+        [SerializeField] private CapturePoint[] objectives;
+        [SerializeField] private CapturePoint[] rationObjectives;
+        [SerializeField] private CapturePoint[] coalObjectives;
         public GameObject[] players; // 0-3 is team 1, 4-7 is team 2
         public SpawnPoint[] spawns; // 0-3 is team 1, 4-7 is team 2
         public Camera rayCamera;

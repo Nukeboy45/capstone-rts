@@ -32,11 +32,15 @@ namespace Capstone {
             if (unitIconPosition != null)
             {
                 float angle = unitFunctions.getCameraRotationDifference(playerCamera.transform, unitIconPosition.transform);
-                if (angle < playerCamera.fieldOfView && getReferenceUnitComponent().getRevealedIcon() == true)
+                
+                float distance = Vector3.Distance(playerCamera.transform.position, unitIconPosition.transform.position);
+
+                float checkingFactor = playerCamera.fieldOfView / Mathf.Exp(distance*0.001f) + 5;
+
+                if (angle < checkingFactor && getReferenceUnitComponent().getRevealedIcon() == true)
                 {
                     selfReference.SetActive(true);
-                    Vector3 screenPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);
-                    float distance = Vector3.Distance(playerCamera.transform.position, unitIconPosition.transform.position);     
+                    Vector3 screenPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
                     selfReference.transform.position = screenPosition;
                     float scaleFactor = Mathf.Clamp(500f / distance, 1f, 130f);
                     selfReference.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
