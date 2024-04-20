@@ -32,21 +32,51 @@ namespace Capstone
         {
             base.Start();
             StartCoroutine(InstantiateSquad());
+            StartCoroutine(squadUpdate());
         }
 
         void Update()
         {
-            if (showSelect != null && selected == false)
+            
+        }
+
+        private IEnumerator squadUpdate()
+        {
+            while (true)
             {
-                if (showSelect == true)
+                if (showSelect != null && selected == false)
                 {
-                    showSelectionRadius();
-                    showSelect = false;
-                } else {
-                    hideSelectionRadius();
-                    showSelect = false;
+                    if (showSelect == true)
+                    {
+                        showSelectionRadius();
+                        showSelect = false;
+                    } else {
+                        hideSelectionRadius();
+                        showSelect = false;
+                    }
+                }
+
+                if (squadState == SquadState.moving || squadState == SquadState.attackmove)
+                {
+                    if (checkStopped())
+                        squadState = SquadState.stationary;
+                }
+                yield return null;
+            }
+        }
+
+        private bool checkStopped()
+        {
+            foreach (GameObject obj in squadMembers)
+            {
+                if (obj != null)
+                {
+                    SquadMember squadMemberComponent = obj.GetComponent<SquadMember>();
+                    if (squadMemberComponent.getRemainingDistance() > 0.1f)
+                        return false;
                 }
             }
+            return true;
         }
 
         /// <summary>
@@ -85,6 +115,7 @@ namespace Capstone
                 float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
                 component.moveToPosition(pair.Value.point, speed);
             }
+            squadState = SquadState.moving;
         }
 
         private float getMaxMoveTime(Dictionary<GameObject, RaycastHit> movePairs , float speed)
@@ -252,6 +283,7 @@ namespace Capstone
             if (state)
             {
                 int selectableLayer = LayerMask.NameToLayer("Visible");
+                worldIconObj.SetActive(true);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
@@ -259,6 +291,7 @@ namespace Capstone
                 }       
             } else {
                 int hiddenLayer = LayerMask.NameToLayer("Hidden");
+                worldIconObj.SetActive(false);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
@@ -283,7 +316,7 @@ namespace Capstone
             squadSize = models.Length;
 
             aliveMembers = squadSize;
-      
+
             List<Vector3> spacing = unitFunctions.generateSpacing(transform.position, aliveMembers);
 
             // Setting the squad's iconSprite baiconSpritesn whether or not it belongs to player's team
@@ -433,11 +466,13 @@ namespace Capstone
         }
 
         // ---------------------- Getter / Setter methods ------------------------------
-        public int getAliveMembers() { return this.aliveMembers; }
+        public int getAliveMembers() { return aliveMembers; }
+
+        public float getSquadCaptureRate() { return captureRate; }
 
         public Transform getCurrentTransform() {
-            if (this.squadLead != null)
-                return this.squadLead.transform;
+            if (squadLead != null)
+                return squadLead.transform;
             return null;
         }
 
@@ -445,9 +480,6 @@ namespace Capstone
             SquadMember component = squadMembers[0].GetComponent<SquadMember>();
             return component.getMoveSpeed();
         }
-
-        public float getSquadCaptureRate() { return this.captureRate; }
-
         private float getCurrentSquadHealth()
         {
             float currentHealth = 0.0f;

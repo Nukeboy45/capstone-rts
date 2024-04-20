@@ -160,12 +160,12 @@ namespace Capstone
             TimeSpan elapsedObjectiveTime = DateTime.Now - lastObjectiveTick;
             if (elapsedObjectiveTime.Seconds >= objectivePointTickTime)
             {
-                checkCapturePoints();
+                capturePointTicketUpdate();
                 lastObjectiveTick = DateTime.Now;
             }
         }
 
-        private void checkCapturePoints()
+        private void capturePointTicketUpdate()
         {
             int team1Points = 0;
             int team2Points = 0;

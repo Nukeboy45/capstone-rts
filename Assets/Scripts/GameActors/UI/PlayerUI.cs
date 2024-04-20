@@ -47,7 +47,7 @@ namespace Capstone {
 
             updateMenu();
 
-            StartCoroutine(updateWorldSpaceIconPositions());
+            // StartCoroutine(updateWorldSpaceIconPositions());
         }
         public void Update()
         {   
@@ -107,25 +107,25 @@ namespace Capstone {
 
         }
 
-        private IEnumerator updateWorldSpaceIconPositions()
-        {
-            while (true)
-            {
-                if (unitIconWorldList.Count == 0)
-                {
-                    yield return null;
-                } else {
-                    if (playerCamera != null)
-                    {
-                        foreach (UnitIconUIWorld icon in unitIconWorldList)
-                        {
-                            icon.updateUIPosition(playerCamera);
-                        }
-                    }
-                }
-                yield return null;
-            }
-        }
+        // private IEnumerator updateWorldSpaceIconPositions()
+        // {
+        //     while (true)
+        //     {
+        //         if (unitIconWorldList.Count == 0)
+        //         {
+        //             yield return null;
+        //         } else {
+        //             if (playerCamera != null)
+        //             {
+        //                 foreach (UnitIconUIWorld icon in unitIconWorldList)
+        //                 {
+        //                     icon.updateUIPosition(playerCamera);
+        //                 }
+        //             }
+        //         }
+        //         yield return null;
+        //     }
+        // }
 
         public UnitIconUIWorld spawnWorldSpaceUnitIcon(GameObject iconPrefab, GameObject iconPosition)
         {
@@ -138,10 +138,11 @@ namespace Capstone {
             newIcon.GetComponent<RectTransform>().localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
             UnitIconUIWorld worldIconComponent = newIcon.GetComponent<UnitIconUIWorld>();
-            worldIconComponent.setIconObject(newIcon);
             worldIconComponent.setReferencePosition(iconPosition);
+            worldIconComponent.setPlayerCamera(playerCamera);
             unitIconWorldList.Add(worldIconComponent);
-            
+            newIcon.SetActive(false);
+            newIcon.SetActive(true);
             return worldIconComponent;
         }
 

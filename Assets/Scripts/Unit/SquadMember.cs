@@ -25,6 +25,8 @@ namespace Capstone
         [SerializeField] private GameObject sightRadius;
         [SerializeField] private SphereCollider rangeCollider;
         [SerializeField] private WeaponAudio weaponAudio;
+        [SerializeField] private ParticleSystem muzzleFlash;
+        [SerializeField] private ParticleSystem muzzleSmoke;
 
 
 
@@ -54,6 +56,8 @@ namespace Capstone
         // Debug Variables
         //[SerializeField] private Collider[] targetCollisions;
 
+        // -------- Utility Variables -----------
+
         // Start is called before the first frame update
         void Start()
         {
@@ -66,9 +70,20 @@ namespace Capstone
         void Update()
         {
             if (currHealth <= 0) {
-                parent.killModel(this.gameObject);
+                StopCoroutine(firingLoop);
+                parent.killModel(gameObject);
             }
 
+            checkForTarget();
+
+            if (target != null && firingLoop == null)
+            {
+                firingLoop = StartCoroutine(attackLoop());
+            }
+        } 
+
+        private void checkForTarget()
+        {
             Collider[] collisions = Physics.OverlapSphere(rangeCollider.transform.position + rangeCollider.center, rangeCollider.radius);
             //targetCollisions = collisions;
 
@@ -87,12 +102,7 @@ namespace Capstone
                 //GameObject obj = collider.GetComponent<Collider>().gameObject;
                 //SquadMember component = obj.GetComponent<SquadMember>();
             }
-
-            if (target != null && firingLoop == null)
-            {
-                firingLoop = StartCoroutine(attackLoop());
-            }
-        } 
+        }
 
         private IEnumerator attackLoop()
         {
@@ -109,12 +119,26 @@ namespace Capstone
                     }
                     targetInRange = false;
                 }
-
+                
                 if (!targetInRange)
                 {
                     target = null;
                     firingLoop = null;
                     yield break;
+                }
+
+                float targetAngleDif = unitFunctions.get2DAngleDifference(transform, target.transform);
+                if (myAgent.remainingDistance <= 0.1f)
+                {
+                    if (Mathf.Abs(targetAngleDif) >= 1.5f)
+                    {
+                        if (targetAngleDif >= 1.0f)
+                        {
+                            transform.Rotate(0f, -360f * Time.deltaTime , 0f, Space.Self);
+                        } else if (targetAngleDif < -1.0) {
+                            transform.Rotate(0f, 360f * Time.deltaTime, 0f, Space.Self);
+                        }
+                    }
                 }
 
                 if (reloading)
@@ -126,27 +150,14 @@ namespace Capstone
                         ammo = ammoCapacity;
                     }
                 } else {
-                    if (lastFiringTick == DateTime.MinValue)
+                    if (Mathf.Abs(targetAngleDif) <= 45.0f)
                     {
-                        if (lastAimTick == DateTime.MinValue)
-                            lastAimTick = DateTime.Now;
-                        else 
-                        {
-                            TimeSpan timeSinceAim = DateTime.Now - lastAimTick;
-                            if (timeSinceAim.TotalSeconds >= currentAimTime)
-                            {
-                                shootAtTarget();
-                                lastFiringTick = DateTime.Now;
-                            }
-                        }
-                    } else {
-                        TimeSpan timeSinceLastShot = DateTime.Now - lastFiringTick;
-                        if (timeSinceLastShot.TotalSeconds >= firingCooldown && !reloading)
+                        if (lastFiringTick == DateTime.MinValue)
                         {
                             if (lastAimTick == DateTime.MinValue)
                                 lastAimTick = DateTime.Now;
                             else 
-                            {                        
+                            {
                                 TimeSpan timeSinceAim = DateTime.Now - lastAimTick;
                                 if (timeSinceAim.TotalSeconds >= currentAimTime)
                                 {
@@ -154,11 +165,30 @@ namespace Capstone
                                     lastFiringTick = DateTime.Now;
                                 }
                             }
+                        } else {
+                            TimeSpan timeSinceLastShot = DateTime.Now - lastFiringTick;
+                            if (timeSinceLastShot.TotalSeconds >= firingCooldown && !reloading)
+                            {
+                                if (lastAimTick == DateTime.MinValue)
+                                    lastAimTick = DateTime.Now;
+                                else 
+                                {                        
+                                    TimeSpan timeSinceAim = DateTime.Now - lastAimTick;
+                                    if (timeSinceAim.TotalSeconds >= currentAimTime)
+                                    {
+                                        shootAtTarget();
+                                        lastFiringTick = DateTime.Now;
+                                    }
+                                }
+                            }
                         }
                     }   
                 }
-                yield return new WaitForSecondsRealtime(0.15f);
+                yield return null;
             }
+            checkForTarget();
+            firingLoop = null;
+            yield break;
         }
 
         private void shootAtTarget()
@@ -166,6 +196,8 @@ namespace Capstone
             currentAimTime = UnityEngine.Random.Range(minAimTime, maxAimTime);
             lastAimTick = DateTime.MinValue;
             weaponAudio.PlaySound(0);
+            muzzleFlash.Play();
+            muzzleSmoke.Play();
             switch (targetType)
             {
                 case TargetType.infantry:
@@ -245,6 +277,7 @@ namespace Capstone
         }
 
         // ------ Getters / Setters
+        public float getRemainingDistance() { return myAgent.remainingDistance; }
         public float getCurrentHealth()
         {
             return currHealth;
@@ -265,5 +298,6 @@ namespace Capstone
             currHealth -= damage;
             parent.updateUIHealth();
         }
+
     }
 }

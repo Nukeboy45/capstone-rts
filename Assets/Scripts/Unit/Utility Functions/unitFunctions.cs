@@ -241,13 +241,15 @@ namespace Capstone
             return result;
         }
 
-        public static float getCameraRotationDifference(Transform cameraTransform, Transform targetTransform)
+        public static float get2DAngleDifference(Transform baseTransform, Transform targetTransform)
         {
-            Vector3 NormalizedVector = new Vector3(targetTransform.position.x - cameraTransform.position.x, 0f, targetTransform.position.z - cameraTransform.position.z);
+            Vector3 NormalizedVector = new Vector3(targetTransform.position.x - baseTransform.position.x, 0f, targetTransform.position.z - baseTransform.position.z);
 
-            Vector3 normalizedForward = new Vector3(cameraTransform.forward.x, 0f, cameraTransform.forward.z);
+            Vector3 normalizedForward = new Vector3(baseTransform.forward.x, 0f, baseTransform.forward.z);
+
             normalizedForward.Normalize();
-            float angle = Vector3.Angle(NormalizedVector, normalizedForward);
+
+            float angle = Vector3.SignedAngle(NormalizedVector, normalizedForward, Vector3.up);
             
             return angle;
         }

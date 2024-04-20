@@ -32,7 +32,7 @@ namespace Capstone
         
         public virtual void Start()
         {
-            owner.unitList.Add(this.gameObject);
+            owner.unitList.Add(gameObject);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Capstone
             if (owner is Player) 
             {
                 Player playerComp = (Player)owner;
-                playerComp.selected.Add(this.gameObject);
+                playerComp.selected.Add(gameObject);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Capstone
             if (owner is Player)
             {
                 Player playerComp = (Player)owner;
-                playerComp.selected.Remove(this.gameObject);              
+                playerComp.selected.Remove(gameObject);              
             }
         }
 

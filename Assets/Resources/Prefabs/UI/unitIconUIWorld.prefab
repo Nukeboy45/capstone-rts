@@ -148,6 +148,7 @@ MonoBehaviour:
   healthBarColor: {fileID: 4817426991261284423}
   unitIcon: {fileID: 9168550210244629695}
   aliveModels: {fileID: 990209072357189687}
+  playerCamera: {fileID: 0}
 --- !u!223 &3595166856492901090
 Canvas:
   m_ObjectHideFlags: 0
