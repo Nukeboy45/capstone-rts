@@ -134,9 +134,10 @@ namespace Capstone
                     {
                         if (targetAngleDif >= 1.0f)
                         {
-                            transform.Rotate(0f, -360f * Time.deltaTime , 0f, Space.Self);
+                            transform.Rotate(0f, -180f * Time.deltaTime , 0f, Space.Self);
                         } else if (targetAngleDif < -1.0) {
-                            transform.Rotate(0f, 360f * Time.deltaTime, 0f, Space.Self);
+                            
+                            transform.Rotate(0f, 180f * Time.deltaTime, 0f, Space.Self);
                         }
                     }
                 }

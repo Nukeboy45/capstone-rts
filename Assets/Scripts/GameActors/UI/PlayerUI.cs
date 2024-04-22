@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,6 +18,8 @@ namespace Capstone {
         [SerializeField] private List<ScoreBarList> scoreBars = new List<ScoreBarList>();
         [SerializeField] private List<GameObject> unitIconPositions = new List<GameObject>();
         [SerializeField] private GameObject worldSpaceIconsParent;
+        [SerializeField] private RectTransform boxSelectionGraphic;
+        [SerializeField] private Transform cursorPosition;
 
         // Private Runtime Variables
         private UIState uiState = UIState.defaultMenu;
@@ -26,6 +28,9 @@ namespace Capstone {
         [SerializeField] private List<GameObject> unitIconBarList = new List<GameObject>();
         [SerializeField] private List<UnitIconUIWorld> unitIconWorldList = new List<UnitIconUIWorld>();
         private FactionType faction;
+
+        // UI Update Variables
+        private bool unitIconsUpToDate = true;
         
         // Prefabs
         private GameObject emptyUnitIconUI;
@@ -51,25 +56,30 @@ namespace Capstone {
         }
         public void Update()
         {   
-            if (playerObj.selected.Count == 0)
+            if (playerObj.getSelected().Count == 0)
             {
                 uiState = UIState.defaultMenu;
                 updateMenu();
             }
-            else if (playerObj.selected.Count == 1)
+            else if (playerObj.getSelected().Count == 1)
             {
-                if (Selection.getSelectionComponent<Unit>(playerObj.selected[0]) is Unit)
+                if (Selection.getSelectionComponent<Unit>(playerObj.getSelected()[0]) is Unit)
                 {
-                    if (Selection.getSelectionComponent<Unit>(playerObj.selected[0]) is Squad)
+                    if (Selection.getSelectionComponent<Unit>(playerObj.getSelected()[0]) is Squad)
                     {
                         uiState = UIState.squad;
                         updateMenu();
                     }
                 }
             } 
-            else if (playerObj.selected.Count > 1)
+            else if (playerObj.getSelected().Count > 1)
             {
 
+            }
+
+            if (!unitIconsUpToDate)
+            {
+                updateUnitIconBarPositions();
             }
         }
         public void Button1()
@@ -141,8 +151,6 @@ namespace Capstone {
             worldIconComponent.setReferencePosition(iconPosition);
             worldIconComponent.setPlayerCamera(playerCamera);
             unitIconWorldList.Add(worldIconComponent);
-            newIcon.SetActive(false);
-            newIcon.SetActive(true);
             return worldIconComponent;
         }
 
@@ -201,9 +209,9 @@ namespace Capstone {
             for (int i = 0; i < unitIconBarList.Count; i++)
             {
                 unitIconBarList[i].transform.SetParent(unitIconPositions[i].transform, false);
-                //Debug.Log("Updated Parent!");
                 unitIconBarList[i].transform.localPosition = Vector3.zero;
             }
+            unitIconsUpToDate = true;
         }
 
         public GameObject iconCheck;
@@ -268,11 +276,15 @@ namespace Capstone {
 
         public void setFaction(FactionType factionType) { faction = factionType; }
 
+        public RectTransform getBoxSelectionGraphic() { return boxSelectionGraphic; }
+
         public UnitIconUI addNewUnitIcon(Sprite portraitImage, Sprite iconImage)
         {
             GameObject newIcon = Instantiate(emptyUnitIconUI, Vector3.zero, Quaternion.identity);
             unitIconBarList.Add(newIcon);
             UnitIconUI returnIconUI = newIcon.GetComponent<UnitIconUI>();
+            unitIconsUpToDate = false;
+            newIcon.SetActive(false);
             StartCoroutine(waitForIconInitialization(returnIconUI, portraitImage, iconImage));
             return returnIconUI;
         }
@@ -281,7 +293,7 @@ namespace Capstone {
         {
             unitIconBarList.Remove(removeIcon);
             Destroy(removeIcon);
-            updateUnitIconBarPositions();
+            unitIconsUpToDate = false;
         }
 
         // INumerators
@@ -293,7 +305,7 @@ namespace Capstone {
             }
             newIcon.setUnitPortrait(portraitImage);
             newIcon.setUnitIcon(iconImage);
-            updateUnitIconBarPositions();
+            newIcon.gameObject.SetActive(true);
         }
     }
 

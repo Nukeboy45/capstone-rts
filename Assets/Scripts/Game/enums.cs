@@ -60,4 +60,10 @@ namespace Capstone
         infantry,
         building
     }
+
+    public enum SelectMode
+    {
+        click,
+        drag
+    }
 }

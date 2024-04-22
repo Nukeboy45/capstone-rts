@@ -150,6 +150,8 @@ MonoBehaviour:
   unitPortrait: {fileID: 9168550210244629695}
   unitIcon: {fileID: 4488439466779329788}
   aliveModels: {fileID: 990209072357189687}
+  state: 0
+  referenceUnit: {fileID: 0}
 --- !u!223 &3595166856492901090
 Canvas:
   m_ObjectHideFlags: 0
@@ -658,8 +660,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6894719964478711140}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -0.00036621094, y: -0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

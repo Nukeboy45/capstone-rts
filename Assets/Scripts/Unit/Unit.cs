@@ -12,6 +12,8 @@ namespace Capstone
         public GameActor owner;
         public bool? showSelect = null;
         public bool selected = false;
+        public bool multiSelect = false;
+        public float multiSelectTime; 
 
         // Private / Protected, Editor-Accessible Variables
         [SerializeField] protected GameObject iconObj;
@@ -44,7 +46,7 @@ namespace Capstone
             if (owner is Player) 
             {
                 Player playerComp = (Player)owner;
-                playerComp.selected.Add(gameObject);
+                playerComp.getSelected().Add(gameObject);
             }
         }
 
@@ -57,15 +59,16 @@ namespace Capstone
             if (owner is Player)
             {
                 Player playerComp = (Player)owner;
-                playerComp.selected.Remove(gameObject);              
+                playerComp.getSelected().Remove(gameObject);              
             }
         }
 
         public virtual void moveTo(List<RaycastHit> hit) {}
 
-        public virtual bool checkReveal() {return false;}
+        public virtual bool checkReveal() { return revealStatus;}
 
         // --- Getters / Setter Methods ---
+        public GameObject getUnitWorldIcon() { return worldIconObj; }
 
         public float getBuildTime() { return buildTime; }
 

@@ -38,7 +38,7 @@ namespace Capstone
             {
                 T component = gameObject.GetComponent<T>();
                 if (component is Unit) { return component; }
-                if (component is Building) { return component; }
+                //if (component is Building) { return component; }
                 return null;
             }
 
@@ -48,59 +48,72 @@ namespace Capstone
             /// <param name="squadMember"></param>
             /// <param name="selected"></param>
             /// <param name="owner"></param>
-            public static void squadSelect(Squad squad, List<GameObject> selected, GameActor owner)
+            public static void squadSelect(Squad squad, List<GameObject> selected, GameActor owner, SelectMode selectMode)
             {
-                if (Input.GetKey(KeyCode.LeftShift))
-                    {
-                        if (!selected.Contains(squad.gameObject))
+                switch (selectMode)
+                {
+                    case SelectMode.click:
+                        if (Input.GetKey(KeyCode.LeftShift))
                         {
-                            if (squad.owner == owner) {
-                                squad.select();
+                            if (!selected.Contains(squad.gameObject))
+                            {
+                                if (squad.owner == owner) {
+                                    squad.select();
+                                }
+                            } else {
+                                squad.deselect();
                             }
                         } else {
-                            squad.deselect();
+                            deselectAll(squad.owner);
+                            if (!selected.Contains(squad.gameObject))
+                            {
+                                if (squad.owner == owner) {
+                                    squad.select();
+                                }
+                            }
                         }
-                    } else {
-                        deselectAll(squad.owner);
+                        break;
+                    case SelectMode.drag:
                         if (!selected.Contains(squad.gameObject))
                         {
                             if (squad.owner == owner) {
                                 squad.select();
                             }
                         }
-                    }
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="building"></param>
-            /// <param name="selected"></param>
-            /// <param name="owner"></param>
-            public static void buildingSelect(Building building, List<GameObject> selected, GameActor owner)
-            {
-                if (building is PassiveBuilding passiveBuilding)
-                {
-                    if (!selected.Contains(passiveBuilding.gameObject))
-                    {
-                        if (passiveBuilding.owner == owner) 
-                        {
-                            deselectAll(owner);
-                            passiveBuilding.select();
-                        }
-                    }
-                } else if (building is DefenseBuilding defenseBuilding)
-                {
-                    if (!selected.Contains(defenseBuilding.gameObject))
-                    {
-                        if (defenseBuilding.owner == owner) 
-                        {
-                            deselectAll(owner);
-                            defenseBuilding.select();
-                        }
-                    }
+                        break;
                 }
             }
+
+            // /// <summary>
+            // /// 
+            // /// </summary>
+            // /// <param name="building"></param>
+            // /// <param name="selected"></param>
+            // /// <param name="owner"></param>
+            // public static void buildingSelect(Building building, List<GameObject> selected, GameActor owner)
+            // {
+            //     if (building is PassiveBuilding passiveBuilding)
+            //     {
+            //         if (!selected.Contains(passiveBuilding.gameObject))
+            //         {
+            //             if (passiveBuilding.owner == owner) 
+            //             {
+            //                 deselectAll(owner);
+            //                 passiveBuilding.select();
+            //             }
+            //         }
+            //     } else if (building is DefenseBuilding defenseBuilding)
+            //     {
+            //         if (!selected.Contains(defenseBuilding.gameObject))
+            //         {
+            //             if (defenseBuilding.owner == owner) 
+            //             {
+            //                 deselectAll(owner);
+            //                 defenseBuilding.select();
+            //             }
+            //         }
+            //     }
+            // }
 
             /// <summary>
             /// 
@@ -116,14 +129,15 @@ namespace Capstone
                         for (int i = selected.Count - 1; i >= 0; i--) 
                         {
                             Unit unit = selected[i].GetComponent<Unit>();
-                            Building building = selected[i].GetComponent<Building>();
+                            // Building building = selected[i].GetComponent<Building>();
                             if (unit != null) 
                             {
                                 unit.deselect();
-                            } else if (building != null) 
-                            {
-                                building.deselect();
-                            }
+                            } 
+                            //else if (building != null) 
+                            // {
+                            //     building.deselect();
+                            // }
                         }
                     }
                 }

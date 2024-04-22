@@ -44,15 +44,26 @@ namespace Capstone
         {
             while (true)
             {
-                if (showSelect != null && selected == false)
+                if (!multiSelect)
                 {
-                    if (showSelect == true)
+                    if (showSelect != null && selected == false)
                     {
-                        showSelectionRadius();
-                        showSelect = false;
-                    } else {
+                        if (showSelect == true)
+                        {
+                            showSelectionRadius();
+                            showSelect = false;
+                        } else {
+                            hideSelectionRadius();
+                            showSelect = false;
+                        }
+                    }
+                } else {
+                    if (Time.time - multiSelectTime > 0.1f)
+                    {
+                        multiSelect = false;
                         hideSelectionRadius();
-                        showSelect = false;
+                    } else {
+                        showSelectionRadius();
                     }
                 }
 
@@ -85,6 +96,7 @@ namespace Capstone
         public override void select()
         {
             base.select();
+            multiSelect = false;
             selected = true;
             showSelectionRadius();
         }
@@ -229,11 +241,11 @@ namespace Capstone
             if (aliveMembers <= 0) {
                 if (owner is Player)
                 {
-                    GameManager.Instance.playerUI.removeUnitIcon(uiIconComponent.gameObject);
-                    GameManager.Instance.playerUI.removeWorldSpaceUnitIcon(worldIconComponent);
+                    GameManager.Instance.player.GetPlayerUI().removeUnitIcon(uiIconComponent.gameObject);
+                    GameManager.Instance.player.GetPlayerUI().removeWorldSpaceUnitIcon(worldIconComponent);
                     base.deselect();
                 } else {
-                    GameManager.Instance.playerUI.removeWorldSpaceUnitIcon(worldIconComponent);
+                    GameManager.Instance.player.GetPlayerUI().removeWorldSpaceUnitIcon(worldIconComponent);
                 }
                 Destroy(this);
             }
@@ -360,7 +372,7 @@ namespace Capstone
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
 
-                worldIconComponent = GameManager.Instance.playerUI.spawnWorldSpaceUnitIcon(iconObj, iconPosition);
+                worldIconComponent = GameManager.Instance.player.GetPlayerUI().spawnWorldSpaceUnitIcon(iconObj, iconPosition);
                 worldIconObj = worldIconComponent.gameObject;
 
                 StartCoroutine(initializeSquadIcon(worldIconObj.GetComponent<UnitIconUIWorld>()));
@@ -419,14 +431,14 @@ namespace Capstone
                     uiIconComponent.setReferenceUnit(this);
                 } else {
                     // Accounting for Debug Spawning
-                    uiIconComponent = GameManager.Instance.playerUI.addNewUnitIcon(getPortrait(), getIcon(0));
+                    Player playerComponent = (Player)owner;
+                    UnitIconUI uiIconComponent = playerComponent.GetPlayerUI().addNewUnitIcon(getPortrait(), getIcon(0));
                     uiIconComponent.setIconStatus(IconStatus.active);
                     setSquadIconUI(uiIconComponent);
                     uiIconComponent.setAliveModels(aliveMembers);
                     uiIconComponent.setHealtBarColor(0);
                     uiIconComponent.setCurrentHealth(1.0f);
                     uiIconComponent.setReferenceUnit(this);
-                    GameManager.Instance.playerUI.updateUnitIconBarPositions();
                 }
             }
 
@@ -466,6 +478,7 @@ namespace Capstone
         }
 
         // ---------------------- Getter / Setter methods ------------------------------
+        public List<GameObject> getSquadModels() { return squadMembers; }
         public int getAliveMembers() { return aliveMembers; }
 
         public float getSquadCaptureRate() { return captureRate; }

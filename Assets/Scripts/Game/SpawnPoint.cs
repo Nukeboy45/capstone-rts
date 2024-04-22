@@ -70,7 +70,7 @@ namespace Capstone {
                 if (owner is Player)
                 {
                     Player playerComponent = (Player)owner;
-                    UnitIconUI newIcon = playerComponent.playerUI.addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0));
+                    UnitIconUI newIcon = playerComponent.GetPlayerUI().addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0));
                     newIcon.setSpawnPoint(this);
                     unitIcons.Add(newIcon);
                     if (currentBuildTime <= 0.0f)
@@ -107,7 +107,7 @@ namespace Capstone {
         {
             if (unitIcons[0] == removeIcon)
                 lastBuildTick = DateTime.Now;
-            GameManager.Instance.playerUI.removeUnitIcon(removeIcon.gameObject);
+            GameManager.Instance.player.GetPlayerUI().removeUnitIcon(removeIcon.gameObject);
             int index = unitIcons.IndexOf(removeIcon);
             buildQueue.RemoveAt(index);
             unitIcons.Remove(removeIcon);

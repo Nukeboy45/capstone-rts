@@ -185,7 +185,7 @@ namespace Capstone
             {
                 Player playerComp = gameActor.GetComponent<Player>();
                 if (playerComp != null)
-                    playerComp.playerUI.updateScoreBars(team1Tickets, team2Tickets);
+                    playerComp.GetPlayerUI().updateScoreBars(team1Tickets, team2Tickets);
             }
         }
 
@@ -211,13 +211,13 @@ namespace Capstone
 
         private IEnumerator waitForPlayerUI(Player playerComponent)
         {
-            while (playerComponent.playerUI == null)
+            while (playerComponent.GetPlayerUI() == null)
             {
                 yield return null;
             }
 
-            playerUI = playerComponent.playerUI;
-            playerComponent.playerUI.updateScoreBars(team1Tickets, team2Tickets);
+            playerUI = playerComponent.GetPlayerUI();
+            playerComponent.GetPlayerUI().updateScoreBars(team1Tickets, team2Tickets);
         }
 
         private IEnumerator waitForPlayerCamera(Player playerComponent, Vector3 position)

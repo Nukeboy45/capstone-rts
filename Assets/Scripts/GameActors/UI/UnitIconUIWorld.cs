@@ -40,49 +40,10 @@ namespace Capstone {
 
         void Start()
         {
-        //     positionComponent = gameObject.AddComponent<WorldIconPosition>();
-        //     positionComponent.setCamera(playerCamera);
-        //     positionComponent.setUnitIconTransform(unitIconPosition.transform);
             rectTransform = gameObject.GetComponent<RectTransform>();
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
             updatePositionCoroutine = StartCoroutine(updateIconPositionLoop());
         }
-
-        // void LateUpdate()
-        // {
-        //     float dTime = Time.deltaTime;
-        //     if (unitIconPosition != null)
-        //     {
-        //         float angle = unitFunctions.get2DAngleDifference(playerCamera.transform, unitIconPosition.transform);
-                
-        //         float distance = Vector3.Distance(playerCamera.transform.position, unitIconPosition.transform.position);
-
-        //         float checkingFactor = playerCamera.fieldOfView / Mathf.Exp(distance*0.001f) + 5;
-
-        //         if (Mathf.Abs(angle) < checkingFactor && getReferenceUnitComponent().getRevealedIcon() == true)
-        //         {
-        //             if (currentUIPosition != null)
-        //             {
-        //                 canvasGroup.alpha = 1;
-        //                 canvasGroup.interactable = true;
-        //                 canvasGroup.blocksRaycasts = true;
-        //                 Debug.Log("linear interpolation");
-        //                 Vector3 newPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-        //                 gameObject.transform.position = Vector3.Lerp(currentUIPosition, newPosition, dTime);
-        //                 currentUIPosition = newPosition;
-        //             } else {
-        //                 currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-        //                 gameObject.transform.position = currentUIPosition;
-        //             }
-        //             float scaleFactor = Mathf.Clamp(600f / distance, 5f, 150f);
-        //             rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-        //         } else {
-        //             canvasGroup.alpha = 0;
-        //             canvasGroup.interactable = false;
-        //             canvasGroup.blocksRaycasts = false;
-        //         }
-        //     }
-        // }
 
         private IEnumerator updateIconPositionLoop()
         {
@@ -105,15 +66,8 @@ namespace Capstone {
                             canvasGroup.alpha = 1;
                             canvasGroup.interactable = true;
                             canvasGroup.blocksRaycasts = true;
-                            if (currentUIPosition != null)
-                            {
-                                Vector3 newPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-                                gameObject.transform.position = Vector3.Lerp(currentUIPosition, newPosition, 0.65f);
-                                currentUIPosition = newPosition;
-                            } else {
-                                currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-                                gameObject.transform.position = currentUIPosition;
-                            }
+                            currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
+                            gameObject.transform.position = currentUIPosition;
                             float scaleFactor = Mathf.Clamp(550f / distance, 5f, 150f);
                             rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                         } else {
@@ -126,45 +80,11 @@ namespace Capstone {
                 yield return null;
             }
         }
-        public void updateUIPosition(Camera playerCamera)
-        {          
-            float dTime = Time.deltaTime;
-            if (unitIconPosition != null)
-            {
-                float angle = unitFunctions.get2DAngleDifference(playerCamera.transform, unitIconPosition.transform);
-                
-                float distance = Vector3.Distance(playerCamera.transform.position, unitIconPosition.transform.position);
-
-                float checkingFactor = playerCamera.fieldOfView / Mathf.Exp(distance*0.001f) + 5;
-
-                // Debug.Log("angle " + angle);
-
-                // Debug.Log("checking factor: " + checkingFactor);
-
-                if (Mathf.Abs(angle) < checkingFactor && getReferenceUnitComponent().getRevealedIcon() == true)
-                {
-                    gameObject.SetActive(true);
-                    if (currentUIPosition != null)
-                    {
-                        Debug.Log("linear interpolation");
-                        Vector3 newPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-                        gameObject.transform.position = Vector3.Lerp(currentUIPosition, newPosition, 0.5f);
-                        currentUIPosition = newPosition;
-                    } else {
-                        currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
-                        gameObject.transform.position = currentUIPosition;
-                    }
-                    float scaleFactor = Mathf.Clamp(600f / distance, 5f, 150f);
-                    rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-                } else {
-                    gameObject.SetActive(false);
-                }
-            }
-        }
 
         public void destroySelf(List<UnitIconUIWorld> iconList)
         {
             iconList.Remove(this);
+            StopCoroutine(updatePositionCoroutine);
             Destroy(gameObject);
         }
 

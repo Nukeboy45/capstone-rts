@@ -18,7 +18,6 @@ namespace Capstone
 
         // Private Runtime Variables
         [SerializeField] private IconStatus state = IconStatus.queued;
-        [SerializeField] private GameObject selfReference;
         [SerializeField] private Unit referenceUnit;
         // Start is called before the first frame update
 
@@ -33,10 +32,14 @@ namespace Capstone
         // Update is called once per frame
         void Awake()
         {
-            selfReference = this.gameObject;
             Destroy(removeEditorScaler);
             Destroy(removeEditorCanvas);
-            selfReference.GetComponent<RectTransform>().localScale = new Vector3(75, 75, 75);
+            gameObject.GetComponent<RectTransform>().localScale = new Vector3(75, 75, 75);
+        }
+
+        void Start()
+        {
+
         }
 
         public void playerClick()
@@ -47,7 +50,7 @@ namespace Capstone
                     if (referenceUnit is Squad)
                     {
                         Squad squadComponent = (Squad)referenceUnit;
-                        Selection.squadSelect(squadComponent, GameManager.Instance.player.selected, squadComponent.owner);
+                        Selection.squadSelect(squadComponent, GameManager.Instance.player.getSelected(), squadComponent.owner, SelectMode.click);
                     }
                     break;
                 default:
