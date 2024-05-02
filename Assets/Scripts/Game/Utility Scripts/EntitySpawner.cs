@@ -43,8 +43,8 @@ namespace Capstone
             {
                 yield return null;
             }
-            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/ausRifleSquad"), new Vector3(60, 0, 60), 1, 1);
-            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/ausRifleSquad"), new Vector3(45, 0, 45), 0, 0);
+            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/entRifleSquad"), new Vector3(60, 0, 60), 1, 1);
+            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/cenRifleSquad"), new Vector3(45, 0, 45), 0, 0);
         }
     }
 }

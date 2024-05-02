@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4503662955652409725}
   - component: {fileID: 7540078718184401334}
   m_Layer: 0
-  m_Name: ausRifleSquad
+  m_Name: cenRifleSquad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

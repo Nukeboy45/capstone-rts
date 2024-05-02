@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f5162da2eb0934d9c349e6f88e53ae, type: 3}
   m_Name: CarcLong
   m_EditorClassIdentifier: 
-  BurstSize: 1
+  MagazineCapacity: 6
   FiringCooldown: 3
-  Accuracy: 0.5
-  Damage: 10
+  ReloadTime: 6
+  MinAimTime: 0.6
+  MaxAimTime: 2.3
+  MaxAccuracy: 0.8
+  MaxAccuracyRange: 15
+  AccuracyFalloffFactor: 0.5
+  AccuracyFalloffDistance: 10
+  Damage: 25
+  weaponSounds:
+  - {fileID: 8300000, guid: 7e890fdfc32535344ad811f90d0c360f, type: 3}

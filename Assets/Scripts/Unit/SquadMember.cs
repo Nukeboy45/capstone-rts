@@ -12,6 +12,7 @@ namespace Capstone
         public Squad parent;
 
         // Private, Editor-Accessible Variables
+        [SerializeField] protected HideObject[] hideObjects;
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currHealth;    
@@ -70,7 +71,7 @@ namespace Capstone
         void Update()
         {
             if (currHealth <= 0) {
-                StopCoroutine(firingLoop);
+                if (firingLoop != null) { StopCoroutine(firingLoop); }
                 parent.killModel(gameObject);
             }
 
@@ -185,7 +186,7 @@ namespace Capstone
                         }
                     }   
                 }
-                yield return null;
+                yield return new WaitForSecondsRealtime(0.05f);
             }
             checkForTarget();
             firingLoop = null;
@@ -237,6 +238,14 @@ namespace Capstone
                 return scaledAccuracy;
             }
 
+        }
+
+        public void showModel() {
+            foreach(HideObject script in hideObjects){ script.showObj(); }
+        }
+
+        public void hideModel() {
+            foreach(HideObject script in hideObjects) { script.hideObj(); }
         }
 
         public void takeHit(float weaponDamage)

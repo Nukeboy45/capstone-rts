@@ -44,6 +44,7 @@ namespace Capstone
         {
             while (true)
             {
+                fogCheck();
                 if (!multiSelect)
                 {
                     if (showSelect != null && selected == false)
@@ -69,10 +70,12 @@ namespace Capstone
 
                 if (squadState == SquadState.moving || squadState == SquadState.attackmove)
                 {
+                    if (team == FogLayerManager.Instance.getPlayerTeam())
+                        FogLayerManager.Instance.isDirty = true;
                     if (checkStopped())
                         squadState = SquadState.stationary;
                 }
-                yield return null;
+                yield return new WaitForFixedUpdate();
             }
         }
 
@@ -247,39 +250,53 @@ namespace Capstone
                 } else {
                     GameManager.Instance.player.GetPlayerUI().removeWorldSpaceUnitIcon(worldIconComponent);
                 }
-                Destroy(this);
+                Destroy(gameObject);
             }
         }
 
         // Fog of War Code
 
-        private IEnumerator fogLoop()
-        {
-            bool previousRevealed = true;
+        // private IEnumerator fogLoop()
+        // {
+        //     bool previousRevealed = true;
 
-            while (true)
-            {
-                bool currentRevealed = checkReveal();
+        //     while (true)
+        //     {
+        //         bool currentRevealed = checkReveal();
                 
-                if (currentRevealed != previousRevealed)
-                {
-                    revealStatus = currentRevealed;
-                    setSquadVisibility(currentRevealed);
-                    previousRevealed = currentRevealed;
-                }
+        //         if (currentRevealed != previousRevealed)
+        //         {
+        //             revealStatus = currentRevealed;
+        //             setSquadVisibility(currentRevealed);
+        //             previousRevealed = currentRevealed;
+        //         }
 
-                yield return new WaitForSecondsRealtime(0.01f);
+        //         yield return new WaitForSecondsRealtime(0.025f);
+        //     }
+        // }
+        bool previousRevealed = true;
+        private void fogCheck()
+        {
+            bool currentRevealed = checkReveal();
+            
+            if (currentRevealed != previousRevealed)
+            {
+                revealStatus = currentRevealed;
+                setSquadVisibility(currentRevealed);
+                previousRevealed = currentRevealed;
             }
         }
+        
+        
         public override bool checkReveal()
         {
-            if (FogLayerManager.instance.getPlayerTeam() != team)
+            if (FogLayerManager.Instance.getPlayerTeam() != team)
             {
                 foreach (GameObject squadMember in squadMembers)
                 {
                     if (squadMember != null)
                     {
-                        if (FogLayerManager.instance.isInFog(squadMember.transform.position))
+                        if (FogLayerManager.Instance.isInFog(squadMember.transform.position))
                         {
                             return true;
                         }
@@ -300,6 +317,7 @@ namespace Capstone
                 {
                     if (member != null)
                         member.layer = selectableLayer;
+                        member.GetComponent<SquadMember>().showModel();
                 }       
             } else {
                 int hiddenLayer = LayerMask.NameToLayer("Hidden");
@@ -308,6 +326,7 @@ namespace Capstone
                 {
                     if (member != null)
                         member.layer = hiddenLayer;
+                        member.GetComponent<SquadMember>().hideModel();
                 }
             }
         }
@@ -443,7 +462,7 @@ namespace Capstone
             }
 
             
-            StartCoroutine(fogLoop());
+            // StartCoroutine(fogLoop());
             yield break;
         }
 

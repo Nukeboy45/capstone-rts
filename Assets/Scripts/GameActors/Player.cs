@@ -77,12 +77,11 @@ namespace Capstone
             playerCamera.tag = "MainCamera";
             playerCamera.gameObject.AddComponent<AudioListener>();
             playerUI.name = name + "UI";
-            //StartCoroutine(mouseUpdateCoroutine());
+            //StartCoroutine(cameraMove());
             //StartCoroutine(keyboardUpdateCoroutine());
             //StartCoroutine(cameraUpdateCoroutine());
         }
 
-        // Update is called once per frame
         void Update()
         {
             dTime = Time.deltaTime;

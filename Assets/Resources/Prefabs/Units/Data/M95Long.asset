@@ -18,7 +18,7 @@ MonoBehaviour:
   MinAimTime: 0.5
   MaxAimTime: 2.5
   MaxAccuracy: 0.8
-  MaxAccuracyRange: 10
+  MaxAccuracyRange: 15
   AccuracyFalloffFactor: 0.5
   AccuracyFalloffDistance: 10
   Damage: 25

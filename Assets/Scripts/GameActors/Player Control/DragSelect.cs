@@ -102,7 +102,7 @@ namespace Capstone {
         {
             Vector2 boxStart = startMousePosition;
             Vector2 boxEnd = endMousePosition;
-            Vector2 boxCenter = (boxStart + boxEnd) / 2; 
+            Vector2 boxCenter = (boxStart + boxEnd) / 2;
             boxGraphic.position = boxCenter;
             Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
             boxGraphic.sizeDelta = boxSize;

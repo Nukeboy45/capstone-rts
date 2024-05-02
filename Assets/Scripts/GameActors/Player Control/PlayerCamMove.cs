@@ -33,31 +33,34 @@ namespace Capstone {
             } 
 
             /// ---------- Camera Movement code given player input -------------------
-            float Horizontal = Input.GetAxis("Horizontal");
-            float Vertical = Input.GetAxis("Vertical");
 
-            if (Horizontal != 0f || Vertical != 0f)
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
             {
-                Transform cameraTransform = playerCamera.transform;
-
-                Vector3 cameraForwardXZ = cameraTransform.forward;
-                cameraForwardXZ.y = 0f;
-                cameraForwardXZ.Normalize();
-
-                Vector3 cameraRightXZ = cameraTransform.right;
-                cameraRightXZ.y = 0f;
-                cameraRightXZ.Normalize();
-
-                // Creates a Vector3 based on the moving direction
-                Vector3 MoveDirection = cameraForwardXZ * Vertical + cameraRightXZ * Horizontal;
-                
-                if (MoveDirection.sqrMagnitude > 1)
+                float Horizontal = Input.GetAxis("Horizontal");
+                float Vertical = Input.GetAxis("Vertical");
+                if (Horizontal != 0f || Vertical != 0f)
                 {
-                    MoveDirection.Normalize();
+                    Transform cameraTransform = playerCamera.transform;
+
+                    Vector3 cameraForwardXZ = cameraTransform.forward;
+                    cameraForwardXZ.y = 0f;
+                    cameraForwardXZ.Normalize();
+
+                    Vector3 cameraRightXZ = cameraTransform.right;
+                    cameraRightXZ.y = 0f;
+                    cameraRightXZ.Normalize();
+
+                    // Creates a Vector3 based on the moving direction
+                    Vector3 MoveDirection = cameraForwardXZ * Vertical + cameraRightXZ * Horizontal;
+                    
+                    if (MoveDirection.sqrMagnitude > 1)
+                    {
+                        MoveDirection.Normalize();
+                    }
+                    // Uses MoveDirection to apply the transformation. Space.world specifies the modifications are
+                    // being performed on the object's world coordinates not a local coordinate system.
+                    cameraTransform.Translate(MoveDirection * cameraSensitivityHorizontal * dTime, Space.World);
                 }
-                // Uses MoveDirection to apply the transformation. Space.world specifies the modifications are
-                // being performed on the object's world coordinates not a local coordinate system.
-                cameraTransform.Translate(MoveDirection * cameraSensitivityHorizontal * dTime, Space.World);
             }
 
             float scrollWheel = Input.GetAxis("Mouse ScrollWheel");

@@ -8,15 +8,16 @@ namespace Capstone
     public class FogLayerManager : MonoBehaviour
     {
         // 
-        public static FogLayerManager instance;
+        public static FogLayerManager Instance;
 
         // Private, Editor-Accessible Variables
         [SerializeField] private RenderTexture fogTexture;
         [SerializeField] private Camera fogCamera;
 
         // Private Runtime Variables
-        private Texture2D tex;
+        private Texture2D tex = null;
         private int playerTeam;
+        public bool isDirty = false;
 
         void Awake()
         {
@@ -25,14 +26,23 @@ namespace Capstone
 
         private void Update()
         {
-
+            if (isDirty) 
+            {
+                Destroy(tex);
+                RenderTexture.active = fogTexture;
+                tex = new Texture2D(fogTexture.width, fogTexture.height);
+                tex.ReadPixels(new Rect(0,0, fogTexture.width, fogTexture.height), 0, 0);
+                tex.Apply();
+                RenderTexture.active = null;
+                isDirty = false;
+            }
         }
 
         private void createFogLayerManagerSingleton()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
                 DontDestroyOnLoad(gameObject);
             }
             else 
@@ -44,23 +54,17 @@ namespace Capstone
             Vector3 cameraTranslatedCoords = fogCamera.WorldToViewportPoint(position);
             Vector2 objectCoord = new Vector2(cameraTranslatedCoords.x, cameraTranslatedCoords.y);
 
-            RenderTexture.active = fogTexture;
-            Texture2D tex = new Texture2D(fogTexture.width, fogTexture.height);
-            tex.ReadPixels(new Rect(0,0, fogTexture.width, fogTexture.height), 0, 0);
-            tex.Apply();
-            RenderTexture.active = null;
             if (tex != null)
             {
                 Color sampledColor = tex.GetPixelBilinear(objectCoord.x, objectCoord.y);
                 // Returns True if it is not fully transparent (i.e - in fog)*/
                 // Destroy texture to prevent buildup of unused, outdated textures for processing
-                Destroy(tex);
+                //Destroy(tex);
                 return sampledColor.a != 0f;
             }
-            
-
+        
             // Destroy texture to prevent buildup of unused, outdated textures for processing
-            Destroy(tex);
+            //Destroy(tex);
             return true;
         }
 

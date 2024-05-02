@@ -18,7 +18,7 @@ namespace Capstone {
 
         // Private Runtime Variable
         private GameObject unitReference;
-        private GameObject unitIconPosition;
+        [SerializeField] private GameObject unitIconPosition;
         private Unit unitComponent;
         [SerializeField] private Camera playerCamera;
         private RectTransform rectTransform;
@@ -44,7 +44,17 @@ namespace Capstone {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
             updatePositionCoroutine = StartCoroutine(updateIconPositionLoop());
         }
+        void OnDisable()
+        {
+            // Stop the coroutine when the object is deactivated
+            StopCoroutine(updatePositionCoroutine);
+        }
 
+        void OnEnable()
+        {
+            // Restart the coroutine when the object is reactivated
+            updatePositionCoroutine = StartCoroutine(updateIconPositionLoop());
+        }
         private IEnumerator updateIconPositionLoop()
         {
             while (true)
@@ -63,18 +73,24 @@ namespace Capstone {
 
                         if (Mathf.Abs(angle) < checkingFactor && getReferenceUnitComponent().getRevealedIcon() == true)
                         {
-                            canvasGroup.alpha = 1;
-                            canvasGroup.interactable = true;
-                            canvasGroup.blocksRaycasts = true;
+                            //if (canvasGroup != null) {
+                                canvasGroup.alpha = 1;
+                                canvasGroup.interactable = true;
+                                canvasGroup.blocksRaycasts = true;
+                            //}
                             currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
                             gameObject.transform.position = currentUIPosition;
                             float scaleFactor = Mathf.Clamp(550f / distance, 5f, 150f);
-                            rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                            //if (rectTransform != null) {
+                                rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                            //}
                         } else {
                             canvasGroup.alpha = 0;
                             canvasGroup.interactable = false;
                             canvasGroup.blocksRaycasts = false;
                         }
+                    } else {
+                        yield return null;
                     }
                 }
                 yield return null;

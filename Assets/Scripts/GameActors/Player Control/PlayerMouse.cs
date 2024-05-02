@@ -17,62 +17,70 @@ namespace Capstone {
         private PlayerUI playerUI;
         //private Camera playerCamera;
         private Camera rayCamera;
+        private Vector3 prevMousePosition = Vector3.zero;
+        
 
+
+
+        private Squad mouseSquad;    
+        private RaycastHit maskHit;
         public void mouseUpdate(List<GameObject> selected = null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Input.mousePosition != prevMousePosition) {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                prevMousePosition = Input.mousePosition;
+            
 
-            RaycastHit[] hits = Physics.RaycastAll(ray);
+                RaycastHit[] hits = Physics.RaycastAll(ray);
 
-            Squad mouseSquad = null;
+                mouseSquad = null;
 
-            foreach (RaycastHit hit in hits)
-            {
-                if ((hit.collider.gameObject.CompareTag("SquadMember") && hit.collider.gameObject.layer == LayerMask.NameToLayer("Visible")) || playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon") != null)
+                foreach (RaycastHit hit in hits)
                 {
-                    SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>(); 
+                    if ((hit.collider.gameObject.CompareTag("SquadMember") && hit.collider.gameObject.layer == LayerMask.NameToLayer("Visible")) || playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon") != null)
+                    {
+                        SquadMember squadMember = hit.collider.gameObject.GetComponent<SquadMember>(); 
 
-                    if (squadMember == null) {
-                        mouseSquad = playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon").GetComponent<UnitIconUIWorld>().getReferenceUnitGameObject().GetComponent<Squad>();
-                    } else
-                        mouseSquad = squadMember.parent;
-                    break;
+                        if (squadMember == null) {
+                            mouseSquad = playerUI.checkMouseOverWorldIcon(Input.mousePosition, "SquadIcon").GetComponent<UnitIconUIWorld>().getReferenceUnitGameObject().GetComponent<Squad>();
+                        } else
+                            mouseSquad = squadMember.parent;
+                        break;
+                    }
+                }
+
+                if (Physics.Raycast(ray, out maskHit, Mathf.Infinity, ground))
+                {
+                    if (mouseSquad != null) 
+                    {
+                        if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
+                        else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
+                    } 
+
+                    if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
+                    {
+                        Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                        List<RaycastHit> raycastHits;
+                        Transform squadLeadTransform = squad.getCurrentTransform();
+                        if (squadLeadTransform != null)
+                        {
+                            raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                            moveMarkerPool.showMoveMarkers(raycastHits);
+                        }
+                    } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
+                        moveMarkerPool.hideMoveMarkers();
+                    }
                 }
             }
 
-            RaycastHit maskHit;
-
-            if (Physics.Raycast(ray, out maskHit, Mathf.Infinity, ground))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (mouseSquad != null) 
-                {
-                    if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
-                    else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
-                } 
+                leftClick(selected, mouseSquad);
+            }
 
-                if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
-                {
-                    Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
-                    List<RaycastHit> raycastHits;
-                    Transform squadLeadTransform = squad.getCurrentTransform();
-                    if (squadLeadTransform != null)
-                    {
-                        raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                        moveMarkerPool.showMoveMarkers(raycastHits);
-                    }
-                } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
-                    moveMarkerPool.hideMoveMarkers();
-                }
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    leftClick(selected, mouseSquad);
-                }
-
-                if (Input.GetMouseButtonDown(1))
-                {
-                    rightClick(selected, maskHit);
-                }
+            if (Input.GetMouseButtonDown(1))
+            {
+                rightClick(selected, maskHit);
             }
         }
 
