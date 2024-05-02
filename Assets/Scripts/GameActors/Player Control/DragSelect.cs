@@ -93,6 +93,7 @@ namespace Capstone {
                     selection = null;
                     startMousePosition = Vector3.zero;
                     endMousePosition = Vector3.zero;
+                    drawBox();
                 }    
             }
             

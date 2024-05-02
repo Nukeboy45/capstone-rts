@@ -10,6 +10,7 @@ namespace Capstone
     {
         // Object functionality Variables
         public Squad parent;
+        [SerializeField] public FogDetection fogDetection;
 
         // Private, Editor-Accessible Variables
         [SerializeField] protected HideObject[] hideObjects;
@@ -186,7 +187,7 @@ namespace Capstone
                         }
                     }   
                 }
-                yield return new WaitForSecondsRealtime(0.05f);
+                yield return null;
             }
             checkForTarget();
             firingLoop = null;

@@ -26,16 +26,16 @@ namespace Capstone
 
         private void Update()
         {
-            if (isDirty) 
-            {
-                Destroy(tex);
-                RenderTexture.active = fogTexture;
-                tex = new Texture2D(fogTexture.width, fogTexture.height);
-                tex.ReadPixels(new Rect(0,0, fogTexture.width, fogTexture.height), 0, 0);
-                tex.Apply();
-                RenderTexture.active = null;
-                isDirty = false;
-            }
+            // if (isDirty) 
+            // {
+            //     Destroy(tex);
+            //     RenderTexture.active = fogTexture;
+            //     tex = new Texture2D(fogTexture.width, fogTexture.height);
+            //     tex.ReadPixels(new Rect(0,0, fogTexture.width, fogTexture.height), 0, 0);
+            //     tex.Apply();
+            //     RenderTexture.active = null;
+            //     isDirty = false;
+            // }
         }
 
         private void createFogLayerManagerSingleton()

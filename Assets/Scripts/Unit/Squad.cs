@@ -212,11 +212,11 @@ namespace Capstone
         public void killModel(GameObject modelObject) 
         {
             if (modelObject == squadLead)
-            {
                 squadLead = null;
-            }
             squadMembers.Remove(modelObject);
             Destroy(modelObject);
+            if (FogLayerManager.Instance.getPlayerTeam() == team)
+                FogLayerManager.Instance.isDirty = true;
             aliveMembers--;
             SquadMoveMarkerPool.sharedInstance.updateVisibleMarkers(aliveMembers);
             worldIconComponent.setAliveModels(aliveMembers);
@@ -287,7 +287,6 @@ namespace Capstone
             }
         }
         
-        
         public override bool checkReveal()
         {
             if (FogLayerManager.Instance.getPlayerTeam() != team)
@@ -296,16 +295,34 @@ namespace Capstone
                 {
                     if (squadMember != null)
                     {
-                        if (FogLayerManager.Instance.isInFog(squadMember.transform.position))
-                        {
+                        SquadMember squadMemberComponent = squadMember.GetComponent<SquadMember>();
+                        if (squadMemberComponent.fogDetection.unitVisible)
                             return true;
-                        }
                     }
                 }
                 return false;
             }
             return true;
         }
+
+        // public override bool checkReveal()
+        // {
+        //     if (FogLayerManager.Instance.getPlayerTeam() != team)
+        //     {
+        //         foreach (GameObject squadMember in squadMembers)
+        //         {
+        //             if (squadMember != null)
+        //             {
+        //                 if (FogLayerManager.Instance.isInFog(squadMember.transform.position))
+        //                 {
+        //                     return true;
+        //                 }
+        //             }
+        //         }
+        //         return false;
+        //     }
+        //     return true;
+        // }
 
         public void setSquadVisibility(bool state)
         {
