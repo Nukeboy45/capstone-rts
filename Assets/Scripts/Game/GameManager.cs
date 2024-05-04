@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Capstone
 {
@@ -20,8 +21,8 @@ namespace Capstone
         public Camera rayCamera;
 
         // ---- Private Variables ------
-        private int team1Tickets = 100;
-        private int team2Tickets = 100;
+        private int team1Tickets = 50;
+        private int team2Tickets = 50;
 
         // Timing Variables
         private DateTime lastObjectiveTick;
@@ -176,16 +177,38 @@ namespace Capstone
                 else if (point.getOwner() == 2)
                     team2Points++;
             }
-            if (team1Points > team2Points)
-                team2Tickets -= team1Points;
-            else if (team2Points > team1Points)
-                team1Tickets -= team2Points;
-            
+            if (team1Points > team2Points) {
+                if (team2Tickets - team1Points < 0)
+                {
+                    team2Tickets = 0;
+                } else {
+                    team2Tickets -= team1Points;
+                }
+            } else if (team2Points > team1Points) {
+                if (team1Tickets - team2Points < 0) {
+                    team1Tickets = 0;
+                } else {
+                    team1Tickets -= team2Points;
+                }
+            }
+
             foreach(GameObject gameActor in players)
             {
                 Player playerComp = gameActor.GetComponent<Player>();
                 if (playerComp != null)
                     playerComp.GetPlayerUI().updateScoreBars(team1Tickets, team2Tickets);
+            }
+
+            if (team1Tickets == 0)
+            {
+                // Team 1 Victory
+                Time.timeScale = 0f;
+            }
+
+            if (team2Tickets == 0)
+            {
+                // Team 2 Victory
+                Time.timeScale = 0f;
             }
         }
 

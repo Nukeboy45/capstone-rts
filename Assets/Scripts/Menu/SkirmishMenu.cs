@@ -54,7 +54,7 @@ public class SkirmishMenu : MonoBehaviour
 
     public void initializeMapList()
     {
-        float offset = -90f;
+        float offset = -110f;
         int times = 0;
         foreach (MapData data in maps)
         {
@@ -64,7 +64,7 @@ public class SkirmishMenu : MonoBehaviour
             mapName.text = "  " + data.mapName;
             TextMeshProUGUI mapSlots = mapButton.transform.Find("mapSlots").GetComponent<TextMeshProUGUI>();
             mapSlots.text = "(" + data.playerSlots.ToString() + ")";
-            mapButton.transform.position += new Vector3(0, offset * times, 0);
+            mapButton.transform.position += new Vector3(5, -10 + offset * times, 0);
 
             //
             Button mapButtonComponent = mapButton.GetComponent<Button>();
@@ -82,12 +82,14 @@ public class SkirmishMenu : MonoBehaviour
             {
                 selectedMapButton.GetComponent<Image>().color = Color.white;
             }
-            Color color = new Color(0.27f,0.27f,0.27f,1.0f);
+            Color color = new Color(0.7f,0.7f,0.7f,1.0f);
             selectedButton.GetComponent<Image>().color = color;
             selectedMap = mapName;
             selectedMapSlots = mapSlots;
             selectedMapButton = selectedButton;
             startButton.interactable = true;
+            TextMeshProUGUI startButtonText = startButton.GetComponentInChildren<TextMeshProUGUI>();
+            startButtonText.color = new Color(255, 255, 255, 255);
         } else {
             if (selectedMapButton != null)
             {
@@ -97,6 +99,8 @@ public class SkirmishMenu : MonoBehaviour
             selectedMapSlots = mapSlots;
             selectedMapButton = null;
             startButton.interactable = false;
+            TextMeshProUGUI startButtonText = startButton.GetComponentInChildren<TextMeshProUGUI>();
+            startButtonText.color = new Color(255, 255, 255, 100);
         }
         updateSelectionMenu(mapSlots);
     }

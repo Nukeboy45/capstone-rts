@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -73,17 +72,17 @@ namespace Capstone {
 
                         if (Mathf.Abs(angle) < checkingFactor && getReferenceUnitComponent().getRevealedIcon() == true)
                         {
-                            //if (canvasGroup != null) {
+                            if (canvasGroup != null) {
                                 canvasGroup.alpha = 1;
                                 canvasGroup.interactable = true;
                                 canvasGroup.blocksRaycasts = true;
-                            //}
+                            }
                             currentUIPosition = playerCamera.WorldToScreenPoint(unitIconPosition.transform.position);   
                             gameObject.transform.position = currentUIPosition;
                             float scaleFactor = Mathf.Clamp(550f / distance, 5f, 150f);
-                            //if (rectTransform != null) {
+                            if (rectTransform != null) {
                                 rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-                            //}
+                            }
                         } else {
                             canvasGroup.alpha = 0;
                             canvasGroup.interactable = false;

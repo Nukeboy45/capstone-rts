@@ -10,6 +10,11 @@ namespace Capstone {
         public bool unitVisible = false;
         public List<Collider> colliders = new List<Collider>();
 
+        void Update() {
+            colliders.RemoveAll(c => c == null);
+            if (colliders.Count == 0 && unitVisible != false)
+                unitVisible = false;
+        }
         void OnTriggerEnter(Collider other) {
             if (other.gameObject.layer == LayerMask.NameToLayer("FOV") && !colliders.Contains(other)) {
                 colliders.Add(other);
@@ -25,12 +30,6 @@ namespace Capstone {
         }
 
         void UpdateVisibility() {
-            List<Collider> newList = new List<Collider>();
-            foreach (Collider c in colliders) {
-                if (c != null)
-                    newList.Add(c);
-            }
-            colliders = newList;
             unitVisible = colliders.Count > 0;
         }
     }
