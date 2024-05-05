@@ -33,20 +33,22 @@ public class SkirmishMenu : MonoBehaviour
 
     public void importAllMapData()
     {
-        string[] sceneNames = Directory.GetFiles("Assets/Scenes/SkirmishMaps", "*.unity");
+        string[] mapJsonPaths = Directory.GetFiles(Application.streamingAssetsPath + "/Maps/", "*.json");
 
         // Loading all maps in the "Skirmish Maps" Folder
-        foreach (string name in sceneNames)
+        foreach (string mapJsonPath in mapJsonPaths)
         {
-            string mapName = Path.GetFileNameWithoutExtension(name);
+            // Debug.Log(name);
+            // string mapName = Path.GetFileNameWithoutExtension(name);
 
-            TextAsset mapJson = Resources.Load<TextAsset>("Maps/" + mapName);
+            // string mapJsonPath = "Maps/" + mapName;
 
-            if (mapJson == null)
+            string mapJsonContent = File.ReadAllText(mapJsonPath);
+            if (mapJsonContent == null)
             {
                 Debug.Log("Failed to load map data!");
             } else {
-                MapData mapData = JsonUtility.FromJson<MapData>(mapJson.text);
+                MapData mapData = JsonUtility.FromJson<MapData>(mapJsonContent);
                 maps.Add(mapData);
             }
         }
@@ -64,7 +66,7 @@ public class SkirmishMenu : MonoBehaviour
             mapName.text = "  " + data.mapName;
             TextMeshProUGUI mapSlots = mapButton.transform.Find("mapSlots").GetComponent<TextMeshProUGUI>();
             mapSlots.text = "(" + data.playerSlots.ToString() + ")";
-            mapButton.transform.position += new Vector3(5, -10 + offset * times, 0);
+            mapButton.transform.position += new Vector3(2.5f, -10 + offset * times, 0);
 
             //
             Button mapButtonComponent = mapButton.GetComponent<Button>();

@@ -68,25 +68,32 @@ namespace Capstone
                     }
                 }
 
+                if (squadState == SquadState.retreating)
+                {
+                    if (checkStopped(0.6f))
+                        squadState = SquadState.stationary;
+                }
+
                 if (squadState == SquadState.moving || squadState == SquadState.attackmove)
                 {
                     if (team == FogLayerManager.Instance.getPlayerTeam())
                         FogLayerManager.Instance.isDirty = true;
-                    if (checkStopped())
+                    if (checkStopped(0.4f))
                         squadState = SquadState.stationary;
                 }
                 yield return new WaitForFixedUpdate();
             }
         }
 
-        private bool checkStopped()
+        private bool checkStopped(float stopDistance)
         {
             foreach (GameObject obj in squadMembers)
             {
                 if (obj != null)
                 {
                     SquadMember squadMemberComponent = obj.GetComponent<SquadMember>();
-                    if (squadMemberComponent.getRemainingDistance() > 0.1f)
+                    Debug.Log(squadMemberComponent.getRemainingDistance());
+                    if (squadMemberComponent.getRemainingDistance() > stopDistance)
                         return false;
                 }
             }
@@ -98,10 +105,13 @@ namespace Capstone
         /// </summary>
         public override void select()
         {
-            base.select();
-            multiSelect = false;
-            selected = true;
-            showSelectionRadius();
+            if (squadState != SquadState.retreating)
+            {
+                base.select();
+                multiSelect = false;
+                selected = true;
+                showSelectionRadius();
+            }
         }
 
         /// <summary>
@@ -120,17 +130,20 @@ namespace Capstone
         /// <param name="hit"></param>
         public override void moveTo(List<RaycastHit> hits)
         {
-            Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
-            float longestMoveTime = getMaxMoveTime(movePositions, getSquadModelSpeed());
-            foreach (var pair in movePositions)
+            if (squadState != SquadState.retreating)
             {
-                SquadMember component = pair.Key.GetComponent<SquadMember>();
-                NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
-                float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
-                float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
-                component.moveToPosition(pair.Value.point, speed);
+                Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
+                float longestMoveTime = getMaxMoveTime(movePositions, getSquadModelSpeed());
+                foreach (var pair in movePositions)
+                {
+                    SquadMember component = pair.Key.GetComponent<SquadMember>();
+                    // NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
+                    float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
+                    float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
+                    component.moveToPosition(pair.Value.point, speed);
+                }
+                squadState = SquadState.moving;
             }
-            squadState = SquadState.moving;
         }
 
         private float getMaxMoveTime(Dictionary<GameObject, RaycastHit> movePairs , float speed)
@@ -190,16 +203,19 @@ namespace Capstone
 
         public void retreat(List<RaycastHit> hits)
         {
-            squadState = SquadState.retreating;
-            Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
-            float longestMoveTime = getMaxMoveTime(movePositions, 10.0f);
-            foreach (var pair in movePositions)
+            if (squadState != SquadState.retreating)
             {
-                SquadMember component = pair.Key.GetComponent<SquadMember>();
-                NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
-                float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
-                float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
-                component.moveToPosition(pair.Value.point, speed);
+                squadState = SquadState.retreating;
+                Dictionary<GameObject, RaycastHit> movePositions = unitFunctions.getOptimalMovePositions(hits, squadMembers, squadLead);
+                float longestMoveTime = getMaxMoveTime(movePositions, 10.0f);
+                foreach (var pair in movePositions)
+                {
+                    SquadMember component = pair.Key.GetComponent<SquadMember>();
+                    // NavMeshAgent agent = pair.Key.GetComponent<NavMeshAgent>();
+                    float distance = Vector3.Distance(pair.Key.transform.position, pair.Value.point);
+                    float speed = getNormalizedMoveSpeed(distance, longestMoveTime, getSquadModelSpeed());
+                    component.moveToPosition(pair.Value.point, speed);
+                }
             }
         }
 

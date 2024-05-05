@@ -20,6 +20,7 @@ namespace Capstone {
         [SerializeField] private GameObject worldSpaceIconsParent;
         [SerializeField] private RectTransform boxSelectionGraphic;
         [SerializeField] private Transform cursorPosition;
+        [SerializeField] private GameObject pauseMenu;
 
         // Private Runtime Variables
         private UIState uiState = UIState.defaultMenu;
@@ -38,10 +39,13 @@ namespace Capstone {
         {
             switch (faction)
             {
-                case (FactionType.centralPowers):
+                case FactionType.centralPowers:
                     // Menu and Unit Construction buttons - Central Powers
                     if (!buttonImages.ContainsKey("ausRifle"))
                         buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
+                    break;
+                case FactionType.ententeForces:
+
                     break;
             }
             // Generic Button Images
@@ -81,6 +85,16 @@ namespace Capstone {
             {
                 updateUnitIconBarPositions();
             }
+        }
+
+        public void showPauseMenu()
+        {
+            pauseMenu.SetActive(true);
+        }
+
+        public void hidePauseMenu()
+        {
+            pauseMenu.SetActive(false);
         }
         public void Button1()
         {

@@ -63,25 +63,28 @@ namespace Capstone {
                 }
             }
 
-            float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
-            if (scrollWheel > 0f) // Scrolling Up
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetAxis("Mouse ScrollWheel") < 0f) // Scrolling Up
             {
-                if (playerCamera.fieldOfView > maxZoom)
+                float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
+                if (scrollWheel > 0f)
                 {
-                    // playerCamera.transform.position = new Vector3(currX, currY - zoomRateY * dTime, currZ);
-                    // playerCamera.transform.position = new Vector3(currX, Mathf.Clamp(playerCamera.transform.position.y, 12, 20), currZ);
-                    playerCamera.fieldOfView -= zoomRateFOV * dTime;
-                    playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 50, 110);
-                }
-            }
-            else if (scrollWheel < 0f) // Scrolling Down
-            {
-                if (playerCamera.fieldOfView < minZoom)
+                    if (playerCamera.fieldOfView > maxZoom)
+                    {
+                        // playerCamera.transform.position = new Vector3(currX, currY - zoomRateY * dTime, currZ);
+                        // playerCamera.transform.position = new Vector3(currX, Mathf.Clamp(playerCamera.transform.position.y, 12, 20), currZ);
+                        playerCamera.fieldOfView -= zoomRateFOV * dTime;
+                        playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 50, 110);
+                    }
+                } 
+                else if (scrollWheel < 0f) // Scrolling Down
                 {
-                    // playerCamera.transform.position = new Vector3(currX, currY + zoomRateY * dTime, currZ);
-                    // playerCamera.transform.position = new Vector3(currX, Mathf.Clamp(playerCamera.transform.position.y, 12, 20), currZ);
-                    playerCamera.fieldOfView += zoomRateFOV * dTime; 
-                    playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 50, 110);
+                    if (playerCamera.fieldOfView < minZoom)
+                    {
+                        // playerCamera.transform.position = new Vector3(currX, currY + zoomRateY * dTime, currZ);
+                        // playerCamera.transform.position = new Vector3(currX, Mathf.Clamp(playerCamera.transform.position.y, 12, 20), currZ);
+                        playerCamera.fieldOfView += zoomRateFOV * dTime; 
+                        playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 50, 110);
+                    }
                 }
             }
         }

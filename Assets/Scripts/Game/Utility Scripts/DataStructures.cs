@@ -12,4 +12,22 @@ namespace Capstone
         public Slider sliderComponent;
         public TextMeshProUGUI textComponent;
     }
+
+    [System.Serializable]
+    public class GameSettings
+    {
+        public int mainVolume;
+        public int musicVolume;
+        public int resWidth;
+        public int resHeight;
+        public bool fullscreen;
+    }
+
+    [System.Serializable]
+    public class MapData
+    {
+        public string mapID;
+        public string mapName;
+        public int playerSlots;
+    }
 }

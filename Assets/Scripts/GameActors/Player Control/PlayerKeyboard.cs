@@ -14,6 +14,7 @@ namespace Capstone {
         private SpawnPoint spawnPoint;
         private GameActor player;
         private Camera rayCamera;
+        private bool keycheckRunning = false;
 
         public void keyboardUpdate(List<GameObject> selected)
         {
@@ -26,12 +27,19 @@ namespace Capstone {
                     char keyPressed = keyPress[0];
                     KeyCode keyCode = (KeyCode)keyPressed;
 
-                    keycodeCheck(keyCode, selected);
+                    if (!keycheckRunning)
+                        keycodeCheck(keyCode, selected);
                 }
+
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    GameManager.Instance.pause();
+                    
             }
         }
         private void keycodeCheck(KeyCode keyCode, List<GameObject> selected)
         {
+            keycheckRunning = true;
+            Debug.Log(keyCode);
             switch (keyCode)
             {
                 case KeyCode.R:
@@ -75,6 +83,7 @@ namespace Capstone {
                     }
                     break;
             }
+            keycheckRunning = false;
         }
 
         // -- Getters / Setter Methods --

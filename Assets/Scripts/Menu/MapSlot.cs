@@ -20,7 +20,7 @@ namespace Capstone {
         private Dictionary<string, FactionType> factionTypes = new Dictionary<string, FactionType>()
         {
             {"Central Powers", FactionType.centralPowers},
-            {"Allied Forces", FactionType.alliedForces}
+            {"Entente Forces", FactionType.ententeForces}
         };
 
         private Dictionary<string, int> teamDict = new Dictionary<string, int>()

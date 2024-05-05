@@ -104,10 +104,18 @@ namespace Capstone {
             Vector2 boxStart = startMousePosition;
             Vector2 boxEnd = endMousePosition;
             Vector2 boxCenter = (boxStart + boxEnd) / 2;
-            boxGraphic.position = boxCenter;
             Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
             boxGraphic.sizeDelta = boxSize;
+            boxGraphic.position = boxCenter;
         }
+
+        // void drawBox()
+        // {
+        //     float width = endMousePosition.x - startMousePosition.x;
+        //     float height = endMousePosition.y - startMousePosition.y;
+        //     boxGraphic.sizeDelta = new Vector2(Mathf.Abs(width), Mathf.Abs(height));
+        //     boxGraphic.anchoredPosition = new Vector2(startMousePosition.x, startMousePosition.y) + new Vector2(width/2, height/2);
+        // }
         private IEnumerator selectInsideBox()
         {
             startMousePosition = Vector3.zero;

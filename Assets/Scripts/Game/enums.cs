@@ -24,7 +24,7 @@ namespace Capstone
     public enum FactionType
     {
         centralPowers,
-        alliedForces
+        ententeForces
     }
 
     [Serializable]

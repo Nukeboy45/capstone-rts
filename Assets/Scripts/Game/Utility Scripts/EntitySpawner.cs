@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Capstone
 {
@@ -20,8 +22,18 @@ namespace Capstone
             StartCoroutine(spawnDebugSquads());
         }
 
-        public void SquadSpawn(GameObject squadPrefab, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
+        public IEnumerator SquadSpawn(AsyncOperationHandle squadAsyncOperation, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
         {
+            GameObject squadPrefab = null;
+            yield return squadAsyncOperation;
+            if (squadAsyncOperation.Status == AsyncOperationStatus.Succeeded)
+            {
+                squadPrefab = squadAsyncOperation.Result as GameObject;
+            }
+            else 
+            {
+                yield break;
+            }
             GameObject squadObj = Instantiate(squadPrefab, position, Quaternion.identity);
             Squad squad = squadObj.GetComponent<Squad>();
             squad.team = team;
@@ -43,8 +55,11 @@ namespace Capstone
             {
                 yield return null;
             }
-            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/entRifleSquad"), new Vector3(60, 0, 60), 1, 1);
-            SquadSpawn(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/cenRifleSquad"), new Vector3(45, 0, 45), 0, 0);
+
+            AsyncOperationHandle handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(60, 0, 60), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("cenRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(40, 0, 40), 0, 0));
         }
     }
 }

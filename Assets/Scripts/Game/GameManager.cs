@@ -166,6 +166,28 @@ namespace Capstone
             }
         }
 
+        private bool paused = false;
+        public void pause()
+        {
+            if (paused == false)
+            {
+                paused = true;
+                playerUI.showPauseMenu();
+            }
+            else 
+            {
+                resume();
+                return;
+            }
+            Time.timeScale = 0f;
+        }
+        public void resume()
+        {
+            paused = false;
+            playerUI.hidePauseMenu();
+            Time.timeScale = 1f;
+        }
+
         private void capturePointTicketUpdate()
         {
             int team1Points = 0;

@@ -110,7 +110,9 @@ namespace Capstone
         {
             bool targetInRange = false;
             while (target != null)
-            {
+            { 
+                if (Time.timeScale == 0f)
+                    yield return new WaitWhile(() => Time.timeScale == 0f);
                 Collider[] collisions = Physics.OverlapSphere(rangeCollider.transform.position + rangeCollider.center, rangeCollider.radius);
                 foreach (Collider collider in collisions)
                 {

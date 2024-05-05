@@ -22,7 +22,7 @@ namespace Capstone
             MatchManager.instance.resetMatchVariables();
             MatchManager.instance.setMapPlayerSlots(2);
             MatchManager.instance.addMatchMember(0, GameActorType.player, FactionType.centralPowers);
-            MatchManager.instance.addMatchMember(1, GameActorType.aiEasy, FactionType.alliedForces);
+            MatchManager.instance.addMatchMember(1, GameActorType.aiEasy, FactionType.ententeForces);
         }
     }
 }

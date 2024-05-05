@@ -7,14 +7,25 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
 
-    [SerializeField] private Canvas mainCanvas;
-    [SerializeField] private Canvas settingCanvas;
-    [SerializeField] private Canvas skirmishCanvas;
     [SerializeField] private Camera menuCamera;
     [SerializeField] private Animator menuAnimator;
-    [SerializeField] private Image[] menuBackgrounds;
-    [SerializeField] private Sprite[] menuBackgroundImages;
+        
+    [Header("Main Menu Screen")]
+    [SerializeField] private Canvas mainCanvas;
+    [SerializeField] private Image mainScreenBackground;
+    [SerializeField] private Sprite[] mainScreenBackgroundImages;
+
+    [Header("Skirmish Menu Screen")]
+    [SerializeField] private Canvas skirmishCanvas;
+    [SerializeField] private Image skirmishScreenBackground;
+    [SerializeField] private Sprite[] skirmishScreenBackgroundImages;
+
+    [Header("Settings Menu Screen")]
+    [SerializeField] private Canvas settingCanvas;
+    [SerializeField] private Image settingScreenBackground;
+    [SerializeField] private Sprite[] settingScreenBackgroundImages;
     [SerializeField] private List<Canvas> menus = new List<Canvas>();
+
 
     private void Start()
     {
@@ -45,11 +56,6 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
-    public void startGame()
-    {
-
-    }
-
     public void updateAspectRatios()
     {
         foreach (Canvas canvas in menus)
@@ -63,21 +69,8 @@ public class MainMenu : MonoBehaviour
 
     private void getRandomBackgrounds()
     {
-        List<int> backgroundIndexes = new List<int>();
-
-        while (backgroundIndexes.Count < menuBackgrounds.Length)
-        {
-            int newIndex = Random.Range(0, 9);
-            if (!backgroundIndexes.Contains(newIndex))
-                backgroundIndexes.Add(newIndex);
-        }
-
-        int i = 0;
-        foreach (Image backgroundImage in menuBackgrounds)
-        {
-            Debug.Log(backgroundIndexes[i]);
-            backgroundImage.sprite = menuBackgroundImages[backgroundIndexes[i]];
-            i++;
-        }
+        mainScreenBackground.sprite = mainScreenBackgroundImages[Random.Range(0,3)];
+        skirmishScreenBackground.sprite = skirmishScreenBackgroundImages[Random.Range(0,3)];
+        settingScreenBackground.sprite = settingScreenBackgroundImages[Random.Range(0,3)];
     }
 }
