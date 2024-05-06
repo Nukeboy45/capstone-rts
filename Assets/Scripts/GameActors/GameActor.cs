@@ -16,7 +16,8 @@ namespace Capstone
         public LayerMask clickable;
         public LayerMask ground;
         public Camera rayCamera;
-        public SpawnPoint spawnPoint;
+        public ProductionStructure headquarters;
+        public GameObject retreatPoint;
 
         // Resource and Gameplay variables
         public int firewood;

@@ -529,7 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualCollider: {fileID: 3916331789703224636}
-  unitVisible: 0
+  visible: 0
   colliders: []
 --- !u!1 &7410556580433263992
 GameObject:

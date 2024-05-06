@@ -11,7 +11,6 @@ namespace Capstone {
         [SerializeField] private LayerMask clickable;
 
         // -- Private, Runtime Variables --
-        private SpawnPoint spawnPoint;
         private GameActor player;
         private Camera rayCamera;
         private bool keycheckRunning = false;
@@ -52,7 +51,7 @@ namespace Capstone {
                                 Unit unitComp = Selection.getSelectionComponent<Unit>(gameObject);
                                 if (unitComp is Squad)
                                 {
-                                    Ray ray = rayCamera.ScreenPointToRay(rayCamera.WorldToScreenPoint(spawnPoint.transform.position));
+                                    Ray ray = rayCamera.ScreenPointToRay(rayCamera.WorldToScreenPoint(player.retreatPoint.transform.position));
                                     RaycastHit hit;
 
                                     if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
@@ -89,6 +88,5 @@ namespace Capstone {
         // -- Getters / Setter Methods --
         public void setPlayer(GameActor newPlayer) { player = newPlayer;}
         public void setRayCamera(Camera newCamera) { rayCamera = newCamera;}
-        public void setSpawnPoint(SpawnPoint newSpawnPoint) { spawnPoint = newSpawnPoint;}
     }
 }

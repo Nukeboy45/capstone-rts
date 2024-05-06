@@ -72,7 +72,7 @@ namespace Capstone
         {
             if (currHealth <= 0) {
                 if (firingLoop != null) { StopCoroutine(firingLoop); }
-                parent.killModel(gameObject, this);
+                StartCoroutine(parent.killModel(gameObject, this));
             }
 
             checkForTarget();
@@ -262,20 +262,13 @@ namespace Capstone
             myAgent.SetDestination(point);
         }
 
-        public void setSightRadiusStatus(bool status)
-        {
-            if (status)
-            {
-                sightRadius.SetActive(true);
-            } else {
-                sightRadius.SetActive(false);
-            }
-        }
+        public void setSightRadiusStatus(bool status) { sightRadius.SetActive(status); }
 
         private void initializeWeapon()
         {
             if (weaponObject == null)
             {
+                Debug.Log("Initializing new weapon!");
                 weaponObject = Instantiate(weaponPrefab, weaponContainer.transform.position, weaponContainer.transform.rotation);
                 weaponScript = weaponObject.GetComponent<Weapon>();
                 weaponObject.transform.SetParent(weaponContainer.transform);
@@ -291,6 +284,8 @@ namespace Capstone
                 weaponAudio.setWeaponSounds(weaponScript.getWeaponSounds());
                 minAimTime = weaponScript.getMinAimTime();
                 maxAimTime = weaponScript.getMaxAimTime();
+                if (!parent.checkReveal())
+                    hideModel();
                 StartCoroutine(weaponSwapWait());
             }
         }
@@ -299,6 +294,7 @@ namespace Capstone
         {
             yield return new WaitForSecondsRealtime(1.5f);
             swappingWeapons = false;
+            yield break;
         }
 
         public void setNewWeapon(GameObject newWeaponPrefab)
@@ -306,6 +302,7 @@ namespace Capstone
             swappingWeapons = true;
             weaponScript = null;
             Destroy(weaponObject);
+            weaponObject = null;
             weaponPrefab = newWeaponPrefab;
             initializeWeapon();
         }

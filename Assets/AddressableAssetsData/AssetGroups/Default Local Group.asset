@@ -29,6 +29,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - Units - Infantry Squads
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73cd290c8702b6d4a9fb41d3366f8ede
+    m_Address: cenAssaultSquad
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Units - Infantry Squads
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfcd8b944eeb4ec46b8f8f3a428b27d3
+    m_Address: cenHeadquarters
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Structures - Production Structures
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1a974dc392916c44d8dc1c300e77b11d, type: 2}
   m_SchemaSet:

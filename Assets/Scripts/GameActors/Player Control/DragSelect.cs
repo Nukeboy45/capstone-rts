@@ -124,7 +124,6 @@ namespace Capstone {
             yield return new WaitForSeconds(0.01f);
             if (selectBox != null)
                 collisions = selectBox.cachedCollisions;
-            Debug.Log(collisions.Count);
             if (collisions != null)
             {
                 looping = true;

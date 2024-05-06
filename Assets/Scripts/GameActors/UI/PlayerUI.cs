@@ -103,7 +103,7 @@ namespace Capstone {
                 case UIState.defaultMenu:
                     if (faction == FactionType.centralPowers)
                     {
-                        playerObj.spawnPoint.addToBuildQueue(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/cenRifleSquad"));
+                        //playerObj.spawnPoint.addToBuildQueue(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/cenRifleSquad"));
                     }
                     break;
             }

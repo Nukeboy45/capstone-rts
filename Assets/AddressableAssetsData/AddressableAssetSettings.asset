@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: d759a0c6758ebef45b54f1ca5af1d14e
   m_currentHash:
     serializedVersion: 2
-    Hash: 24c3dc5217ba1441ab967ac37fbb561e
+    Hash: 46f48a152f1e2e263e991ad736f86497
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Units - Infantry Squads
+    - Structures - Production Structures
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 2ec11f1dd5eea0c4f84addcb4c2a65b3, type: 2}

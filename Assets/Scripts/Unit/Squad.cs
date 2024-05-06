@@ -90,7 +90,6 @@ namespace Capstone
                 if (obj != null)
                 {
                     SquadMember squadMemberComponent = obj.GetComponent<SquadMember>();
-                    Debug.Log(squadMemberComponent.getRemainingDistance());
                     if (squadMemberComponent.getRemainingDistance() > stopDistance)
                         return false;
                 }
@@ -217,20 +216,25 @@ namespace Capstone
             }
         }
 
+        private bool killingModel = false;
         /// <summary>
         /// Function called by a squadMember object belonging to this squad when its
         /// health reaches 0. Allows the squad to always determine proper number of 
         /// alive members.
         /// </summary>
         /// <param name="modelObject"></param>
-        public void killModel(GameObject modelObject, SquadMember killComponent) 
+        public IEnumerator killModel(GameObject modelObject, SquadMember killComponent) 
         {
+            while (killingModel)
+                yield return null;
+            killingModel = true;
             if (modelObject == squadLead)
                 squadLead = null;
             squadMembers.Remove(modelObject);
             int modelIndex = checkLowestModelPriority(killComponent.modelPriority);
             if (modelIndex != -1)
             {
+                Debug.Log("Lower model priority!");
                 SquadMember cloneTarget = squadMembers[modelIndex].GetComponent<SquadMember>();
                 reinforceMemberIndexes.Add(cloneTarget.prefabIndex);
                 cloneModel(cloneTarget, killComponent);
@@ -261,6 +265,8 @@ namespace Capstone
             else {
                 killSquad();
             }
+            killingModel = false;
+            yield break;
         }
 
         private int checkLowestModelPriority(int priority)
@@ -284,10 +290,10 @@ namespace Capstone
         private void cloneModel(SquadMember cloneTarget, SquadMember cloneParent)
         {
             cloneTarget.prefabIndex = cloneParent.prefabIndex;
+            cloneTarget.modelPriority = cloneParent.modelPriority;
             cloneTarget.setNewWeapon(cloneParent.getWeaponPrefab());
             cloneTarget.setMaxHealth(cloneParent.getMaxHealth());
-            cloneTarget.setCurrentHealth(cloneParent.getCurrentHealth());
-            cloneTarget.setRange(cloneParent.getMaxHealth());
+            cloneTarget.setRange(cloneParent.getRange());
             cloneTarget.setDefense(cloneParent.getDefense());
             cloneTarget.setMoveSpeed(cloneParent.getMoveSpeed());
             cloneTarget.setModelAccuracyModifer(cloneParent.getModelAccuracyModifer());
@@ -343,14 +349,14 @@ namespace Capstone
         
         public override bool checkReveal()
         {
-            if (FogLayerManager.Instance.getPlayerTeam() != team)
+            if (GameManager.Instance.player.team != team)
             {
                 foreach (GameObject squadMember in squadMembers)
                 {
                     if (squadMember != null)
                     {
                         SquadMember squadMemberComponent = squadMember.GetComponent<SquadMember>();
-                        if (squadMemberComponent.fogDetection.unitVisible)
+                        if (squadMemberComponent.fogDetection.visible)
                             return true;
                     }
                 }
@@ -358,45 +364,21 @@ namespace Capstone
             }
             return true;
         }
-
-        // public override bool checkReveal()
-        // {
-        //     if (FogLayerManager.Instance.getPlayerTeam() != team)
-        //     {
-        //         foreach (GameObject squadMember in squadMembers)
-        //         {
-        //             if (squadMember != null)
-        //             {
-        //                 if (FogLayerManager.Instance.isInFog(squadMember.transform.position))
-        //                 {
-        //                     return true;
-        //                 }
-        //             }
-        //         }
-        //         return false;
-        //     }
-        //     return true;
-        // }
-
         public void setSquadVisibility(bool state)
         {
             if (state)
             {
-                int selectableLayer = LayerMask.NameToLayer("Visible");
                 worldIconObj.SetActive(true);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
-                        member.layer = selectableLayer;
                         member.GetComponent<SquadMember>().showModel();
                 }       
             } else {
-                int hiddenLayer = LayerMask.NameToLayer("Hidden");
                 worldIconObj.SetActive(false);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
-                        member.layer = hiddenLayer;
                         member.GetComponent<SquadMember>().hideModel();
                 }
             }

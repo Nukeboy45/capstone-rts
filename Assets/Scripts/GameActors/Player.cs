@@ -53,7 +53,7 @@ namespace Capstone
 
             keyboard.setPlayer(this);
             keyboard.setRayCamera(rayCamera);
-            keyboard.setSpawnPoint(spawnPoint);
+            // keyboard.setSpawnPoint(spawnPoint);
             
 
             if (ui != null)

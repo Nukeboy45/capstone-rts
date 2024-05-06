@@ -84,9 +84,12 @@ namespace Capstone {
                                 rectTransform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                             }
                         } else {
-                            canvasGroup.alpha = 0;
-                            canvasGroup.interactable = false;
-                            canvasGroup.blocksRaycasts = false;
+                            if (canvasGroup != null) 
+                            {
+                                canvasGroup.alpha = 0;
+                                canvasGroup.interactable = false;
+                                canvasGroup.blocksRaycasts = false;
+                            }
                         }
                     } else {
                         yield return null;

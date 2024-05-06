@@ -6,8 +6,8 @@
     <type fullname="Capstone.Squad" preserve="all" />
     <type fullname="Capstone.SquadMember" preserve="all" />
     <type fullname="Capstone.UnitIconUIWorld" preserve="all" />
+    <type fullname="Capstone.Weapon" preserve="all" />
     <type fullname="Capstone.WeaponAudio" preserve="all" />
-    <type fullname="Capstone.WeaponData" preserve="all" />
   </assembly>
   <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
     <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
