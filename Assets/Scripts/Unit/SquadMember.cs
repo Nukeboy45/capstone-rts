@@ -276,7 +276,7 @@ namespace Capstone
         {
             if (weaponObject == null)
             {
-                weaponObject = Instantiate(weaponPrefab, weaponContainer.transform.position, Quaternion.identity);
+                weaponObject = Instantiate(weaponPrefab, weaponContainer.transform.position, weaponContainer.transform.rotation);
                 weaponScript = weaponObject.GetComponent<Weapon>();
                 weaponObject.transform.SetParent(weaponContainer.transform);
                 ammoCapacity = weaponScript.getMagazineCapacity();
@@ -291,11 +291,17 @@ namespace Capstone
                 weaponAudio.setWeaponSounds(weaponScript.getWeaponSounds());
                 minAimTime = weaponScript.getMinAimTime();
                 maxAimTime = weaponScript.getMaxAimTime();
-                swappingWeapons = false;
+                StartCoroutine(weaponSwapWait());
             }
         }
 
-        public void createNewWeapon(GameObject newWeaponPrefab)
+        private IEnumerator weaponSwapWait() 
+        {
+            yield return new WaitForSecondsRealtime(1.5f);
+            swappingWeapons = false;
+        }
+
+        public void setNewWeapon(GameObject newWeaponPrefab)
         {
             swappingWeapons = true;
             weaponScript = null;
@@ -314,6 +320,13 @@ namespace Capstone
         public float getMoveSpeed() { return moveSpeed; }
         public float getModelAccuracyModifer () { return modelAccuracyModifier; }
         public float getAttackSpeedModifier() { return attackSpeedModifier; }
+        public void setMaxHealth(float newMaxHealth) { maxHealth = newMaxHealth; }
+        public void setCurrentHealth(float newCurrentHealth) { currHealth = newCurrentHealth; }
+        public void setRange(float newRange) { range = newRange; }
+        public void setDefense(float newDefense) { defense = newDefense; }
+        public void setMoveSpeed(float newMoveSpeed) { moveSpeed = newMoveSpeed; }
+        public void setModelAccuracyModifer (float newModelAccuracyModifer) { modelAccuracyModifier = newModelAccuracyModifer; }
+        public void setAttackSpeedModifier(float newAttackSpeedModifier) { attackSpeedModifier = newAttackSpeedModifier; }
         public void takeDamage(float damage)
         {
             currHealth -= damage;

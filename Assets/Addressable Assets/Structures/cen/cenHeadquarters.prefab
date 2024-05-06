@@ -59,7 +59,7 @@ MonoBehaviour:
   smallArmsDamageResist: 0
   explosiveDamageResist: 0
   constructableUnits:
-  - {fileID: 0}
+  - {fileID: 2395043953102495349, guid: e3ff2487af4200f429043953c7e9ce3b, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

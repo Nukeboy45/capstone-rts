@@ -232,7 +232,10 @@ namespace Capstone
             if (modelIndex != -1)
             {
                 SquadMember cloneTarget = squadMembers[modelIndex].GetComponent<SquadMember>();
-                cloneModelStats(cloneTarget, killComponent);
+                reinforceMemberIndexes.Add(cloneTarget.prefabIndex);
+                cloneModel(cloneTarget, killComponent);
+            } else {
+                reinforceMemberIndexes.Add(killComponent.prefabIndex);
             }
             Destroy(modelObject);
             if (FogLayerManager.Instance.getPlayerTeam() == team)
@@ -278,9 +281,17 @@ namespace Capstone
             return lowestPriorityIndex;
         }
 
-        private void cloneModelStats(SquadMember cloneTarget, SquadMember cloneParent)
+        private void cloneModel(SquadMember cloneTarget, SquadMember cloneParent)
         {
-
+            cloneTarget.prefabIndex = cloneParent.prefabIndex;
+            cloneTarget.setNewWeapon(cloneParent.getWeaponPrefab());
+            cloneTarget.setMaxHealth(cloneParent.getMaxHealth());
+            cloneTarget.setCurrentHealth(cloneParent.getCurrentHealth());
+            cloneTarget.setRange(cloneParent.getMaxHealth());
+            cloneTarget.setDefense(cloneParent.getDefense());
+            cloneTarget.setMoveSpeed(cloneParent.getMoveSpeed());
+            cloneTarget.setModelAccuracyModifer(cloneParent.getModelAccuracyModifer());
+            cloneTarget.setAttackSpeedModifier(cloneParent.getAttackSpeedModifier());
         }
         private void killSquad()
         {
