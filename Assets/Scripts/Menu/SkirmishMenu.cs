@@ -16,6 +16,7 @@ public class SkirmishMenu : MonoBehaviour
 
     // Logic / Runtime Variables
     private string selectedMap = null;
+    private MapData selectedMapData = null;
     private int selectedMapSlots = 0;
     private Button selectedMapButton = null;
     private List<MapData> maps = new List<MapData>();
@@ -70,13 +71,13 @@ public class SkirmishMenu : MonoBehaviour
 
             //
             Button mapButtonComponent = mapButton.GetComponent<Button>();
-            mapButtonComponent.onClick.AddListener(() => selectMap(data.mapID, data.playerSlots, mapButtonComponent));
+            mapButtonComponent.onClick.AddListener(() => selectMap(data.mapID, data, data.playerSlots, mapButtonComponent));
 
             times += 1;
         }
     }
 
-    public void selectMap(string mapName, int mapSlots, Button selectedButton)
+    public void selectMap(string mapName, MapData mapData, int mapSlots, Button selectedButton)
     {
         if (selectedButton != selectedMapButton)
         {
@@ -87,6 +88,7 @@ public class SkirmishMenu : MonoBehaviour
             Color color = new Color(0.7f,0.7f,0.7f,1.0f);
             selectedButton.GetComponent<Image>().color = color;
             selectedMap = mapName;
+            selectedMapData = mapData;
             selectedMapSlots = mapSlots;
             selectedMapButton = selectedButton;
             startButton.interactable = true;
@@ -98,6 +100,7 @@ public class SkirmishMenu : MonoBehaviour
                 selectedMapButton.GetComponent<Image>().color = Color.white;
             }
             selectedMap = null;
+            selectedMapData = null;
             selectedMapSlots = mapSlots;
             selectedMapButton = null;
             startButton.interactable = false;
@@ -134,6 +137,7 @@ public class SkirmishMenu : MonoBehaviour
             {
                 MapSlot slot = slotOptions[i].GetComponent<MapSlot>();
                 MatchManager.instance.addMatchMember(slot.getTeam(), slot.getPlayerType(), slot.getFaction());
+                MatchManager.instance.mapData = selectedMapData;
             }
             SceneManager.LoadScene(selectedMap);
         } else {

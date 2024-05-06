@@ -8,6 +8,7 @@ namespace Capstone
         public static MatchManager instance;
 
         public List<(int, GameActorType, FactionType)> matchMembers = new List<(int, GameActorType, FactionType)>();
+        public MapData mapData;
         public int mapSlots;
 
         private void Awake()

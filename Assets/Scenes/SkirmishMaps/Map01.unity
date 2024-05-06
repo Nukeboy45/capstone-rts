@@ -1411,6 +1411,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f9a7013e4379f344a36d1e81bd33295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapData:
+    mapID: 
+    mapName: Map 01
+    playerSlots: 2
+    mapSize: 384
   mapSlots: 0
 --- !u!1 &2032863120
 GameObject:

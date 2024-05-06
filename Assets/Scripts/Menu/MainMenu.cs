@@ -29,6 +29,9 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
+        if (Time.timeScale == 0f)
+            Time.timeScale = 1f;
+        menuAnimator.SetInteger("menuState", 0);
         getRandomBackgrounds();
     }
     public void Update()

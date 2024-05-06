@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Capstone 
 {
@@ -15,6 +12,7 @@ namespace Capstone
 
         // Private, Runtime Variables
         [SerializeField] private List<GameObject> squadMembers = new List<GameObject>();
+        [SerializeField] private List<int> reinforceMemberIndexes = new List<int>();
         private int veterancy;
         [SerializeField] private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit iconSprite isiconSpritesered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
@@ -225,11 +223,17 @@ namespace Capstone
         /// alive members.
         /// </summary>
         /// <param name="modelObject"></param>
-        public void killModel(GameObject modelObject) 
+        public void killModel(GameObject modelObject, SquadMember killComponent) 
         {
             if (modelObject == squadLead)
                 squadLead = null;
             squadMembers.Remove(modelObject);
+            int modelIndex = checkLowestModelPriority(killComponent.modelPriority);
+            if (modelIndex != -1)
+            {
+                SquadMember cloneTarget = squadMembers[modelIndex].GetComponent<SquadMember>();
+                cloneModelStats(cloneTarget, killComponent);
+            }
             Destroy(modelObject);
             if (FogLayerManager.Instance.getPlayerTeam() == team)
                 FogLayerManager.Instance.isDirty = true;
@@ -254,6 +258,29 @@ namespace Capstone
             else {
                 killSquad();
             }
+        }
+
+        private int checkLowestModelPriority(int priority)
+        {
+            int lowestModelPriority = priority;
+            int lowestPriorityIndex = -1;
+            int i = 0;
+            foreach(GameObject member in squadMembers)
+            {
+                SquadMember squadMemberComponent = member.GetComponent<SquadMember>();
+                if (squadMemberComponent.modelPriority < lowestModelPriority)
+                {
+                    lowestModelPriority = squadMemberComponent.modelPriority;
+                    lowestPriorityIndex = i;
+                }
+                i++;
+            }
+            return lowestPriorityIndex;
+        }
+
+        private void cloneModelStats(SquadMember cloneTarget, SquadMember cloneParent)
+        {
+
         }
         private void killSquad()
         {
@@ -404,6 +431,7 @@ namespace Capstone
 
                 // Sets the parent reference on the model to the current squad object
                 squadMemberComponent.parent = this;
+                squadMemberComponent.prefabIndex = i;
 
                 // First model to spawn becomes the default "squadLead" - 
                 // squadLead models do not get any bonuses, their coordinates are used to 

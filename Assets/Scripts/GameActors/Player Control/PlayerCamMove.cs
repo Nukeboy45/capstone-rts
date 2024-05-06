@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Capstone {
         private float cameraSensitivityHorizontal = 60.0f;
         private float cameraSensitivityRotate = 980.0f;
         // Start is called before the first frame update
+
         public void checkCameraMove(Camera playerCamera, float dTime)
         {
             if (Input.GetKey(KeyCode.LeftAlt) || Input.GetMouseButton(2))
@@ -60,6 +62,10 @@ namespace Capstone {
                     // Uses MoveDirection to apply the transformation. Space.world specifies the modifications are
                     // being performed on the object's world coordinates not a local coordinate system.
                     cameraTransform.Translate(MoveDirection * cameraSensitivityHorizontal * dTime, Space.World);
+                    Vector3 newCameraPosition = cameraTransform.position;
+                    newCameraPosition.x = Mathf.Clamp(newCameraPosition.x, 0f, 384f);
+                    newCameraPosition.z = Mathf.Clamp(newCameraPosition.z, 0f, 384f);
+                    cameraTransform.position = newCameraPosition;
                 }
             }
 

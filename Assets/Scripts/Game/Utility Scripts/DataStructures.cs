@@ -29,5 +29,6 @@ namespace Capstone
         public string mapID;
         public string mapName;
         public int playerSlots;
+        public int mapSize;
     }
 }

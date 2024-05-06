@@ -9,6 +9,8 @@ TagManager:
   - SquadIcon
   - UnitRange
   - UnitIconUI
+  - OwnedStructure
+  - ReinforceRadius
   layers:
   - Default
   - TransparentFX

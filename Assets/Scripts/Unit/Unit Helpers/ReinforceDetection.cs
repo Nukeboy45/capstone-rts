@@ -4,33 +4,33 @@ using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 
 namespace Capstone {
-    public class FogDetection : MonoBehaviour
+    public class ReinforceDetection : MonoBehaviour
     {
         [SerializeField] private CapsuleCollider visualCollider;
-        public bool unitVisible = false;
+        public bool unitReinforceable = false;
         public List<Collider> colliders = new List<Collider>();
 
         void Update() {
             colliders.RemoveAll(c => c == null);
-            if (colliders.Count == 0 && unitVisible != false)
-                unitVisible = false;
+            if (colliders.Count == 0 && unitReinforceable != false)
+                unitReinforceable = false;
         }
         void OnTriggerEnter(Collider other) {
-            if (other.gameObject.layer == LayerMask.NameToLayer("FOV") && !colliders.Contains(other)) {
+            if (other.gameObject.CompareTag("ReinforceRadius") && !colliders.Contains(other)) {
                 colliders.Add(other);
-                UpdateVisibility();
+                UpdateReinforce();
             }
         }
 
         void OnTriggerExit(Collider other) {
-            if (other.gameObject.layer == LayerMask.NameToLayer("FOV") && colliders.Contains(other)) {
+            if (other.gameObject.CompareTag("ReinforceRadius") && colliders.Contains(other)) {
                 colliders.Remove(other);
-                UpdateVisibility();
+                UpdateReinforce();
             }
         }
 
-        void UpdateVisibility() {
-            unitVisible = colliders.Count > 0;
+        void UpdateReinforce() {
+            unitReinforceable = colliders.Count > 0;
         }
     }
 }
