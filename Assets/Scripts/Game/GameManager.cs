@@ -24,8 +24,8 @@ namespace Capstone
         public Camera rayCamera;
 
         // ---- Private Variables ------
-        private int team1Tickets = 50;
-        private int team2Tickets = 50;
+        [SerializeField] private int team1Tickets = 50;
+        [SerializeField] private int team2Tickets = 50;
 
         // Timing Variables
         private DateTime lastObjectiveTick;
@@ -251,17 +251,54 @@ namespace Capstone
                     playerComp.GetPlayerUI().updateScoreBars(team1Tickets, team2Tickets);
             }
 
-            if (team1Tickets == 0)
+            if (team1Tickets == 0 || team2Tickets == 0 && Time.timeScale != 0f)
             {
-                // Team 1 Victory
-                Time.timeScale = 0f;
-            }
+                bool playerVictory = false;
+                FactionType playerFaction = FactionType.none;
+                if (team1Tickets == 0)
+                {
+                    // Team 1 Victory
+                    playerVictory = player.team == 1;
+                    playerFaction = player.faction;
+                }
 
-            if (team2Tickets == 0)
-            {
-                // Team 2 Victory
-                Time.timeScale = 0f;
+                if (team2Tickets == 0)
+                {
+                    // Team 2 Victory
+                    playerVictory = player.team == 0;
+                    playerFaction = player.faction;
+                }
+                if (gameOver == false)
+                {
+                    gameOver = true;
+                    AsyncOperationHandle winScreenHandle = Addressables.LoadAssetAsync<GameObject>("WinConditionCanvas");
+                    StartCoroutine(spawnWinConditionScreen(winScreenHandle, playerVictory, playerFaction));
+                }
             }
+        }
+
+        private bool gameOver = false;
+        private IEnumerator spawnWinConditionScreen(AsyncOperationHandle winScreenHandle, bool playerTeamVictory, FactionType playerFaction)
+        {
+            GameObject winScreenPrefab = null;
+            yield return winScreenHandle;
+            if (winScreenHandle.Status == AsyncOperationStatus.Succeeded) 
+            {
+                winScreenPrefab = winScreenHandle.Result as GameObject;
+            } 
+            else 
+            {
+                yield break;
+            }
+            if (winScreenPrefab != null)
+            {
+                GameObject winScreenObject = Instantiate(winScreenPrefab, playerUI.transform);
+                WinConditionCanvas winConditionComponent = winScreenObject.GetComponent<WinConditionCanvas>();
+                winConditionComponent.playerTeamVictory = playerTeamVictory;
+                winConditionComponent.playerFaction = playerFaction;
+            }
+            Time.timeScale = 0f;
+            yield break;
         }
 
         private IEnumerator waitForMatchManager()

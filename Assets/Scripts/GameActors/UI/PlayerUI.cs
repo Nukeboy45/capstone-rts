@@ -54,7 +54,7 @@ namespace Capstone {
             while (fadeInCanvasGroup.alpha > 0) 
             {
                 fadeInCanvasGroup.alpha -= 0.05f;
-                yield return new WaitForSecondsRealtime(0.25f);
+                yield return new WaitForSecondsRealtime(0.15f);
             }
             Destroy(fadeInObj);
             yield break;
