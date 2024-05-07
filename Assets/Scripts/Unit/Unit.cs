@@ -11,6 +11,7 @@ namespace Capstone
         public int team;
         public GameActor owner;
         public bool? showSelect = null;
+        // public float showSelectTime = -1f;
         public bool selected = false;
         public bool multiSelect = false;
         public float multiSelectTime; 

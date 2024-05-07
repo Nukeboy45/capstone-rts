@@ -45,9 +45,10 @@ namespace Capstone
                 playerCamera.cullingMask &= ~(1 << hiddenLayer);
             
             dragSelect.setPlayer(this);
-            dragSelect.setSelectedList(selected);
+            //dragSelect.setSelectedList(selected);
 
             mouse.setPlayer(this);
+            mouse.setPlayerCamera(playerCamera);
             mouse.setMovePool(moveMarkerPool);
             mouse.setRayCamera(rayCamera);
 
@@ -86,8 +87,9 @@ namespace Capstone
         {
             dTime = Time.deltaTime;
             camMove.checkCameraMove(playerCamera, dTime);
-            mouse.mouseUpdate(selected);
-            keyboard.keyboardUpdate(selected);
+            mouse.mouseUpdate(ref selected);
+            dragSelect.dragSelectUpdate(ref selected);
+            keyboard.keyboardUpdate(ref selected);
         }
 
         // ------------------- Getter / Setter / Accessibility Functions ----------------

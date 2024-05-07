@@ -15,7 +15,6 @@ namespace Capstone
         {
             while (MatchManager.instance == null)
             {
-                Debug.Log("Waiting, no MatchManager for initialization");
                 yield return null;
             }
 

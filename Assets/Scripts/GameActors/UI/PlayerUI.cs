@@ -56,7 +56,21 @@ namespace Capstone {
 
             updateMenu();
 
+            GameObject fadeInObject = transform.Find("fadeInCanvas").gameObject;
+
+            StartCoroutine(fadeInCamera(fadeInObject));
             // StartCoroutine(updateWorldSpaceIconPositions());
+        }
+
+        private IEnumerator fadeInCamera(GameObject fadeInObj) {
+            CanvasGroup fadeInCanvasGroup = fadeInObj.GetComponent<CanvasGroup>();
+            while (fadeInCanvasGroup.alpha > 0) 
+            {
+                fadeInCanvasGroup.alpha -= 0.05f;
+                yield return new WaitForSecondsRealtime(0.10f);
+            }
+            Destroy(fadeInObj);
+            yield break;
         }
         public void Update()
         {   

@@ -268,13 +268,11 @@ namespace Capstone
         {
             while (MatchManager.instance == null)
             {
-                Debug.Log("Waiting, no MatchManager for data");
                 yield return null;
             }
 
             while (MatchManager.instance.getMatchMembers().Count < 2)
             {
-                Debug.Log("Waiting, not enough players");
                 yield return null;
             }
 

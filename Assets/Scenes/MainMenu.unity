@@ -7463,7 +7463,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000027656555, y: -48.29948}
+  m_AnchoredPosition: {x: 0.000027656555, y: -48.299774}
   m_SizeDelta: {x: 0, y: 1.25}
   m_Pivot: {x: 0, y: 0.9}
 --- !u!1 &444851576
@@ -16975,7 +16975,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &976274175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17042,7 +17042,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2099466142}
         m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
-        m_MethodName: updateScreenResolution
+        m_MethodName: updateScreen
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17410,6 +17410,7 @@ MonoBehaviour:
     resWidth: 0
     resHeight: 0
     fullscreen: 0
+    vsync: 0
 --- !u!4 &1000699639
 Transform:
   m_ObjectHideFlags: 0
@@ -36702,6 +36703,7 @@ MonoBehaviour:
   musicVolumeValueLabel: {fileID: 2127617957}
   resolutionSelect: {fileID: 120943649}
   fullscreenCheckbox: {fileID: 1005715913}
+  vsyncToggle: {fileID: 465769452}
 --- !u!1 &2099539957
 GameObject:
   m_ObjectHideFlags: 0

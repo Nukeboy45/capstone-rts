@@ -21,6 +21,7 @@ namespace Capstone
         public int resWidth;
         public int resHeight;
         public bool fullscreen;
+        public bool vsync;
     }
 
     [System.Serializable]

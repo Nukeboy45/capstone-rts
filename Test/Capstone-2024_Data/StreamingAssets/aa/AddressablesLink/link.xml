@@ -3,6 +3,7 @@
     <type fullname="Capstone.FogDetection" preserve="all" />
     <type fullname="Capstone.GetParentIcon" preserve="all" />
     <type fullname="Capstone.HideObject" preserve="all" />
+    <type fullname="Capstone.ProductionStructure" preserve="all" />
     <type fullname="Capstone.Squad" preserve="all" />
     <type fullname="Capstone.SquadMember" preserve="all" />
     <type fullname="Capstone.UnitIconUIWorld" preserve="all" />
@@ -59,6 +60,7 @@
     <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.BoxCollider" preserve="all" />
     <type fullname="UnityEngine.CapsuleCollider" preserve="all" />
     <type fullname="UnityEngine.Rigidbody" preserve="all" />
     <type fullname="UnityEngine.SphereCollider" preserve="all" />

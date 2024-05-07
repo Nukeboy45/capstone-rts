@@ -15,7 +15,7 @@ namespace Capstone {
         private Camera rayCamera;
         private bool keycheckRunning = false;
 
-        public void keyboardUpdate(List<GameObject> selected)
+        public void keyboardUpdate(ref List<GameObject> selected)
         {
             if (Input.anyKeyDown)
             {
@@ -27,7 +27,7 @@ namespace Capstone {
                     KeyCode keyCode = (KeyCode)keyPressed;
 
                     if (!keycheckRunning)
-                        keycodeCheck(keyCode, selected);
+                        keycodeCheck(keyCode, ref selected);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -35,7 +35,7 @@ namespace Capstone {
                     
             }
         }
-        private void keycodeCheck(KeyCode keyCode, List<GameObject> selected)
+        private void keycodeCheck(KeyCode keyCode, ref List<GameObject> selected)
         {
             keycheckRunning = true;
             Debug.Log(keyCode);

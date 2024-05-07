@@ -30,17 +30,12 @@ namespace Capstone
         {
             base.Start();
             StartCoroutine(InstantiateSquad());
-            StartCoroutine(squadUpdate());
+            // StartCoroutine(squadUpdate());
         }
 
         void Update()
         {
-            
-        }
-
-        private IEnumerator squadUpdate()
-        {
-            while (true)
+            if (Time.timeScale != 0)
             {
                 fogCheck();
                 if (!multiSelect)
@@ -79,7 +74,61 @@ namespace Capstone
                     if (checkStopped(0.4f))
                         squadState = SquadState.stationary;
                 }
-                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        private IEnumerator squadUpdate()
+        {
+            while (true)
+            {
+                while (Time.timeScale == 0)
+                {
+                    yield return null;
+                }
+                fogCheck();
+                if (!multiSelect)
+                {
+                    // if (Time.time - showSelectTime > 0.1f || showSelectTime == -1f || sel)
+                    // {
+                    //     hideSelectionRadius();
+                    // } else {
+                    //     showSelectionRadius();
+                    // }
+                    if (showSelect != null && selected == false)
+                    {
+                        if (showSelect == true)
+                        {
+                            showSelectionRadius();
+                            showSelect = false;
+                        } else {
+                            hideSelectionRadius();
+                            showSelect = false;
+                        }
+                    }
+                } else {
+                    if (Time.time - multiSelectTime > 0.1f)
+                    {
+                        multiSelect = false;
+                        hideSelectionRadius();
+                    } else {
+                        showSelectionRadius();
+                    }
+                }
+
+                if (squadState == SquadState.retreating)
+                {
+                    if (checkStopped(0.6f))
+                        squadState = SquadState.stationary;
+                }
+
+                if (squadState == SquadState.moving || squadState == SquadState.attackmove)
+                {
+                    if (team == FogLayerManager.Instance.getPlayerTeam())
+                        FogLayerManager.Instance.isDirty = true;
+                    if (checkStopped(0.4f))
+                        squadState = SquadState.stationary;
+                }
+                yield return new WaitForEndOfFrame();
             }
         }
 
@@ -440,7 +489,7 @@ namespace Capstone
                 //squadMembers[i].transform.SetParent(this.transform, false);
             }
 
-            // Initializes the squad Icon and attaches it to the iconSprite poiconSpritesn empty object on the model.
+            // Initializes the squad Icon and attaches it to the iconSprite empty object on the model.
             GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
