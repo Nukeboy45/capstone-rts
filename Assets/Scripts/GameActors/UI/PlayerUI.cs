@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -25,7 +26,7 @@ namespace Capstone {
         // Private Runtime Variables
         private UIState uiState = UIState.defaultMenu;
         [SerializeField] private Camera playerCamera;
-        private Dictionary<String, Sprite> buttonImages = new Dictionary<string, Sprite>();
+        [SerializeField] private Sprite blankButtonImage;
         [SerializeField] private List<GameObject> unitIconBarList = new List<GameObject>();
         [SerializeField] private List<UnitIconUIWorld> unitIconWorldList = new List<UnitIconUIWorld>();
         private FactionType faction;
@@ -37,20 +38,6 @@ namespace Capstone {
         private GameObject emptyUnitIconUI;
         public void Start()
         {
-            switch (faction)
-            {
-                case FactionType.centralPowers:
-                    // Menu and Unit Construction buttons - Central Powers
-                    if (!buttonImages.ContainsKey("ausRifle"))
-                        buttonImages.Add("ausRifle", Resources.Load<Sprite>("Art/ui/uiButtonAusRifle"));
-                    break;
-                case FactionType.ententeForces:
-
-                    break;
-            }
-            // Generic Button Images
-            buttonImages.Add("retreat", Resources.Load<Sprite>("Art/ui/uiButtonRetreat"));
-
             // Initializing the Empty UnitIconUI Prefab
             emptyUnitIconUI = Resources.Load<GameObject>("Prefabs/UI/UnitIconUIBar");
 
@@ -67,26 +54,49 @@ namespace Capstone {
             while (fadeInCanvasGroup.alpha > 0) 
             {
                 fadeInCanvasGroup.alpha -= 0.05f;
-                yield return new WaitForSecondsRealtime(0.10f);
+                yield return new WaitForSecondsRealtime(0.25f);
             }
             Destroy(fadeInObj);
             yield break;
         }
         public void Update()
         {   
-            if (playerObj.getSelected().Count == 0)
+            List<GameObject> selected = playerObj.getSelected();
+            if (selected.Count == 0)
             {
                 uiState = UIState.defaultMenu;
                 updateMenu();
             }
-            else if (playerObj.getSelected().Count == 1)
+            else if (selected.Count == 1)
             {
-                if (Selection.getSelectionComponent<Unit>(playerObj.getSelected()[0]) is Unit)
+                if (selected[0].GetComponent<Unit>() != null)
                 {
-                    if (Selection.getSelectionComponent<Unit>(playerObj.getSelected()[0]) is Squad)
+                    Unit baseComponent = selected[0].GetComponent<Unit>();
+                    if (baseComponent is Squad)
                     {
                         uiState = UIState.squad;
                         updateMenu();
+                    }
+                }
+                if (selected[0].GetComponent<OwnedStructure>() != null)
+                {
+                    OwnedStructure baseComponent = selected[0].GetComponent<OwnedStructure>();
+                    if (baseComponent is ProductionStructure)
+                    {
+                        ProductionStructure productionStructureComponent = (ProductionStructure)baseComponent;
+                        uiState = UIState.productionStructure;
+                        for (int i=0; i <productionStructureComponent.constructableUnits.Count(); i++)
+                        {
+                            if (productionStructureComponent.constructableUnits[i] != null)
+                            {
+                                int index = i;
+                                buttons[i].GetComponent<Image>().sprite = productionStructureComponent.constructableUnits[i].GetComponent<Unit>().buttonSprite;
+                                buttons[i].onClick.RemoveAllListeners();
+                                buttons[i].interactable = true;
+                                buttons[i].onClick.AddListener(delegate {productionStructureComponent.addToBuildQueue(index);});
+                            }
+                        }
+                        buttonsCleared = false;
                     }
                 }
             } 
@@ -109,40 +119,6 @@ namespace Capstone {
         public void hidePauseMenu()
         {
             pauseMenu.SetActive(false);
-        }
-        public void Button1()
-        {
-            switch (uiState)
-            {
-                case UIState.defaultMenu:
-                    if (faction == FactionType.centralPowers)
-                    {
-                        //playerObj.spawnPoint.addToBuildQueue(Resources.Load<GameObject>("Prefabs/Units/Infantry Squads/cenRifleSquad"));
-                    }
-                    break;
-            }
-        }
-        public void Button2()
-        {
-            Debug.Log("Button2 Pressed!");
-        }
-        public void Button3()
-        {
-            Debug.Log("Button3 Pressed!");
-        }
-        public void Button4()
-        {
-            Debug.Log("Button4 Pressed!");
-        }
-
-        public void Button5()
-        {
-
-        }
-
-        public void Button6()
-        {
-
         }
 
         // private IEnumerator updateWorldSpaceIconPositions()
@@ -193,17 +169,9 @@ namespace Capstone {
             switch (uiState)
             {
                 case UIState.defaultMenu:
-                    if (faction == FactionType.centralPowers)
-                    {
-                        buttons[0].GetComponent<Image>().sprite = buttonImages["ausRifle"];
-                        buttons[0].interactable = true;
-                    }
-                    else 
-                    {
-
-                    }
+                    if (!buttonsCleared)
+                        clearButtons();
                     break;
-
                 case UIState.squad:
 
                     break;
@@ -212,6 +180,17 @@ namespace Capstone {
 
                     break;
             }
+        }
+
+        private bool buttonsCleared = true;
+        private void clearButtons()
+        {
+            foreach(Button button in buttons)
+            {
+                button.GetComponent<Image>().sprite = blankButtonImage;
+                button.onClick.RemoveAllListeners();
+            }
+            buttonsCleared = true;
         }
 
         public void updateScoreBars(int team1Tickets, int team2Tickets)

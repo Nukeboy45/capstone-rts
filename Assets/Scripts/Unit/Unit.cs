@@ -18,6 +18,7 @@ namespace Capstone
 
         // Private / Protected, Editor-Accessible Variables
         [SerializeField] protected GameObject iconObj;
+        [SerializeField] public Sprite buttonSprite;
         [SerializeField] protected Sprite[] iconSprites;
         [SerializeField] protected Sprite portrait;
         [SerializeField] protected float buildTime;

@@ -179,19 +179,15 @@ namespace Capstone
                                 if (unit is Squad)
                                 {
                                     ((Squad)unit).deselect();
-                                    i--;
+                                    continue;
                                 }
                             }
-                            if (i < 0)
-                                break;
                             OwnedStructure ownedStructure = selected[i].GetComponent<OwnedStructure>();
                             if (ownedStructure != null)
                             {
                                 ownedStructure.deselect();
-                                i--;
+                                continue;
                             }
-                            if (i < 0)
-                                break;
                         }
                     }
                 }

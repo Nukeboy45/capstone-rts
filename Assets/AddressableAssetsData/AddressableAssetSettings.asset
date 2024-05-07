@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: d759a0c6758ebef45b54f1ca5af1d14e
   m_currentHash:
     serializedVersion: 2
-    Hash: 46f48a152f1e2e263e991ad736f86497
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -46,6 +46,9 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 585177ab924d46c49899bf5c923da859, type: 2}
   - {fileID: 11400000, guid: 0f7bdf1151bc61d4ba65a93bad050ee1, type: 2}
+  - {fileID: 11400000, guid: 92cff268bbbdda944be8274331e62f2b, type: 2}
+  - {fileID: 11400000, guid: 1d3c9467e86785a42ad67bfae31ab142, type: 2}
+  - {fileID: 11400000, guid: 9482cc502893a854e94994d2e29950ef, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -89,6 +92,7 @@ MonoBehaviour:
     - default
     - Units - Infantry Squads
     - Structures - Production Structures
+    - UI - Default UI Asset
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 2ec11f1dd5eea0c4f84addcb4c2a65b3, type: 2}

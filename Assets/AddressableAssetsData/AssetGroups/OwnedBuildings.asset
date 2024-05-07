@@ -10,16 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: OwnedBuildings
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
+  m_GroupName: OwnedBuildings
   m_Data:
     m_SerializedData: []
-  m_GUID: d759a0c6758ebef45b54f1ca5af1d14e
-  m_SerializeEntries: []
+  m_GUID: a4ae965e3f6aa5d4e9fc58c2c0218e50
+  m_SerializeEntries:
+  - m_GUID: bfcd8b944eeb4ec46b8f8f3a428b27d3
+    m_Address: cenHeadquarters
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Structures - Production Structures
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1a974dc392916c44d8dc1c300e77b11d, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 27c75d0ce8ad93b45987bbaa04621a6a, type: 2}
-    - {fileID: 11400000, guid: 70f95288f7bf1ce40aee31b1aa1517f3, type: 2}
+    - {fileID: 11400000, guid: 4e38c80cf3eb0c744b3bc8e8b76a4be5, type: 2}
+    - {fileID: 11400000, guid: 32598a2eccc0f5f4baaecf2a206f94cc, type: 2}

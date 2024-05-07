@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Capstone {
     public class PlayerMouse : MonoBehaviour
@@ -99,12 +100,14 @@ namespace Capstone {
 
             if (Input.GetMouseButtonDown(0))
             {
-                leftClick(ref selected);
+                if (!isMouseOverUI())
+                    leftClick(ref selected);
             }
 
             if (Input.GetMouseButtonDown(1))
             {
-                rightClick(ref selected, maskHit);
+                if (!isMouseOverUI())
+                    rightClick(ref selected, maskHit);
             }
         }
 
@@ -179,6 +182,12 @@ namespace Capstone {
                     }
                 }
             }
+        }
+
+        private bool isMouseOverUI()
+        {
+            Debug.Log(EventSystem.current.IsPointerOverGameObject());
+            return EventSystem.current.IsPointerOverGameObject();
         }
 
         // -- Getter / Setter Methods --

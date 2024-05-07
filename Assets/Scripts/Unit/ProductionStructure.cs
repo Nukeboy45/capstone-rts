@@ -9,7 +9,7 @@ namespace Capstone
     public class ProductionStructure : OwnedStructure
     {
         [Header("Production Structure Variables")]
-        [SerializeField] protected GameObject[] constructableUnits = new GameObject[4];
+        [SerializeField] public GameObject[] constructableUnits = new GameObject[4];
         [SerializeField] protected GameObject spawnPoint;
 
         // Private Runtime Variables
@@ -62,22 +62,27 @@ namespace Capstone
                 }
             }
         }
-        public void addToBuildQueue(GameObject unitPrefab) 
+        public void addToBuildQueue(int constructableUnitIndex) 
         {
+            Debug.Log("Called!");
             if (buildQueue.Count < 3)
             {
-                Unit unitComponent = unitPrefab.GetComponent<Unit>();
-                if (owner is Player)
+                GameObject prefab = constructableUnits[constructableUnitIndex];
+                if (prefab != null)
                 {
-                    Player playerComponent = (Player)owner;
-                    UnitIconUI newIcon = playerComponent.GetPlayerUI().addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0));
-                    newIcon.setProductionStructure(this);
-                    buildQueueIcons.Add(newIcon);
-                    if (currentBuildTime <= 0.0f)
-                        lastBuildTick = DateTime.Now;
-                    buildQueue.Add(unitPrefab);
-                } else {
-                    buildQueue.Add(unitPrefab);
+                    Unit unitComponent = prefab.GetComponent<Unit>();
+                    if (owner is Player)
+                    {
+                        Player playerComponent = (Player)owner;
+                        UnitIconUI newIcon = playerComponent.GetPlayerUI().addNewUnitIcon(unitComponent.getPortrait(), unitComponent.getIcon(0));
+                        newIcon.setProductionStructure(this);
+                        buildQueueIcons.Add(newIcon);
+                        if (currentBuildTime <= 0.0f)
+                            lastBuildTick = DateTime.Now;
+                        buildQueue.Add(prefab);
+                    } else {
+                        buildQueue.Add(prefab);
+                    }
                 }
             }
         }
@@ -86,12 +91,12 @@ namespace Capstone
         {
             if (unitPrefab.GetComponent<Squad>() != null)
             {
-                GameObject squadObj = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+                GameObject squadObj = Instantiate(unitPrefab, spawnPoint.transform.position, Quaternion.identity);
                 Squad squad = squadObj.GetComponent<Squad>();
                 squad.setSquadIconUI(unitIconUI);
                 squad.team = team;
                 squad.owner = owner;
-                squadObj.transform.position = transform.position;
+                //squadObj.transform.position = transform.position;
                 if (!rallyPoint.Equals(default(RaycastHit)))
                 {
                     List<RaycastHit> hits = Selection.getAdditionalCasts(rallyPoint, GameManager.Instance.rayCamera, transform, squad.getAliveMembers(), LayerMask.NameToLayer("Ground"));

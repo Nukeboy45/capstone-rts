@@ -23,6 +23,7 @@ namespace Capstone
     public enum UIState
     {
         defaultMenu,
+        productionStructure,
         squad,
         group,
         vehicle,
