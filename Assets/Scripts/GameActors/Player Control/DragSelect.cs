@@ -19,7 +19,6 @@ namespace Capstone {
         public List<GameObject> collisions;
         private GameObject selection;
         private GameActor player;
-        private List<GameObject> selected;
         private List<String> unitTags = new List<String>{"SquadMember"};
         private float mouseDownTime;
 
@@ -40,7 +39,7 @@ namespace Capstone {
         }
 
         // Update is called once per frame
-        public void Update()
+        public void dragSelectUpdate(ref List<GameObject> selected)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -83,7 +82,8 @@ namespace Capstone {
             {
                 if (Input.GetMouseButtonUp(0))
                 {
-                    StartCoroutine(selectInsideBox());
+                    //StartCoroutine(selectInsideBox());
+                    selectInsideBox(ref selected);
                 }
             } else {
                 if (Input.GetMouseButtonUp(0))
@@ -116,32 +116,34 @@ namespace Capstone {
         //     boxGraphic.sizeDelta = new Vector2(Mathf.Abs(width), Mathf.Abs(height));
         //     boxGraphic.anchoredPosition = new Vector2(startMousePosition.x, startMousePosition.y) + new Vector2(width/2, height/2);
         // }
-        private IEnumerator selectInsideBox()
+        private void selectInsideBox(ref List<GameObject> selected)
         {
             startMousePosition = Vector3.zero;
             endMousePosition = Vector3.zero;
             drawBox();
-            yield return new WaitForSeconds(0.01f);
+            //yield return new WaitForSeconds(0.01f);
             if (selectBox != null)
-                collisions = selectBox.cachedCollisions;
-            Debug.Log(collisions.Count);
-            if (collisions != null)
+            {    
+            if (selectBox.cachedCollisions != null)
             {
-                looping = true;
-                //collisions = selectBox.GetColliders();
-                foreach (GameObject collision in collisions)
-                {
-                    if (collision != null)
+                    looping = true;
+                    //collisions = selectBox.GetColliders();
+                    if (Selection.checkBuildingInSelected(selected))
+                        Selection.removeBuildingInSelected(ref selected);
+                    foreach (GameObject collision in selectBox.cachedCollisions)
                     {
-                        if (unitTags.Contains(collision.tag))
+                        if (collision != null)
                         {
-                            switch (collision.tag)
+                            if (unitTags.Contains(collision.tag))
                             {
-                                case "SquadMember":
-                                    SquadMember squadMemberComponent = collision.GetComponent<SquadMember>();
-                                    Squad squadComponent = squadMemberComponent.parent;
-                                    Selection.squadSelect(squadComponent, selected, player, SelectMode.drag);
-                                    break;
+                                switch (collision.tag)
+                                {
+                                    case "SquadMember":
+                                        SquadMember squadMemberComponent = collision.GetComponent<SquadMember>();
+                                        Squad squadComponent = squadMemberComponent.parent;
+                                        Selection.squadSelect(squadComponent, selected, player, SelectMode.drag);
+                                        break;
+                                }
                             }
                         }
                     }
@@ -158,6 +160,6 @@ namespace Capstone {
         public void setPlayer(GameActor newPlayer) { player = newPlayer;}
         public void setPlayerCamera(Camera newCamera) { playerCam = newCamera; }
         public void setSelectionBoxGraphic (RectTransform newGraphic) { boxGraphic = newGraphic; }
-        public void setSelectedList(List<GameObject> newSelectedList) { selected = newSelectedList; }
+        //public void setSelectedList(List<GameObject> newSelectedList) { selected = newSelectedList; }
     }
 }

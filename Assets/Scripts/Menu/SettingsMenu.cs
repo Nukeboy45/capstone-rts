@@ -20,6 +20,7 @@ public class SettingsMenu : MonoBehaviour
     [Header("Screen Settings")]
     [SerializeField] private TMP_Dropdown resolutionSelect;
     [SerializeField] private Toggle fullscreenCheckbox;
+    [SerializeField] private Toggle vsyncToggle;
 
     void Start()
     {
@@ -47,7 +48,7 @@ public class SettingsMenu : MonoBehaviour
         resolutionSelect.value = selectedResolutionDictionary[new Tuple<int, int>(savedResWidth, savedResHeight)];
         Debug.Log("correct value?" + resolutionSelect.value);
         fullscreenCheckbox.isOn = SettingsManager.Instance.settings.fullscreen;
-        updateScreenResolution(false);
+        updateScreen(false);
     }
 
     private void onVolumeValueChange(float value, string tag)
@@ -63,9 +64,12 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
-    public void updateScreenResolution(bool save)
+    public void updateScreen(bool save)
     {
         bool fullscreen = fullscreenCheckbox.isOn;
+        Debug.Log(vsyncToggle.isOn);
+        bool vsync = vsyncToggle.isOn;
+        updateVsync(vsync);
         Dictionary<int, int[]> resolutionDictionary = new Dictionary<int, int[]>() {
             {0, new int[] {3840, 2400}},
             {1, new int[] {3840, 2160}},
@@ -79,7 +83,15 @@ public class SettingsMenu : MonoBehaviour
 
         int[] newResolution = resolutionDictionary[resolutionSelect.value];
         Screen.SetResolution(newResolution[0], newResolution[1], fullscreen);
-        SettingsManager.Instance.updateScreenResolution(newResolution[0], newResolution[1], fullscreen, save);
+        SettingsManager.Instance.updateScreenSettings(newResolution[0], newResolution[1], fullscreen, vsync, save);
+    }
+
+    private void updateVsync(bool status)
+    {
+        if (status)
+            QualitySettings.vSyncCount = 1;
+        else
+            QualitySettings.vSyncCount = 0;
     }
 
     // Update is called once per frame

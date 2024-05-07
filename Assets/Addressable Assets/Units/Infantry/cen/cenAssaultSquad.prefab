@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2395043953102495349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4503662955652409725}
+  - component: {fileID: 7540078718184401334}
+  m_Layer: 0
+  m_Name: cenAssaultSquad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4503662955652409725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395043953102495349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7540078718184401334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395043953102495349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c243a0205cc9e040b1c047290d1f7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  owner: {fileID: 0}
+  selected: 0
+  multiSelect: 0
+  multiSelectTime: 0
+  iconObj: {fileID: 3544985342347442964, guid: 3d24359fcb4b3ca4fa4ec2f1f3169254, type: 3}
+  buttonSprite: {fileID: 21300000, guid: 84f0b21ac17a0ad4a996184ab2decc55, type: 3}
+  iconSprites:
+  - {fileID: 21300000, guid: a00ae151c19227b4aa6eb022b38fc432, type: 3}
+  - {fileID: 21300000, guid: b45f3abea7010914ebcab32e97fea325, type: 3}
+  portrait: {fileID: 21300000, guid: e5ae0cb978f65034da1d8931e436785e, type: 3}
+  buildTime: 5
+  models:
+  - {fileID: 6936724390920511725, guid: 99aafdf4c6f72c949ba0038bfb7ec1b3, type: 3}
+  - {fileID: 6936724390920511725, guid: 99aafdf4c6f72c949ba0038bfb7ec1b3, type: 3}
+  - {fileID: 6936724390920511725, guid: 99aafdf4c6f72c949ba0038bfb7ec1b3, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  - {fileID: 6936724390920511725, guid: 239d2169f038fc24b8298ed215a08649, type: 3}
+  captureRate: 10
+  squadMembers: []
+  reinforceMemberIndexes: 
+  squadLead: {fileID: 0}
+  squadState: 0

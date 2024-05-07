@@ -8,11 +8,18 @@ namespace Capstone
         [SerializeField] private int hideLayer;
 
         public void showObj() {
-            gameObject.layer = showLayer;
+            changeAllChildren(transform, showLayer);
         }
 
         public void hideObj() {
-            gameObject.layer = hideLayer;
+            changeAllChildren(transform, hideLayer);
+        }
+
+        private void changeAllChildren(Transform parent, int newLayer)
+        {
+            parent.gameObject.layer = newLayer;
+            foreach(Transform child in parent)
+                changeAllChildren(child, newLayer);
         }
     }
 }

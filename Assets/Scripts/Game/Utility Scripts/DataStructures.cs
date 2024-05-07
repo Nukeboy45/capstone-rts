@@ -21,6 +21,7 @@ namespace Capstone
         public int resWidth;
         public int resHeight;
         public bool fullscreen;
+        public bool vsync;
     }
 
     [System.Serializable]
@@ -29,5 +30,6 @@ namespace Capstone
         public string mapID;
         public string mapName;
         public int playerSlots;
+        public int mapSize;
     }
 }

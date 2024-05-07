@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Capstone {
     public class PlayerMouse : MonoBehaviour
@@ -15,25 +16,30 @@ namespace Capstone {
         private GameActor player;
         private SquadMoveMarkerPool moveMarkerPool;
         private PlayerUI playerUI;
-        //private Camera playerCamera;
+        private Camera playerCamera;
         private Camera rayCamera;
         private Vector3 prevMousePosition = Vector3.zero;
+        private Vector3 prevCameraPosition = Vector3.zero;
         
 
 
 
         private Squad mouseSquad;    
+        private OwnedStructure mouseOwnedStructure;
         private RaycastHit maskHit;
-        public void mouseUpdate(List<GameObject> selected = null)
+        public void mouseUpdate(ref List<GameObject> selected)
         {
-            if (Input.mousePosition != prevMousePosition) {
+            if (Input.mousePosition != prevMousePosition || playerCamera.transform.position != prevCameraPosition || mouseSquad != null || mouseOwnedStructure != null) {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 prevMousePosition = Input.mousePosition;
+                prevCameraPosition = playerCamera.transform.position;
             
 
                 RaycastHit[] hits = Physics.RaycastAll(ray);
 
                 mouseSquad = null;
+
+                mouseOwnedStructure = null;
 
                 foreach (RaycastHit hit in hits)
                 {
@@ -47,26 +53,45 @@ namespace Capstone {
                             mouseSquad = squadMember.parent;
                         break;
                     }
+                    if (hit.collider.gameObject.CompareTag("OwnedStructure") && hit.collider.gameObject.layer == LayerMask.NameToLayer("Visible"))
+                    {
+                        mouseOwnedStructure = hit.collider.gameObject.GetComponent<OwnedStructure>();
+                    }
                 }
 
                 if (Physics.Raycast(ray, out maskHit, Mathf.Infinity, ground))
                 {
+                    // Selection Radiuses - Squad
                     if (mouseSquad != null) 
                     {
-                        if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
-                        else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; }
+                        if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; /*mouseSquad.showSelectTime = Time.time;*/ }
+                        else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseSquad.showSelect = true; /*mouseSquad.showSelectTime = Time.time;*/ }
                     } 
 
-                    if (selected.Count == 1 && Selection.getSelectionComponent<Unit>(selected[0]) is Squad)
+                    // Selection radiuses - Building 
+                    if (mouseOwnedStructure != null)
                     {
-                        Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
-                        List<RaycastHit> raycastHits;
-                        Transform squadLeadTransform = squad.getCurrentTransform();
-                        if (squadLeadTransform != null)
+                        if (selected.Count == 0 || Input.GetKey(KeyCode.LeftShift)) { mouseOwnedStructure.showSelect = true; }
+                        else if (selected.Count > 0 && !Input.GetKey(KeyCode.LeftShift)) { mouseOwnedStructure.showSelect = true; }
+                    }
+
+                    if (selected.Count == 1 && /*Selection.getSelectionComponent<Unit>(selected[0]) is Squad*/selected[0].GetComponent<Unit>() != null)
+                    {
+                        Unit unitComponent = selected[0].GetComponent<Unit>();
+                        if (unitComponent is Squad)
                         {
-                            raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
-                            moveMarkerPool.showMoveMarkers(raycastHits);
+                            //Squad squad = (Squad)Selection.getSelectionComponent<Unit>(selected[0]);
+                            Squad squad = (Squad)unitComponent;
+                            List<RaycastHit> raycastHits;
+                            Transform squadLeadTransform = squad.getCurrentTransform();
+                            if (squadLeadTransform != null)
+                            {
+                                raycastHits = Selection.getAdditionalCasts(maskHit, rayCamera, squad.getCurrentTransform(), squad.getAliveMembers(), ground);
+                                moveMarkerPool.showMoveMarkers(raycastHits);
+                            }
                         }
+                    } else if (selected.Count == 1 && selected[0].GetComponent<OwnedStructure>() != null) {
+
                     } else if (selected.Count == 0 && moveMarkerPool.checkActive() == true) {
                         moveMarkerPool.hideMoveMarkers();
                     }
@@ -75,16 +100,18 @@ namespace Capstone {
 
             if (Input.GetMouseButtonDown(0))
             {
-                leftClick(selected, mouseSquad);
+                if (!isMouseOverUI())
+                    leftClick(ref selected);
             }
 
             if (Input.GetMouseButtonDown(1))
             {
-                rightClick(selected, maskHit);
+                if (!isMouseOverUI())
+                    rightClick(ref selected, maskHit);
             }
         }
 
-        private void leftClick(List<GameObject> selected, Squad mouseSquad = null)
+        private void leftClick(ref List<GameObject> selected)
         {
             if (playerUI.checkMouseOverUIIcon(Input.mousePosition, "UnitIconUI") != null)
             {
@@ -100,14 +127,23 @@ namespace Capstone {
             {
                 if (mouseSquad != null && mouseSquad.squadState != SquadState.retreating)
                 {
+                    if (Selection.checkBuildingInSelected(selected))
+                        Selection.removeBuildingInSelected(ref selected);
                     Selection.squadSelect(mouseSquad, selected, player, SelectMode.click);
                     if (selected.Count > 1)
                         moveMarkerPool.hideMoveMarkers();
                     return;
                 }
             }
+
+            else if (mouseOwnedStructure != null)
+            {
+                Selection.buildingSelect(mouseOwnedStructure, selected, player);
+                if (moveMarkerPool.checkActive() == true)
+                    moveMarkerPool.hideMoveMarkers();
+            }
                 // Assuming player is not in multi-select mode, deselect all units and hide any move markers
-            if (!Input.GetKey(KeyCode.LeftShift)) 
+            else if (!Input.GetKey(KeyCode.LeftShift) && selected.Count > 0) 
             { 
                 Selection.deselectAll(player); 
                 if (moveMarkerPool.markersActive == true)
@@ -117,7 +153,7 @@ namespace Capstone {
             } 
         }
 
-        private void rightClick(List<GameObject> selected, RaycastHit maskHit)
+        private void rightClick(ref List<GameObject> selected, RaycastHit maskHit)
         {
             if (selected.Count > 0)
             {
@@ -148,8 +184,15 @@ namespace Capstone {
             }
         }
 
+        private bool isMouseOverUI()
+        {
+            Debug.Log(EventSystem.current.IsPointerOverGameObject());
+            return EventSystem.current.IsPointerOverGameObject();
+        }
+
         // -- Getter / Setter Methods --
         public void setPlayer(GameActor newPlayer) { player = newPlayer;}
+        public void setPlayerCamera(Camera newCamera) { playerCamera = newCamera; }
         public void setMovePool(SquadMoveMarkerPool newPool) { moveMarkerPool = newPool;}
         public void setPlayerUI(PlayerUI newUI) { playerUI = newUI;}
         //public void setPlayerCamera(Camera newCamera) { playerCamera = newCamera;}

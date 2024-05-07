@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Capstone
 {
@@ -133,26 +136,53 @@ namespace Capstone
             }
         }
 
-        private void InitalizeSpawnPoints()
+        private IEnumerator InitalizeHeadquarters()
         {
             foreach (GameObject gameActor in players)
             {
                 if (gameActor != null)
                 {
                     GameActor component = gameActor.GetComponent<GameActor>();
-                    component.spawnPoint = spawns[component.ownerTag];
                     if (component is Player)
                     {
                         Player playerComp = (Player)component;
-                        StartCoroutine(waitForPlayerCamera(playerComp, playerComp.spawnPoint.getCameraSpawnPosition()));
+                        StartCoroutine(waitForPlayerCamera(playerComp, spawns[component.ownerTag].getCameraSpawnPosition()));
                     }
-                    component.spawnPoint.faction = component.faction;
-                    component.spawnPoint.team = component.team;
-                    component.spawnPoint.ownerTag = component.ownerTag;
-                    component.spawnPoint.owner = component;
-                    component.spawnPoint.setGameManager(this);
+                    switch (component.faction)
+                    {
+                        case FactionType.centralPowers:
+                            AsyncOperationHandle cenHeadquartersHandle = Addressables.LoadAssetAsync<GameObject>("cenHeadquarters");
+                            yield return StartCoroutine(SpawnBuilding(cenHeadquartersHandle, spawns[component.ownerTag].gameObject, component));
+                            break;
+                        case FactionType.ententeForces:
+                            AsyncOperationHandle entHeadquartersHandle = Addressables.LoadAssetAsync<GameObject>("cenHeadquarters");
+                            yield return StartCoroutine(SpawnBuilding(entHeadquartersHandle, spawns[component.ownerTag].gameObject, component));
+                            break;
+                    }
                 }
             }
+            yield break;
+        }
+
+        private IEnumerator SpawnBuilding(AsyncOperationHandle buildingAsyncOperation, GameObject spawnPosition, GameActor owner)
+        {
+            GameObject buildingPrefab;
+            yield return buildingAsyncOperation;
+            if (buildingAsyncOperation.Status == AsyncOperationStatus.Succeeded)
+            {
+                buildingPrefab = buildingAsyncOperation.Result as GameObject;
+            } 
+            else 
+            {
+                yield break;
+            }
+            GameObject newHeadquarters = Instantiate(buildingPrefab, spawnPosition.transform.position, spawnPosition.transform.rotation);
+            ProductionStructure newHeadquartersComponent = newHeadquarters.GetComponent<ProductionStructure>();
+            owner.headquarters = newHeadquartersComponent;
+            newHeadquartersComponent.owner = owner;
+            newHeadquartersComponent.team = owner.team;
+            owner.retreatPoint = newHeadquartersComponent.getSpawnPoint();
+            yield break;
         }
 
         // Update is called once per frame
@@ -238,20 +268,18 @@ namespace Capstone
         {
             while (MatchManager.instance == null)
             {
-                Debug.Log("Waiting, no MatchManager for data");
                 yield return null;
             }
 
             while (MatchManager.instance.getMatchMembers().Count < 2)
             {
-                Debug.Log("Waiting, not enough players");
                 yield return null;
             }
 
             matchMembers = MatchManager.instance.getMatchMembers();
             Debug.Log("Initializing teams!");
             InitializeTeams();
-            InitalizeSpawnPoints();
+            StartCoroutine(InitalizeHeadquarters());
         }
 
         private IEnumerator waitForPlayerUI(Player playerComponent)

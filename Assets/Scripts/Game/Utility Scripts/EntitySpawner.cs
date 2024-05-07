@@ -24,7 +24,7 @@ namespace Capstone
 
         public IEnumerator SquadSpawn(AsyncOperationHandle squadAsyncOperation, Vector3 position, int team, int ownerTag, List<RaycastHit> rallyMove = null)
         {
-            GameObject squadPrefab = null;
+            GameObject squadPrefab;
             yield return squadAsyncOperation;
             if (squadAsyncOperation.Status == AsyncOperationStatus.Succeeded)
             {
@@ -58,7 +58,7 @@ namespace Capstone
 
             AsyncOperationHandle handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
             yield return StartCoroutine(SquadSpawn(handle, new Vector3(60, 0, 60), 1, 1));
-            handle = Addressables.LoadAssetAsync<GameObject>("cenRifleSquad");
+            handle = Addressables.LoadAssetAsync<GameObject>("cenAssaultSquad");
             yield return StartCoroutine(SquadSpawn(handle, new Vector3(40, 0, 40), 0, 0));
         }
     }

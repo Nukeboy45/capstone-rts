@@ -84,6 +84,50 @@ namespace Capstone
                 }
             }
 
+            public static void buildingSelect(OwnedStructure ownedStructure, List<GameObject> selected, GameActor owner)
+            {
+                if (selected.Count > 0)
+                {
+                    if (ownedStructure.owner == owner)
+                    {
+                        deselectAll(owner);
+                        if (!selected.Contains(ownedStructure.gameObject))
+                            ownedStructure.select();
+                    }
+                }
+                else {
+                    if (ownedStructure.owner == owner)
+                        if (!selected.Contains(ownedStructure.gameObject))
+                            ownedStructure.select();
+                }
+            }
+
+            public static bool checkBuildingInSelected(List<GameObject> selected)
+            {
+                foreach(GameObject selectedObject in selected)
+                {
+                    if (selectedObject.GetComponent<OwnedStructure>() != null)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public static void removeBuildingInSelected(ref List<GameObject> selected)
+            {
+                List<GameObject> newSelected = new List<GameObject>();
+                foreach(GameObject selectedObject in selected)
+                {
+                    OwnedStructure ownedStructureComponent = selectedObject.GetComponent<OwnedStructure>();
+                    if (ownedStructureComponent == null)
+                        newSelected.Add(selectedObject);
+                    else
+                        ownedStructureComponent.selected = false;
+                }
+                selected = newSelected;
+            }
+
             // /// <summary>
             // /// 
             // /// </summary>
@@ -124,20 +168,26 @@ namespace Capstone
                 if (owner is Player) {
                     Player playerComp = owner.GetComponent<Player>();
                     List<GameObject> selected = playerComp.getSelected();
+                    Debug.Log(selected.Count);
                     if (selected.Count > 0)
                     {
                         for (int i = selected.Count - 1; i >= 0; i--) 
                         {
                             Unit unit = selected[i].GetComponent<Unit>();
-                            // Building building = selected[i].GetComponent<Building>();
-                            if (unit != null) 
+                            if (unit != null)
                             {
-                                unit.deselect();
-                            } 
-                            //else if (building != null) 
-                            // {
-                            //     building.deselect();
-                            // }
+                                if (unit is Squad)
+                                {
+                                    ((Squad)unit).deselect();
+                                    continue;
+                                }
+                            }
+                            OwnedStructure ownedStructure = selected[i].GetComponent<OwnedStructure>();
+                            if (ownedStructure != null)
+                            {
+                                ownedStructure.deselect();
+                                continue;
+                            }
                         }
                     }
                 }

@@ -11,9 +11,19 @@ namespace Capstone
         retreating
     }
 
+    public enum BuildingType
+    {
+        neutralGarrison,
+        headquarters,
+        production,
+        ownedGarrison,
+        ownedDefense
+    }
+
     public enum UIState
     {
         defaultMenu,
+        productionStructure,
         squad,
         group,
         vehicle,

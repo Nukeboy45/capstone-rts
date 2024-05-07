@@ -20,6 +20,7 @@ namespace Capstone {
         [Header("Screen Settings")]
         [SerializeField] private TMP_Dropdown resolutionSelect;
         [SerializeField] private Toggle fullscreenCheckbox;
+        [SerializeField] private Toggle vsyncToggle;
 
         [Header("Pause Menu GameObjects")]
         [SerializeField] private GameObject resumeButton;
@@ -52,9 +53,9 @@ namespace Capstone {
                 {new Tuple<int, int>(1280, 720), 7},
             };
             resolutionSelect.value = selectedResolutionDictionary[new Tuple<int, int>(savedResWidth, savedResHeight)];
-            Debug.Log("correct value?" + resolutionSelect.value);
             fullscreenCheckbox.isOn = SettingsManager.Instance.settings.fullscreen;
-            updateScreenResolution(false);
+            vsyncToggle.isOn = SettingsManager.Instance.settings.vsync;
+            updateScreenSettings(false);
         }
 
         private void onVolumeValueChange(float value, string tag)
@@ -70,9 +71,12 @@ namespace Capstone {
             }
         }
 
-        public void updateScreenResolution(bool save)
+        public void updateScreenSettings(bool save)
         {
             bool fullscreen = fullscreenCheckbox.isOn;
+            Debug.Log(vsyncToggle.isOn);
+            bool vsync = vsyncToggle.isOn;
+            updateVsync(vsync);
             Dictionary<int, int[]> resolutionDictionary = new Dictionary<int, int[]>() {
                 {0, new int[] {3840, 2400}},
                 {1, new int[] {3840, 2160}},
@@ -86,9 +90,15 @@ namespace Capstone {
 
             int[] newResolution = resolutionDictionary[resolutionSelect.value];
             Screen.SetResolution(newResolution[0], newResolution[1], fullscreen);
-            SettingsManager.Instance.updateScreenResolution(newResolution[0], newResolution[1], fullscreen, save);
+            SettingsManager.Instance.updateScreenSettings(newResolution[0], newResolution[1], fullscreen, vsync, save);
         }
-
+        private void updateVsync(bool status)
+        {
+            if (status)
+                QualitySettings.vSyncCount = 1;
+            else
+                QualitySettings.vSyncCount = 0;
+        }
         public void resumeGame()
         {
             GameManager.Instance.resume();

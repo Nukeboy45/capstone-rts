@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,11 +23,16 @@ namespace Capstone
         // Start is called before the first frame update
 
         // Temporary for Debug
-        private SpawnPoint spawnPoint;
+        private ProductionStructure productionStructure;
 
-        public void setSpawnPoint(SpawnPoint buildQueue)
+        public void setProductionStructure(ProductionStructure unitConstructor)
         {
-            spawnPoint = buildQueue;
+            productionStructure = unitConstructor;
+        }
+
+        public void eliminateProductionReference()
+        {
+            productionStructure = null;
         }
 
         // Update is called once per frame
@@ -54,7 +60,7 @@ namespace Capstone
                     }
                     break;
                 default:
-                    spawnPoint.removeFromBuildQueue(this);
+                    productionStructure.removeFromBuildQueue(this);
                     break;
             }
         }

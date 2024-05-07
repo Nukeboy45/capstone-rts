@@ -16,19 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: d759a0c6758ebef45b54f1ca5af1d14e
-  m_SerializeEntries:
-  - m_GUID: 42d7611cdc3d7a54a80a6ca8b6d7911a
-    m_Address: entRifleSquad
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Units - Infantry Squads
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e3ff2487af4200f429043953c7e9ce3b
-    m_Address: cenRifleSquad
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Units - Infantry Squads
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1a974dc392916c44d8dc1c300e77b11d, type: 2}
   m_SchemaSet:

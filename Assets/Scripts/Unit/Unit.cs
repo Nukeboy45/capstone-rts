@@ -11,12 +11,14 @@ namespace Capstone
         public int team;
         public GameActor owner;
         public bool? showSelect = null;
+        // public float showSelectTime = -1f;
         public bool selected = false;
         public bool multiSelect = false;
         public float multiSelectTime; 
 
         // Private / Protected, Editor-Accessible Variables
         [SerializeField] protected GameObject iconObj;
+        [SerializeField] public Sprite buttonSprite;
         [SerializeField] protected Sprite[] iconSprites;
         [SerializeField] protected Sprite portrait;
         [SerializeField] protected float buildTime;

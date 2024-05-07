@@ -10,11 +10,15 @@ namespace Capstone
     {
         // Object functionality Variables
         public Squad parent;
+        public int prefabIndex;
         [SerializeField] public FogDetection fogDetection;
 
         // Private, Editor-Accessible Variables
         [SerializeField] protected HideObject[] hideObjects;
-        [SerializeField] private WeaponData weaponData;
+        [SerializeField] private GameObject weaponPrefab;
+        [SerializeField] private GameObject weaponContainer;
+        [SerializeField] private GameObject weaponObject = null;
+        [SerializeField] private Weapon weaponScript;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currHealth;    
         [SerializeField] private float range;
@@ -22,18 +26,14 @@ namespace Capstone
         [SerializeField] private float moveSpeed;
         [SerializeField] private float modelAccuracyModifier = 1.0f;// 1.0 is base accuracy modifier, 1.1 10% more accurate, etc.
         [SerializeField] private float attackSpeedModifier = 1.0f; // 1.0 is base attack speed, 1.1 10% faster, etc
-        [SerializeField] private int modelPriority;
+        public int modelPriority;
         [SerializeField] private NavMeshAgent myAgent;
         [SerializeField] private GameObject sightRadius;
         [SerializeField] private SphereCollider rangeCollider;
         [SerializeField] private WeaponAudio weaponAudio;
-        [SerializeField] private ParticleSystem muzzleFlash;
-        [SerializeField] private ParticleSystem muzzleSmoke;
-
-
 
         // Private Runtime Variables
-        [SerializeField] private GameObject target = null;
+        private GameObject target = null;
         private TargetType targetType;
 
         // Shooting Variables
@@ -65,15 +65,14 @@ namespace Capstone
         {
             currHealth = maxHealth;
             myAgent = GetComponent<NavMeshAgent>();
-            UpdateWeaponVariables();
-
+            initializeWeapon();
         }
         // Update is called once per frame
         void Update()
         {
             if (currHealth <= 0) {
                 if (firingLoop != null) { StopCoroutine(firingLoop); }
-                parent.killModel(gameObject);
+                StartCoroutine(parent.killModel(gameObject, this));
             }
 
             checkForTarget();
@@ -106,10 +105,11 @@ namespace Capstone
             }
         }
 
+        private bool swappingWeapons = false;
         private IEnumerator attackLoop()
         {
             bool targetInRange = false;
-            while (target != null)
+            while (target != null && swappingWeapons == false)
             { 
                 if (Time.timeScale == 0f)
                     yield return new WaitWhile(() => Time.timeScale == 0f);
@@ -201,8 +201,7 @@ namespace Capstone
             currentAimTime = UnityEngine.Random.Range(minAimTime, maxAimTime);
             lastAimTick = DateTime.MinValue;
             weaponAudio.PlaySound(0);
-            muzzleFlash.Play();
-            muzzleSmoke.Play();
+            weaponScript.shootWeapon();
             switch (targetType)
             {
                 case TargetType.infantry:
@@ -263,49 +262,68 @@ namespace Capstone
             myAgent.SetDestination(point);
         }
 
-        public void setSightRadiusStatus(bool status)
+        public void setSightRadiusStatus(bool status) { sightRadius.SetActive(status); }
+
+        private void initializeWeapon()
         {
-            if (status)
+            if (weaponObject == null)
             {
-                sightRadius.SetActive(true);
-            } else {
-                sightRadius.SetActive(false);
+                Debug.Log("Initializing new weapon!");
+                weaponObject = Instantiate(weaponPrefab, weaponContainer.transform.position, weaponContainer.transform.rotation);
+                weaponScript = weaponObject.GetComponent<Weapon>();
+                weaponObject.transform.SetParent(weaponContainer.transform);
+                ammoCapacity = weaponScript.getMagazineCapacity();
+                ammo = weaponScript.getMagazineCapacity();
+                reloadTime = weaponScript.getReloadTime();
+                firingCooldown = weaponScript.getFiringCooldown();
+                weaponDamage = weaponScript.getDamage();
+                weaponAccuracy = weaponScript.getMaxAccuracy();
+                weaponAccuracyFalloffFactor = weaponScript.getAccuracyFalloffFactor();
+                weaponAccuracyFalloffDistance = weaponScript.getAccuracyFalloffDistance();
+                highestWeaponAccuracyRange = weaponScript.getMaxAccuracyRange();
+                weaponAudio.setWeaponSounds(weaponScript.getWeaponSounds());
+                minAimTime = weaponScript.getMinAimTime();
+                maxAimTime = weaponScript.getMaxAimTime();
+                if (!parent.checkReveal())
+                    hideModel();
+                StartCoroutine(weaponSwapWait());
             }
         }
 
-        private void UpdateWeaponVariables()
+        private IEnumerator weaponSwapWait() 
         {
-            ammoCapacity = weaponData.MagazineCapacity;
-            ammo = weaponData.MagazineCapacity;
-            reloadTime = weaponData.ReloadTime;
-            firingCooldown = weaponData.FiringCooldown;
-            weaponDamage = weaponData.Damage;
-            weaponAccuracy = weaponData.MaxAccuracy;
-            weaponAccuracyFalloffFactor = weaponData.AccuracyFalloffFactor;
-            weaponAccuracyFalloffDistance = weaponData.AccuracyFalloffDistance;
-            highestWeaponAccuracyRange = weaponData.MaxAccuracyRange;
-            weaponAudio.setWeaponSounds(weaponData.weaponSounds);
-            minAimTime = weaponData.MinAimTime;
-            maxAimTime = weaponData.MaxAimTime;
+            yield return new WaitForSecondsRealtime(1.5f);
+            swappingWeapons = false;
+            yield break;
+        }
+
+        public void setNewWeapon(GameObject newWeaponPrefab)
+        {
+            swappingWeapons = true;
+            weaponScript = null;
+            Destroy(weaponObject);
+            weaponObject = null;
+            weaponPrefab = newWeaponPrefab;
+            initializeWeapon();
         }
 
         // ------ Getters / Setters
         public float getRemainingDistance() { return myAgent.remainingDistance; }
-        public float getCurrentHealth()
-        {
-            return currHealth;
-        }
-
-        public float getMoveSpeed()
-        {
-            return moveSpeed;
-        }
-
-        public float getMaxHealth()
-        {
-            return maxHealth;
-        }
-
+        public GameObject getWeaponPrefab() { return weaponPrefab; }
+        public float getMaxHealth() { return maxHealth; }
+        public float getCurrentHealth() { return currHealth; }
+        public float getRange() { return range; }
+        public float getDefense() { return defense; }
+        public float getMoveSpeed() { return moveSpeed; }
+        public float getModelAccuracyModifer () { return modelAccuracyModifier; }
+        public float getAttackSpeedModifier() { return attackSpeedModifier; }
+        public void setMaxHealth(float newMaxHealth) { maxHealth = newMaxHealth; }
+        public void setCurrentHealth(float newCurrentHealth) { currHealth = newCurrentHealth; }
+        public void setRange(float newRange) { range = newRange; }
+        public void setDefense(float newDefense) { defense = newDefense; }
+        public void setMoveSpeed(float newMoveSpeed) { moveSpeed = newMoveSpeed; }
+        public void setModelAccuracyModifer (float newModelAccuracyModifer) { modelAccuracyModifier = newModelAccuracyModifer; }
+        public void setAttackSpeedModifier(float newAttackSpeedModifier) { attackSpeedModifier = newAttackSpeedModifier; }
         public void takeDamage(float damage)
         {
             currHealth -= damage;

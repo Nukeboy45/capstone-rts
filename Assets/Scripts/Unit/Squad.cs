@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Capstone 
 {
@@ -15,6 +12,7 @@ namespace Capstone
 
         // Private, Runtime Variables
         [SerializeField] private List<GameObject> squadMembers = new List<GameObject>();
+        [SerializeField] private List<int> reinforceMemberIndexes = new List<int>();
         private int veterancy;
         [SerializeField] private GameObject squadLead; // Reference to the 'primary' member of the squad - determines where the unit iconSprite isiconSpritesered, upon death another member
                                        // is assigned to this - will modify code to assume squadLead is always = 0th unit
@@ -32,17 +30,12 @@ namespace Capstone
         {
             base.Start();
             StartCoroutine(InstantiateSquad());
-            StartCoroutine(squadUpdate());
+            // StartCoroutine(squadUpdate());
         }
 
         void Update()
         {
-            
-        }
-
-        private IEnumerator squadUpdate()
-        {
-            while (true)
+            if (Time.timeScale != 0)
             {
                 fogCheck();
                 if (!multiSelect)
@@ -81,7 +74,61 @@ namespace Capstone
                     if (checkStopped(0.4f))
                         squadState = SquadState.stationary;
                 }
-                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        private IEnumerator squadUpdate()
+        {
+            while (true)
+            {
+                while (Time.timeScale == 0)
+                {
+                    yield return null;
+                }
+                fogCheck();
+                if (!multiSelect)
+                {
+                    // if (Time.time - showSelectTime > 0.1f || showSelectTime == -1f || sel)
+                    // {
+                    //     hideSelectionRadius();
+                    // } else {
+                    //     showSelectionRadius();
+                    // }
+                    if (showSelect != null && selected == false)
+                    {
+                        if (showSelect == true)
+                        {
+                            showSelectionRadius();
+                            showSelect = false;
+                        } else {
+                            hideSelectionRadius();
+                            showSelect = false;
+                        }
+                    }
+                } else {
+                    if (Time.time - multiSelectTime > 0.1f)
+                    {
+                        multiSelect = false;
+                        hideSelectionRadius();
+                    } else {
+                        showSelectionRadius();
+                    }
+                }
+
+                if (squadState == SquadState.retreating)
+                {
+                    if (checkStopped(0.6f))
+                        squadState = SquadState.stationary;
+                }
+
+                if (squadState == SquadState.moving || squadState == SquadState.attackmove)
+                {
+                    if (team == FogLayerManager.Instance.getPlayerTeam())
+                        FogLayerManager.Instance.isDirty = true;
+                    if (checkStopped(0.4f))
+                        squadState = SquadState.stationary;
+                }
+                yield return new WaitForEndOfFrame();
             }
         }
 
@@ -92,7 +139,6 @@ namespace Capstone
                 if (obj != null)
                 {
                     SquadMember squadMemberComponent = obj.GetComponent<SquadMember>();
-                    Debug.Log(squadMemberComponent.getRemainingDistance());
                     if (squadMemberComponent.getRemainingDistance() > stopDistance)
                         return false;
                 }
@@ -219,17 +265,31 @@ namespace Capstone
             }
         }
 
+        private bool killingModel = false;
         /// <summary>
         /// Function called by a squadMember object belonging to this squad when its
         /// health reaches 0. Allows the squad to always determine proper number of 
         /// alive members.
         /// </summary>
         /// <param name="modelObject"></param>
-        public void killModel(GameObject modelObject) 
+        public IEnumerator killModel(GameObject modelObject, SquadMember killComponent) 
         {
+            while (killingModel)
+                yield return null;
+            killingModel = true;
             if (modelObject == squadLead)
                 squadLead = null;
             squadMembers.Remove(modelObject);
+            int modelIndex = checkLowestModelPriority(killComponent.modelPriority);
+            if (modelIndex != -1)
+            {
+                Debug.Log("Lower model priority!");
+                SquadMember cloneTarget = squadMembers[modelIndex].GetComponent<SquadMember>();
+                reinforceMemberIndexes.Add(cloneTarget.prefabIndex);
+                cloneModel(cloneTarget, killComponent);
+            } else {
+                reinforceMemberIndexes.Add(killComponent.prefabIndex);
+            }
             Destroy(modelObject);
             if (FogLayerManager.Instance.getPlayerTeam() == team)
                 FogLayerManager.Instance.isDirty = true;
@@ -254,6 +314,39 @@ namespace Capstone
             else {
                 killSquad();
             }
+            killingModel = false;
+            yield break;
+        }
+
+        private int checkLowestModelPriority(int priority)
+        {
+            int lowestModelPriority = priority;
+            int lowestPriorityIndex = -1;
+            int i = 0;
+            foreach(GameObject member in squadMembers)
+            {
+                SquadMember squadMemberComponent = member.GetComponent<SquadMember>();
+                if (squadMemberComponent.modelPriority < lowestModelPriority)
+                {
+                    lowestModelPriority = squadMemberComponent.modelPriority;
+                    lowestPriorityIndex = i;
+                }
+                i++;
+            }
+            return lowestPriorityIndex;
+        }
+
+        private void cloneModel(SquadMember cloneTarget, SquadMember cloneParent)
+        {
+            cloneTarget.prefabIndex = cloneParent.prefabIndex;
+            cloneTarget.modelPriority = cloneParent.modelPriority;
+            cloneTarget.setNewWeapon(cloneParent.getWeaponPrefab());
+            cloneTarget.setMaxHealth(cloneParent.getMaxHealth());
+            cloneTarget.setRange(cloneParent.getRange());
+            cloneTarget.setDefense(cloneParent.getDefense());
+            cloneTarget.setMoveSpeed(cloneParent.getMoveSpeed());
+            cloneTarget.setModelAccuracyModifer(cloneParent.getModelAccuracyModifer());
+            cloneTarget.setAttackSpeedModifier(cloneParent.getAttackSpeedModifier());
         }
         private void killSquad()
         {
@@ -305,14 +398,14 @@ namespace Capstone
         
         public override bool checkReveal()
         {
-            if (FogLayerManager.Instance.getPlayerTeam() != team)
+            if (GameManager.Instance.player.team != team)
             {
                 foreach (GameObject squadMember in squadMembers)
                 {
                     if (squadMember != null)
                     {
                         SquadMember squadMemberComponent = squadMember.GetComponent<SquadMember>();
-                        if (squadMemberComponent.fogDetection.unitVisible)
+                        if (squadMemberComponent.fogDetection.visible)
                             return true;
                     }
                 }
@@ -320,45 +413,21 @@ namespace Capstone
             }
             return true;
         }
-
-        // public override bool checkReveal()
-        // {
-        //     if (FogLayerManager.Instance.getPlayerTeam() != team)
-        //     {
-        //         foreach (GameObject squadMember in squadMembers)
-        //         {
-        //             if (squadMember != null)
-        //             {
-        //                 if (FogLayerManager.Instance.isInFog(squadMember.transform.position))
-        //                 {
-        //                     return true;
-        //                 }
-        //             }
-        //         }
-        //         return false;
-        //     }
-        //     return true;
-        // }
-
         public void setSquadVisibility(bool state)
         {
             if (state)
             {
-                int selectableLayer = LayerMask.NameToLayer("Visible");
                 worldIconObj.SetActive(true);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
-                        member.layer = selectableLayer;
                         member.GetComponent<SquadMember>().showModel();
                 }       
             } else {
-                int hiddenLayer = LayerMask.NameToLayer("Hidden");
                 worldIconObj.SetActive(false);
                 foreach (GameObject member in squadMembers)
                 {
                     if (member != null)
-                        member.layer = hiddenLayer;
                         member.GetComponent<SquadMember>().hideModel();
                 }
             }
@@ -404,6 +473,7 @@ namespace Capstone
 
                 // Sets the parent reference on the model to the current squad object
                 squadMemberComponent.parent = this;
+                squadMemberComponent.prefabIndex = i;
 
                 // First model to spawn becomes the default "squadLead" - 
                 // squadLead models do not get any bonuses, their coordinates are used to 
@@ -419,7 +489,7 @@ namespace Capstone
                 //squadMembers[i].transform.SetParent(this.transform, false);
             }
 
-            // Initializes the squad Icon and attaches it to the iconSprite poiconSpritesn empty object on the model.
+            // Initializes the squad Icon and attaches it to the iconSprite empty object on the model.
             GameObject iconPosition = squadLead.transform.Find("iconPos").gameObject;
             if (iconPosition != null) {
                 iconPosition.SetActive(true);
