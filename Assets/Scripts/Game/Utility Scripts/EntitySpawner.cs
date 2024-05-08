@@ -57,9 +57,17 @@ namespace Capstone
             }
 
             AsyncOperationHandle handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
-            yield return StartCoroutine(SquadSpawn(handle, new Vector3(60, 0, 60), 1, 1));
-            handle = Addressables.LoadAssetAsync<GameObject>("cenAssaultSquad");
-            yield return StartCoroutine(SquadSpawn(handle, new Vector3(40, 0, 40), 0, 0));
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(90, 0, 90), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(105, 0, 105), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(183, 0, 183), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(198, 0, 198), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(294, 0, 294), 1, 1));
+            handle = Addressables.LoadAssetAsync<GameObject>("entRifleSquad");
+            yield return StartCoroutine(SquadSpawn(handle, new Vector3(282, 0, 282), 1, 1));
         }
     }
 }

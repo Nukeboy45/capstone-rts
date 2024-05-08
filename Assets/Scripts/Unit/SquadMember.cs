@@ -243,10 +243,12 @@ namespace Capstone
         }
 
         public void showModel() {
+            gameObject.layer = 3;
             foreach(HideObject script in hideObjects){ script.showObj(); }
         }
 
         public void hideModel() {
+            gameObject.layer = 10;
             foreach(HideObject script in hideObjects) { script.hideObj(); }
         }
 

@@ -33,6 +33,7 @@ namespace Capstone
     [Serializable]
     public enum FactionType
     {
+        none,
         centralPowers,
         ententeForces
     }

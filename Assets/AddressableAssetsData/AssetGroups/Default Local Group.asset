@@ -16,7 +16,13 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: d759a0c6758ebef45b54f1ca5af1d14e
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 3bad46a3b46520d4ba0a96df964901da
+    m_Address: WinConditionCanvas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI - Default UI Asset
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1a974dc392916c44d8dc1c300e77b11d, type: 2}
   m_SchemaSet:
