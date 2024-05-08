@@ -86,10 +86,13 @@ namespace Capstone
         void Update()
         {
             dTime = Time.deltaTime;
-            camMove.checkCameraMove(playerCamera, dTime);
-            mouse.mouseUpdate(ref selected);
-            dragSelect.dragSelectUpdate(ref selected);
-            keyboard.keyboardUpdate(ref selected);
+            if (Time.timeScale != 0)
+            {
+                camMove.checkCameraMove(playerCamera, dTime);
+                mouse.mouseUpdate(ref selected);
+                dragSelect.dragSelectUpdate(ref selected);
+                keyboard.keyboardUpdate(ref selected);
+            }
         }
 
         // ------------------- Getter / Setter / Accessibility Functions ----------------

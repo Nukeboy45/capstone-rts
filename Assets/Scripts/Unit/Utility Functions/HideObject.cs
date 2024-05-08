@@ -4,8 +4,8 @@ namespace Capstone
 {
     public class HideObject : MonoBehaviour
     {
-        [SerializeField] private int showLayer;
-        [SerializeField] private int hideLayer;
+        private int showLayer = 3;
+        private int hideLayer = 10;
 
         public void showObj() {
             changeAllChildren(transform, showLayer);

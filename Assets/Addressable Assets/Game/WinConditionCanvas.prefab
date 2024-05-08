@@ -669,13 +669,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 064e405cb5c02c84493d8558a9cdb9ac, type: 3}
   - {fileID: 21300000, guid: c7fa72fc6d6660f4ea1ad844e93de14e, type: 3}
   - {fileID: 21300000, guid: 05cb407c7e5bf3b4fb9ee500e0cefbb2, type: 3}
-  cenDefeatSprites: []
+  cenDefeatSprites:
+  - {fileID: 21300000, guid: 04273f93a3a735144b2a1eb57290fc22, type: 3}
+  - {fileID: 21300000, guid: b28070d497771c24e8d7a078b874d3c7, type: 3}
+  - {fileID: 21300000, guid: df55beb0803e27c45ac8d9d10d8dd8ca, type: 3}
+  - {fileID: 21300000, guid: 69f5930e25e29184c9cd9897cde6d738, type: 3}
   entVictorySprites:
   - {fileID: 21300000, guid: 6de3585902155bc419c4767452a35591, type: 3}
   - {fileID: 21300000, guid: d35eb2833682c1b428a1839192d64ccb, type: 3}
   - {fileID: 21300000, guid: fd3715ed2aba83b4e87bb7b89d2c3660, type: 3}
   - {fileID: 21300000, guid: c2e1fa1775684664c983d921240a07fb, type: 3}
-  entDefeatSprites: []
+  entDefeatSprites:
+  - {fileID: 21300000, guid: 5a3ec1b02d57e5648bdd95f0860519e5, type: 3}
+  - {fileID: 21300000, guid: 04b06f08b319f854fbaab38ad08a8b16, type: 3}
+  - {fileID: 21300000, guid: ccf9ae9625b1edd4e9c176cec00a59df, type: 3}
+  - {fileID: 21300000, guid: 618c0f9274cd3854dbf0fac93f54fc0e, type: 3}
 --- !u!1 &8120838657315554328
 GameObject:
   m_ObjectHideFlags: 0
