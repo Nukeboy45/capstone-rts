@@ -188,11 +188,14 @@ namespace Capstone
         // Update is called once per frame
         void Update()
         {
-            TimeSpan elapsedObjectiveTime = DateTime.Now - lastObjectiveTick;
-            if (elapsedObjectiveTime.Seconds >= objectivePointTickTime)
+            if (Time.timeScale != 0)
             {
-                capturePointTicketUpdate();
-                lastObjectiveTick = DateTime.Now;
+                TimeSpan elapsedObjectiveTime = DateTime.Now - lastObjectiveTick;
+                if (elapsedObjectiveTime.Seconds >= objectivePointTickTime)
+                {
+                    capturePointTicketUpdate();
+                    lastObjectiveTick = DateTime.Now;
+                }
             }
         }
 
